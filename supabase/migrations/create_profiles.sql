@@ -1,9 +1,8 @@
 -- ==============================================================================
--- FerroMax: User Profiles & Roles System
--- Supports 'admin' (Don Carlos / Store Owner) and 'cliente' (Default Buyer)
--- All new registrations default to 'cliente'. Roles are managed directly in Supabase.
+-- FerroMax: Creación de la tabla public.profiles y Sincronización de Roles
 -- ==============================================================================
 
+-- 1. Crear tabla de perfiles en el esquema public
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT NOT NULL,
@@ -14,19 +13,18 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Indexes
+-- 2. Índices para consultas rápidas
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
 
--- Enable RLS
+-- 3. Habilitar seguridad por fila (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies if any
+-- 4. Políticas de lectura y escritura
 DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 
--- Policies
 CREATE POLICY "Public profiles are viewable by everyone"
     ON public.profiles FOR SELECT
     TO anon, authenticated
@@ -42,8 +40,8 @@ CREATE POLICY "Users can update their own profile"
     TO authenticated
     USING (auth.uid() = id);
 
--- Function & Trigger to automatically synchronize profile on user signup
--- New accounts ALWAYS default to 'cliente'. Roles are managed directly in Supabase.
+-- 5. Función y Trigger: cada usuario nuevo que se registre en Supabase
+--    se inserta automáticamente en public.profiles con el rol 'cliente'.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -69,3 +67,15 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 6. Migrar usuarios existentes: si ya habías registrado usuarios en auth.users,
+--    este comando los copia de una vez a public.profiles para que aparezcan en tu Table Editor.
+INSERT INTO public.profiles (id, email, full_name, phone, role)
+SELECT 
+    id, 
+    email, 
+    COALESCE(raw_user_meta_data->>'full_name', ''), 
+    COALESCE(raw_user_meta_data->>'phone', ''), 
+    COALESCE(raw_user_meta_data->>'role', 'cliente')
+FROM auth.users
+ON CONFLICT (id) DO NOTHING;

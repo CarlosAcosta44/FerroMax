@@ -5,7 +5,6 @@ import { UserProfile, UserRole } from '@/domain/entities/UserProfile';
 export class SupabaseAuthRepository implements IAuthRepository {
   async signUp(dto: SignUpDTO): Promise<{ user: any; profile: UserProfile }> {
     const { email, password, fullName, phone } = dto;
-    // Every new user account always defaults to 'cliente'
     const role: UserRole = 'cliente';
 
     const { data, error } = await supabase.auth.signUp({
@@ -40,7 +39,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
       createdAt: data.user.created_at,
     };
 
-    // Ensure public.profiles table has the record as 'cliente'
+    // Attempt to upsert into public.profiles if table exists
     try {
       await supabase.from('profiles').upsert({
         id: data.user.id,
@@ -50,8 +49,8 @@ export class SupabaseAuthRepository implements IAuthRepository {
         role: 'cliente',
         updated_at: new Date().toISOString(),
       });
-    } catch (e) {
-      console.warn('Note: Profile table upsert skipped or managed by DB trigger:', e);
+    } catch {
+      // Table might not be created yet in Supabase
     }
 
     return { user: data.user, profile };
@@ -112,8 +111,21 @@ export class SupabaseAuthRepository implements IAuthRepository {
   }
 
   async getProfile(userId: string, userAuthObject?: any): Promise<UserProfile> {
+    let authUser = userAuthObject;
+
+    if (!authUser) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.id === userId) {
+          authUser = user;
+        }
+      } catch {
+        // Ignore auth fetch error
+      }
+    }
+
+    // 1. Try to read from public.profiles in database
     try {
-      // Primary source of truth: public.profiles managed in Supabase
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -131,21 +143,21 @@ export class SupabaseAuthRepository implements IAuthRepository {
           updatedAt: data.updated_at,
         };
       }
-    } catch (e) {
-      console.warn('Profiles table query error, falling back to auth metadata:', e);
+    } catch {
+      // Table doesn't exist yet, proceed to auth metadata fallback
     }
 
-    // Fallback if table is not yet migrated
+    // 2. Direct fallback to auth.users user_metadata
     let role: UserRole = 'cliente';
     let fullName = 'Usuario FerroMax';
     let phone = '';
     let email = '';
 
-    if (userAuthObject) {
-      email = userAuthObject.email || '';
-      fullName = userAuthObject.user_metadata?.full_name || email.split('@')[0];
-      phone = userAuthObject.user_metadata?.phone || '';
-      if (userAuthObject.user_metadata?.role === 'admin') {
+    if (authUser) {
+      email = authUser.email || '';
+      fullName = authUser.user_metadata?.full_name || email.split('@')[0];
+      phone = authUser.user_metadata?.phone || '';
+      if (authUser.user_metadata?.role === 'admin') {
         role = 'admin';
       }
     }
