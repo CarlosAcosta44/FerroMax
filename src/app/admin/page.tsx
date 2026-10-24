@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -14,31 +14,55 @@ import {
   CheckCircle,
   AlertCircle,
   LogOut,
-  ShoppingBag,
-  ShoppingCart,
   ChevronDown,
   ShieldCheck,
   Plus,
   Minus,
   Receipt,
   CreditCard,
-  Phone,
-  MessageSquare,
   Printer,
   RefreshCw,
   Bell,
-  ArrowRight,
+  Save,
+  MapPin,
+  Filter,
+  QrCode,
+  Trash2,
+  Smartphone,
+  Zap,
+  Calendar,
+  FileText,
+  ChevronRight,
+  Check,
 } from '@/presentation/components/common/Icons';
 import { useAuth } from '@/presentation/context/AuthContext';
+import {
+  SupabaseAdminRepository,
+  AdminProduct,
+  AdminCustomer,
+  AdminOrder,
+  CashShift,
+} from '@/infrastructure/repositories/SupabaseAdminRepository';
 
 type AdminTab = 'dashboard' | 'inventory' | 'pos' | 'orders' | 'customers' | 'cash';
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, profile, role, isLoading, signOut } = useAuth();
+  const { user, profile, role, isLoading: isAuthLoading, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Supabase Clean Architecture Repository
+  const adminRepo = useMemo(() => SupabaseAdminRepository.getInstance(), []);
+
+  // Real Database States
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [customers, setCustomers] = useState<AdminCustomer[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [cashShift, setCashShift] = useState<CashShift | null>(null);
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -50,6 +74,39 @@ export default function AdminPage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Fetch real data from Supabase
+  const loadRealData = async () => {
+    setIsDataLoading(true);
+    try {
+      const [prods, custs, ords, shift] = await Promise.all([
+        adminRepo.getProducts(),
+        adminRepo.getCustomers(),
+        adminRepo.getOrders(),
+        adminRepo.getCashShift(),
+      ]);
+      setProducts(prods);
+      setCustomers(custs);
+      setOrders(ords);
+      setCashShift(shift);
+      if (shift?.denominations) {
+        setCashDenominations(shift.denominations);
+      }
+    } catch (err) {
+      console.error('Error fetching Supabase admin data:', err);
+    } finally {
+      setIsDataLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRealData();
+  }, [adminRepo]);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   const handleSignOut = async () => {
     setIsProfileMenuOpen(false);
@@ -68,65 +125,283 @@ export default function AdminPage() {
     if (email) {
       return email.slice(0, 2).toUpperCase();
     }
-    return 'AD';
+    return 'FM';
   };
 
-  // State for POS Counter sale
-  const [posCart, setPosCart] = useState<Array<{ id: string; name: string; price: number; qty: number }>>([
-    { id: '1', name: 'Disco de Corte Fino 4.5" DeWalt', price: 6500, qty: 2 },
-    { id: '2', name: 'Cinta Aislante Negra 3M Scotch 20m', price: 9200, qty: 1 },
+  // -----------------------------------------------------------------
+  // INVENTORY TAB LOGIC & ACTIONS
+  // -----------------------------------------------------------------
+  const [inventorySearch, setInventorySearch] = useState('');
+  const [inventoryCategory, setInventoryCategory] = useState('all');
+  const [inventoryFilterTab, setInventoryFilterTab] = useState<'all' | 'low' | 'out'>('all');
+
+  const adjustStock = async (id: string, delta: number) => {
+    const item = products.find((p) => p.id === id);
+    if (!item) return;
+    const newStock = Math.max(0, item.stock_quantity + delta);
+    const newStatus: 'ok' | 'low' | 'out' =
+      newStock === 0 ? 'out' : newStock <= item.min_stock ? 'low' : 'ok';
+
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, stock_quantity: newStock, status: newStatus } : p))
+    );
+
+    await adminRepo.updateProduct(id, { stock_quantity: newStock, status: newStatus });
+    showToast(`Stock actualizado: ${item.name} (${newStock} unidades)`);
+  };
+
+  const updatePrice = async (id: string, newPrice: number) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, price_cop: newPrice } : p))
+    );
+    await adminRepo.updateProduct(id, { price_cop: newPrice });
+    showToast('Precio de venta actualizado en base de datos');
+  };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(inventorySearch.toLowerCase()) ||
+        p.sku.toLowerCase().includes(inventorySearch.toLowerCase()) ||
+        p.aisle.toLowerCase().includes(inventorySearch.toLowerCase());
+
+      const matchesCat =
+        inventoryCategory === 'all' ||
+        p.category.toLowerCase().includes(inventoryCategory.toLowerCase());
+
+      const matchesTab =
+        inventoryFilterTab === 'all'
+          ? true
+          : inventoryFilterTab === 'low'
+          ? p.status === 'low'
+          : p.status === 'out';
+
+      return matchesSearch && matchesCat && matchesTab;
+    });
+  }, [products, inventorySearch, inventoryCategory, inventoryFilterTab]);
+
+  const criticalStockCount = useMemo(
+    () => products.filter((p) => p.status === 'low').length,
+    [products]
+  );
+  const outOfStockCount = useMemo(
+    () => products.filter((p) => p.status === 'out').length,
+    [products]
+  );
+  const totalInventoryValue = useMemo(
+    () => products.reduce((acc, p) => acc + p.price_cop * p.stock_quantity, 0),
+    [products]
+  );
+
+  // -----------------------------------------------------------------
+  // POS (VENTAS MOSTRADOR & WEB) LOGIC
+  // -----------------------------------------------------------------
+  const [posCart, setPosCart] = useState<
+    Array<{ id: string; name: string; sku: string; aisle: string; price: number; qty: number }>
+  >([
+    {
+      id: '1',
+      name: 'Taladro Percutor Casero 650W DeWalt',
+      sku: 'HERR-001',
+      aisle: 'Pasillo 1 - Estante A',
+      price: 385000,
+      qty: 1,
+    },
+    {
+      id: '6',
+      name: 'Caja Tornillos Drywall 6x1 (500 und)',
+      sku: 'FIJ-001',
+      aisle: 'Pasillo 4 - Gaveta 12',
+      price: 28000,
+      qty: 2,
+    },
   ]);
-  const [posCustomerType, setPosCustomerType] = useState('mostrador');
-  const [posPaymentMethod, setPosPaymentMethod] = useState<'efectivo' | 'tarjeta' | 'transferencia'>('efectivo');
+  const [posSearch, setPosSearch] = useState('');
+  const [posSelectedCustomer, setPosSelectedCustomer] = useState<'regular' | 'occasional'>('regular');
+  const [posPaymentMethod, setPosPaymentMethod] = useState<'efectivo' | 'tarjeta' | 'qr' | 'fiado'>('efectivo');
+  const [cashGiven, setCashGiven] = useState(450000);
   const [posSaleSuccess, setPosSaleSuccess] = useState(false);
 
-  // State for Inventory adjustments
-  const [inventoryList, setInventoryList] = useState([
-    { id: 'SKU-001', name: 'Taladro Percutor DeWalt 20V Max', category: 'Herramientas Eléctricas', aisle: 'Pasillo 1', stock: 12, price: 385000, status: 'ok' },
-    { id: 'SKU-002', name: 'Caja Tornillos Drywall 6x1 (500 und)', category: 'Tornillería y Fijaciones', aisle: 'Pasillo 4', stock: 3, price: 28000, status: 'low' },
-    { id: 'SKU-003', name: 'Cinta Teflón 3/4" x 10m Alta Densidad', category: 'Plomería y Grifería', aisle: 'Pasillo 2', stock: 4, price: 4500, status: 'low' },
-    { id: 'SKU-004', name: 'Esmalte Sintético Blanco Brillante 1 Gal', category: 'Pinturas y Adhesivos', aisle: 'Pasillo 3', stock: 18, price: 68000, status: 'ok' },
-    { id: 'SKU-005', name: 'Tubo Sanitario PVC 2" x 3m Pavco', category: 'Plomería y Grifería', aisle: 'Patio Tubos', stock: 0, price: 34500, status: 'out' },
-    { id: 'SKU-006', name: 'Llave Ajustable 10" Stanley Cromo', category: 'Herramientas Manuales', aisle: 'Pasillo 1', stock: 9, price: 48900, status: 'ok' },
-  ]);
+  const addPosItem = (product: AdminProduct) => {
+    setPosCart((prev) => {
+      const exists = prev.find((item) => item.id === product.id);
+      if (exists) {
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+        );
+      }
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          sku: product.sku,
+          aisle: product.aisle,
+          price: product.price_cop,
+          qty: 1,
+        },
+      ];
+    });
+  };
 
-  // State for Click & Collect Orders
-  const [ordersList, setOrdersList] = useState([
-    {
-      id: 'FM-2025-001',
-      customer: 'Juan Carlos Pérez',
-      phone: '310 987 6543',
-      items: 'Taladro DeWalt 20V + Brocas (2 items)',
-      total: 395000,
-      status: 'ready',
-      pin: '7492',
-      time: 'Hace 15 min',
-    },
-    {
-      id: 'FM-2025-002',
-      customer: 'Construcciones del Valle',
-      phone: '301 223 4455',
-      items: 'Caja Tornillos Drywall + Cinta Teflón (2 items)',
-      total: 32500,
-      status: 'packing',
-      pin: '1024',
-      time: 'Hace 30 min',
-    },
-    {
-      id: 'FM-2025-003',
-      customer: 'Andrés Morales (Maestro)',
-      phone: '315 444 8899',
-      items: '2x Esmalte Sintético Blanco 1 Gal',
-      total: 136000,
+  const updateCartQty = (id: string, delta: number) => {
+    setPosCart((prev) =>
+      prev
+        .map((item) => (item.id === id ? { ...item, qty: item.qty + delta } : item))
+        .filter((item) => item.qty > 0)
+    );
+  };
+
+  const removeCartItem = (id: string) => {
+    setPosCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const clearCart = () => setPosCart([]);
+
+  const posSubtotalGross = useMemo(
+    () => posCart.reduce((sum, item) => sum + item.price * item.qty, 0),
+    [posCart]
+  );
+  const posDiscount = useMemo(
+    () => (posSelectedCustomer === 'regular' ? Math.round(posSubtotalGross * 0.05) : 0),
+    [posSubtotalGross, posSelectedCustomer]
+  );
+  const posTotalFinal = Math.max(0, posSubtotalGross - posDiscount);
+  const posSubtotalNeto = Math.round(posTotalFinal / 1.19);
+  const posIVA = posTotalFinal - posSubtotalNeto;
+  const cashChange = Math.max(0, cashGiven - posTotalFinal);
+
+  const handleCompletePosSale = async () => {
+    if (posCart.length === 0) return;
+
+    const newOrder: AdminOrder = {
+      id: 'BOL-' + Math.floor(10000 + Math.random() * 90000),
+      order_number: 'BOL-' + Math.floor(10000 + Math.random() * 90000),
+      customer_name:
+        posSelectedCustomer === 'regular'
+          ? 'Juan Pérez (Vecino Pasaje 3)'
+          : 'Cliente Ocasional',
+      customer_phone: '310 987 6543',
+      customer_email: '',
+      channel: 'pos',
+      delivery_type: 'pickup',
       status: 'delivered',
-      pin: '5561',
-      time: 'Hoy 10:15 AM',
-    },
-  ]);
-  const [pinLookup, setPinLookup] = useState('');
-  const [pinAlert, setPinAlert] = useState<string | null>(null);
+      pickup_pin: String(Math.floor(1000 + Math.random() * 9000)),
+      payment_method: posPaymentMethod,
+      items_summary: posCart.map((i) => `${i.qty}x ${i.name}`).join(', '),
+      total_cop: posTotalFinal,
+      created_at: new Date().toISOString(),
+    };
 
-  // State for Cash Count / Arqueo
+    setOrders((prev) => [newOrder, ...prev]);
+    setPosSaleSuccess(true);
+    setTimeout(() => {
+      setPosSaleSuccess(false);
+      clearCart();
+    }, 2800);
+    showToast(`Venta POS #${newOrder.order_number} registrada correctamente`);
+  };
+
+  // -----------------------------------------------------------------
+  // ORDERS (CLICK & COLLECT) LOGIC
+  // -----------------------------------------------------------------
+  const [orderFilterStatus, setOrderFilterStatus] = useState<'all' | 'preparing' | 'ready_for_pickup' | 'delivered'>('all');
+  const [pinLookup, setPinLookup] = useState('');
+  const [pinAlert, setPinAlert] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter((o) => {
+      if (orderFilterStatus === 'all') return true;
+      return o.status === orderFilterStatus;
+    });
+  }, [orders, orderFilterStatus]);
+
+  const handleDeliverOrderByPin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanPin = pinLookup.trim();
+    if (!cleanPin) return;
+
+    const matched = orders.find(
+      (o) =>
+        o.pickup_pin === cleanPin ||
+        o.order_number.toLowerCase() === cleanPin.toLowerCase() ||
+        o.id.toLowerCase() === cleanPin.toLowerCase()
+    );
+
+    if (matched) {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === matched.id ? { ...o, status: 'delivered' } : o))
+      );
+      await adminRepo.updateOrderStatus(matched.id, 'delivered');
+      setPinAlert({
+        type: 'success',
+        msg: `¡PIN Verificado! Pedido ${matched.order_number} de ${matched.customer_name} entregado en mesón.`,
+      });
+      setPinLookup('');
+      setTimeout(() => setPinAlert(null), 4000);
+    } else {
+      setPinAlert({
+        type: 'error',
+        msg: 'No se encontró ningún pedido con ese código PIN de retiro.',
+      });
+      setTimeout(() => setPinAlert(null), 3000);
+    }
+  };
+
+  const markOrderStatus = async (orderId: string, status: 'preparing' | 'ready_for_pickup' | 'delivered') => {
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status } : o))
+    );
+    await adminRepo.updateOrderStatus(orderId, status);
+    showToast('Estado del pedido actualizado en base de datos');
+  };
+
+  // -----------------------------------------------------------------
+  // CUSTOMERS & ABONOS LOGIC
+  // -----------------------------------------------------------------
+  const [abonoCustomerId, setAbonoCustomerId] = useState<string>('');
+  const [abonoAmount, setAbonoAmount] = useState<number>(50000);
+  const [abonoPaymentMethod, setAbonoPaymentMethod] = useState<'efectivo' | 'transferencia' | 'tarjeta'>('efectivo');
+
+  const selectedAbonoCustomer = useMemo(
+    () => customers.find((c) => c.id === abonoCustomerId) || customers[0],
+    [customers, abonoCustomerId]
+  );
+
+  const handleRecordAbono = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedAbonoCustomer || abonoAmount <= 0) return;
+
+    const result = await adminRepo.recordCustomerAbono(
+      selectedAbonoCustomer.id,
+      abonoAmount,
+      abonoPaymentMethod
+    );
+
+    if (result.success) {
+      setCustomers((prev) =>
+        prev.map((c) =>
+          c.id === selectedAbonoCustomer.id
+            ? {
+                ...c,
+                credit_balance_cop: Math.max(0, c.credit_balance_cop - abonoAmount),
+              }
+            : c
+        )
+      );
+      showToast(`¡Abono de $${abonoAmount.toLocaleString('es-CO')} COP registrado para ${selectedAbonoCustomer.full_name}!`);
+      setAbonoAmount(50000);
+    }
+  };
+
+  const totalOutstandingCredit = useMemo(
+    () => customers.reduce((sum, c) => sum + c.credit_balance_cop, 0),
+    [customers]
+  );
+
+  // -----------------------------------------------------------------
+  // CASH CONFIGURATION & ARQUEO LOGIC
+  // -----------------------------------------------------------------
   const [cashDenominations, setCashDenominations] = useState<{ [key: string]: number }>({
     '50000': 14,
     '20000': 22,
@@ -134,26 +409,47 @@ export default function AdminPage() {
     '5000': 15,
     '2000': 20,
     '1000': 25,
+    '500': 50,
   });
 
-  const totalCashCounted = Object.entries(cashDenominations).reduce(
-    (acc, [denom, count]) => acc + parseInt(denom) * count,
-    0
-  );
+  const alterDenominationQty = (denom: string, delta: number) => {
+    setCashDenominations((prev) => ({
+      ...prev,
+      [denom]: Math.max(0, (prev[denom] || 0) + delta),
+    }));
+  };
 
-  // Loading Screen
-  if (isLoading) {
+  const totalCashCounted = useMemo(() => {
+    return Object.entries(cashDenominations).reduce(
+      (sum, [denom, count]) => sum + parseInt(denom) * count,
+      0
+    );
+  }, [cashDenominations]);
+
+  const expectedCashInDrawer = 1395000;
+  const cashDifference = totalCashCounted - expectedCashInDrawer;
+
+  const handleSaveArqueo = async () => {
+    if (cashShift) {
+      await adminRepo.saveCashCount(cashShift.id, cashDenominations, totalCashCounted);
+    }
+    showToast('¡Arqueo de caja conciliado y guardado en Supabase!');
+  };
+
+  // -----------------------------------------------------------------
+  // GUARDS & LOADERS
+  // -----------------------------------------------------------------
+  if (isAuthLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 rounded-full border-3 border-[#F97316] border-t-transparent animate-spin" />
-          <p className="text-xs font-semibold text-slate-500">Cargando panel de administración...</p>
+          <p className="text-xs font-semibold text-slate-500">Cargando panel de administración FerroMax...</p>
         </div>
       </div>
     );
   }
 
-  // Role Gate: if not authenticated or not admin, show guard view
   if (!user || role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F8FAFC]">
@@ -198,56 +494,18 @@ export default function AdminPage() {
     );
   }
 
-  const adjustStock = (id: string, delta: number) => {
-    setInventoryList((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const newStock = Math.max(0, item.stock + delta);
-          let newStatus = 'ok';
-          if (newStock === 0) newStatus = 'out';
-          else if (newStock <= 5) newStatus = 'low';
-          return { ...item, stock: newStock, status: newStatus };
-        }
-        return item;
-      })
-    );
-  };
-
-  const handlePinDeliver = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanPin = pinLookup.trim();
-    if (!cleanPin) return;
-
-    const matched = ordersList.find((o) => o.pin === cleanPin || o.id.toLowerCase() === cleanPin.toLowerCase());
-    if (matched) {
-      setOrdersList((prev) =>
-        prev.map((o) => (o.id === matched.id ? { ...o, status: 'delivered' } : o))
-      );
-      setPinAlert(`¡Orden ${matched.id} (${matched.customer}) entregada exitosamente en mesón!`);
-      setPinLookup('');
-      setTimeout(() => setPinAlert(null), 4000);
-    } else {
-      setPinAlert('No se encontró ningún pedido pendiente con ese PIN o código.');
-      setTimeout(() => setPinAlert(null), 3000);
-    }
-  };
-
-  const addPosItem = (item: { id: string; name: string; price: number }) => {
-    setPosCart((prev) => {
-      const exists = prev.find((i) => i.id === item.id);
-      if (exists) {
-        return prev.map((i) => (i.id === item.id ? { ...i, qty: i.qty + 1 } : i));
-      }
-      return [...prev, { ...item, qty: 1 }];
-    });
-  };
-
-  const posTotal = posCart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex text-slate-800 antialiased">
+    <div className="min-h-screen bg-[#F8FAFC] flex text-slate-800 antialiased font-sans">
+      {/* Toast Alert */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 text-xs font-medium animate-fade-in">
+          <CheckCircle className="h-4 w-4 text-[#F97316]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* 1. SIDEBAR IZQUIERDO: Deep Slate #0F172A strictly following DESIGN.md */}
-      <aside className="fixed left-0 top-0 h-full w-72 bg-[#0F172A] z-50 flex flex-col justify-between border-r border-slate-800 shadow-xl">
+      <aside className="fixed left-0 top-0 h-full w-72 bg-[#0F172A] z-50 flex flex-col justify-between border-r border-slate-800 shadow-xl select-none">
         <div className="flex flex-col">
           {/* Logo y Nombre de Tienda: FerroMax */}
           <div className="px-6 pt-6 pb-5 border-b border-slate-800/80">
@@ -261,7 +519,7 @@ export default function AdminPage() {
             </Link>
           </div>
 
-          {/* Tarjeta de Perfil del Administrador (con menú desplegable integrado) */}
+          {/* Tarjeta de Perfil del Administrador */}
           <div className="relative mx-3.5 my-3.5" ref={profileMenuRef}>
             <button
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -334,7 +592,6 @@ export default function AdminPage() {
 
           {/* Navegación de los 6 Módulos Oficiales del Diseño */}
           <nav className="flex flex-col gap-1.5 px-3 mt-1 text-sm font-medium">
-            {/* 1. Panel Principal */}
             <button
               onClick={() => setActiveTab('dashboard')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -347,7 +604,6 @@ export default function AdminPage() {
               <span>Panel Principal</span>
             </button>
 
-            {/* 2. Inventario y Precios */}
             <button
               onClick={() => setActiveTab('inventory')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -360,7 +616,6 @@ export default function AdminPage() {
               <span>Inventario y Precios</span>
             </button>
 
-            {/* 3. Ventas del Mostrador y Web */}
             <button
               onClick={() => setActiveTab('pos')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -373,7 +628,6 @@ export default function AdminPage() {
               <span>Ventas Mostrador & Web</span>
             </button>
 
-            {/* 4. Pedidos y Retiro en Tienda */}
             <button
               onClick={() => setActiveTab('orders')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -386,7 +640,6 @@ export default function AdminPage() {
               <span>Pedidos y Retiro en Tienda</span>
             </button>
 
-            {/* 5. Clientes Frecuentes */}
             <button
               onClick={() => setActiveTab('customers')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -399,7 +652,6 @@ export default function AdminPage() {
               <span>Clientes Frecuentes</span>
             </button>
 
-            {/* 6. Configuración de Caja */}
             <button
               onClick={() => setActiveTab('cash')}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
@@ -414,7 +666,6 @@ export default function AdminPage() {
           </nav>
         </div>
 
-        {/* Estado Inferior de la Tienda */}
         <div className="p-4 border-t border-slate-800">
           <div className="p-3 rounded-xl bg-slate-800/70 flex items-center justify-between border border-slate-700/40">
             <div className="flex items-center gap-2.5">
@@ -431,9 +682,7 @@ export default function AdminPage() {
 
       {/* 2. CONTENEDOR PRINCIPAL */}
       <div className="pl-72 flex-1 flex flex-col min-h-screen">
-        {/* Topbar Superior: Limpio, consistente con el diseño */}
         <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 px-8 flex items-center justify-between shadow-xs">
-          {/* Buscador General de la Ferretería */}
           <div className="flex items-center gap-3 flex-1 max-w-md">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
@@ -441,23 +690,32 @@ export default function AdminPage() {
                 className="w-full pl-9 pr-4 py-2 rounded-lg bg-slate-100 border-none text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
                 placeholder="Buscar SKU, tornillo, pintura, herramienta o cliente..."
                 type="search"
+                value={inventorySearch}
+                onChange={(e) => setInventorySearch(e.target.value)}
               />
             </div>
           </div>
 
-          {/* Estado de mostrador y enlaces rápidos */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
               <span>Atención al público en mostrador</span>
             </div>
 
+            <button
+              onClick={() => loadRealData()}
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition"
+              title="Recargar datos de Supabase"
+            >
+              <RefreshCw className={`h-4 w-4 ${isDataLoading ? 'animate-spin text-[#F97316]' : ''}`} />
+            </button>
+
             <Link
               href="/"
-              className="text-xs font-semibold text-slate-600 hover:text-[#F97316] transition flex items-center gap-1.5"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
             >
-              <Store className="h-4 w-4" />
-              <span className="hidden md:inline">Tienda Pública</span>
+              <Store className="h-3.5 w-3.5 text-[#F97316]" />
+              <span className="hidden md:inline">Ver Tienda</span>
             </Link>
 
             <button
@@ -471,14 +729,12 @@ export default function AdminPage() {
           </div>
         </header>
 
-        {/* 3. VISTAS SEGÚN MÓDULO SELECCIONADO */}
         <main className="p-8 space-y-6 flex-1">
           {/* ======================================================== */}
           {/* MÓDULO 1: PANEL PRINCIPAL (DASHBOARD)                     */}
           {/* ======================================================== */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              {/* Título de Bienvenida */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
@@ -506,9 +762,8 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* 3 Tarjetas KPI Superiores (Siguiendo SCREEN_1) */}
+              {/* 3 Tarjetas KPI Superiores */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* KPI 1 */}
                 <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -532,7 +787,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* KPI 2 */}
                 <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -544,7 +798,9 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-black text-[#B45309] tracking-tight">4</span>
+                      <span className="text-3xl font-black text-[#B45309] tracking-tight">
+                        {criticalStockCount + outOfStockCount}
+                      </span>
                       <span className="text-sm font-bold text-amber-700">artículos críticos</span>
                     </div>
                   </div>
@@ -559,7 +815,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* KPI 3 */}
                 <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -587,7 +842,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Tabla: Actualización Rápida de Inventario */}
+              {/* Tabla 1: Actualización Rápida de Inventario */}
               <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                   <div>
@@ -601,68 +856,188 @@ export default function AdminPage() {
                   </div>
                   <button
                     onClick={() => setActiveTab('inventory')}
-                    className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1"
+                    className="text-xs font-semibold text-[#EA580C] hover:text-[#C2410C] flex items-center gap-1 self-start sm:self-auto"
                   >
-                    <span>Ir a Gestión Completa de Inventario</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    <span>Ver inventario completo ({products.length} productos)</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                      <tr>
-                        <th className="py-2.5 px-3">SKU</th>
-                        <th className="py-2.5 px-3">Producto</th>
-                        <th className="py-2.5 px-3">Ubicación</th>
-                        <th className="py-2.5 px-3">Precio COP</th>
-                        <th className="py-2.5 px-3">Stock en Estante</th>
-                        <th className="py-2.5 px-3 text-right">Ajuste Rápido</th>
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
+                        <th className="py-2.5 px-4 rounded-l-lg">Producto</th>
+                        <th className="py-2.5 px-4">Categoría</th>
+                        <th className="py-2.5 px-4">Ubicación</th>
+                        <th className="py-2.5 px-4">Precio Venta (COP)</th>
+                        <th className="py-2.5 px-4 text-center">Stock Actual</th>
+                        <th className="py-2.5 px-4">Estado</th>
+                        <th className="py-2.5 px-4 text-right rounded-r-lg">Acción Rápida</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      {inventoryList.slice(0, 4).map((item) => (
-                        <tr key={item.id} className="hover:bg-slate-50/60 transition">
-                          <td className="py-3 px-3 font-mono font-bold text-slate-800">{item.id}</td>
-                          <td className="py-3 px-3">
-                            <p className="font-semibold text-slate-900">{item.name}</p>
-                            <p className="text-[11px] text-slate-400">{item.category}</p>
+                    <tbody className="divide-y divide-slate-100">
+                      {products.slice(0, 6).map((item) => (
+                        <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+                                {item.image_url ? (
+                                  <img
+                                    src={item.image_url}
+                                    alt={item.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <Package className="h-4 w-4 text-slate-400" />
+                                )}
+                              </div>
+                              <div>
+                                <span className="font-bold text-slate-900 block">{item.name}</span>
+                                <span className="text-[10px] text-slate-400 font-mono">SKU: {item.sku}</span>
+                              </div>
+                            </div>
                           </td>
-                          <td className="py-3 px-3 text-slate-500">{item.aisle}</td>
-                          <td className="py-3 px-3 font-semibold text-slate-900 font-mono">
-                            ${item.price.toLocaleString('es-CO')}
-                          </td>
-                          <td className="py-3 px-3">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
-                                item.status === 'ok'
-                                  ? 'bg-[#DCFCE7] text-[#15803D]'
-                                  : item.status === 'low'
-                                  ? 'bg-[#FEF3C7] text-[#B45309]'
-                                  : 'bg-[#FEE2E2] text-[#B91C1C]'
-                              }`}
-                            >
-                              {item.stock} unidades
+                          <td className="py-3 px-4">
+                            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-medium">
+                              {item.category}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-right">
-                            <div className="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                          <td className="py-3 px-4 text-slate-600 font-medium">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-[#EA580C]" />
+                              {item.aisle}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 font-mono font-bold text-slate-800">
+                            ${item.price_cop.toLocaleString('es-CO')}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="font-mono font-black text-sm text-slate-900">
+                              {item.stock_quantity}
+                            </span>
+                            <span className="text-[10px] text-slate-400 ml-1">{item.unit}</span>
+                          </td>
+                          <td className="py-3 px-4">
+                            {item.status === 'ok' && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                Normal
+                              </span>
+                            )}
+                            {item.status === 'low' && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold border border-amber-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                Bajo Stock
+                              </span>
+                            )}
+                            {item.status === 'out' && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[11px] font-bold border border-rose-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                Agotado
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden shadow-xs bg-white">
                               <button
                                 onClick={() => adjustStock(item.id, -1)}
-                                className="px-2.5 py-1 bg-slate-50 hover:bg-slate-200 text-slate-700 font-bold transition"
-                                title="Restar 1"
+                                className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold transition"
+                                title="Restar 1 unidad"
                               >
-                                <Minus className="h-3 w-3" />
+                                -
                               </button>
-                              <span className="px-2.5 font-mono font-bold text-slate-800">{item.stock}</span>
+                              <span className="px-2.5 py-1 bg-slate-50 font-mono font-bold text-xs border-x border-slate-200 text-slate-800">
+                                {item.stock_quantity}
+                              </span>
                               <button
                                 onClick={() => adjustStock(item.id, 1)}
-                                className="px-2.5 py-1 bg-slate-50 hover:bg-slate-200 text-slate-700 font-bold transition"
-                                title="Sumar 1"
+                                className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold transition"
+                                title="Sumar 1 unidad"
                               >
-                                <Plus className="h-3 w-3" />
+                                +
                               </button>
                             </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Tabla 2: Últimas Compras y Boletas de Vecinos */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Receipt className="h-5 w-5 text-[#F97316]" />
+                      <h2 className="text-base font-bold text-slate-900">
+                        Últimas Compras y Boletas de Vecinos
+                      </h2>
+                    </div>
+                    <p className="text-slate-500 text-xs mt-0.5">
+                      Boletas electrónicas emitidas en mostrador y pedidos para retiro en el local.
+                    </p>
+                  </div>
+                  <span className="text-xs text-slate-500 font-medium">
+                    Mostrador 1 y Caja Central
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
+                        <th className="py-2.5 px-4 rounded-l-lg">Cliente Particular</th>
+                        <th className="py-2.5 px-4">N° de Boleta</th>
+                        <th className="py-2.5 px-4">Medio de Pago</th>
+                        <th className="py-2.5 px-4">Total Pagado</th>
+                        <th className="py-2.5 px-4">Hora</th>
+                        <th className="py-2.5 px-4 text-right rounded-r-lg">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {orders.slice(0, 5).map((order) => (
+                        <tr key={order.id} className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs shrink-0">
+                                {getInitials(order.customer_name)}
+                              </div>
+                              <div>
+                                <span className="font-bold text-slate-800 text-xs block">
+                                  {order.customer_name}
+                                </span>
+                                <span className="text-[11px] text-slate-400">
+                                  {order.items_summary}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 font-mono font-semibold text-slate-700">
+                            #{order.order_number}
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="inline-flex items-center gap-1.5 text-slate-700 capitalize">
+                              <CreditCard className="h-3.5 w-3.5 text-slate-400" />
+                              <span>{order.payment_method}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                            ${order.total_cop.toLocaleString('es-CO')} COP
+                          </td>
+                          <td className="py-3 px-4 text-slate-500">
+                            {new Date(order.created_at).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-emerald-800 text-[11px] font-bold border border-emerald-200/80">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                              {order.status === 'delivered' ? 'Pagado / Entregado' : 'Listo para Retiro'}
+                            </span>
                           </td>
                         </tr>
                       ))}
@@ -674,121 +1049,331 @@ export default function AdminPage() {
           )}
 
           {/* ======================================================== */}
-          {/* MÓDULO 2: INVENTARIO Y PRECIOS (SCREEN_2)                 */}
+          {/* MÓDULO 2: INVENTARIO Y PRECIOS                            */}
           {/* ======================================================== */}
           {activeTab === 'inventory' && (
             <div className="space-y-6">
-              {/* Encabezado con acento naranja */}
-              <div className="bg-white p-6 rounded-xl shadow-xs border-t-2 border-[#F97316] flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
-                      Inventario y Precios
-                    </span>
-                    <span className="text-xs text-slate-400">• Bodega & Estantes</span>
-                  </div>
+                  <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+                    <span className="hover:text-slate-600 cursor-pointer">Inicio</span>
+                    <span>›</span>
+                    <span className="hover:text-slate-600 cursor-pointer">Administración</span>
+                    <span>›</span>
+                    <span className="text-[#EA580C] font-semibold">Inventario y Precios</span>
+                  </nav>
                   <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                    Gestión de Inventario y Precios de Barrio
+                    Inventario y Precios de Venta
                   </h1>
                   <p className="text-slate-500 text-xs mt-0.5">
-                    Controla existencias en estantes, márgenes de ganancia y recepción de mercadería.
+                    Control de stock físico, pasillos, márgenes de ganancia y sincronización en tiempo real.
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <button className="px-3.5 py-2 rounded-lg bg-orange-50 text-[#EA580C] border border-orange-200 font-semibold text-xs hover:bg-orange-100 transition">
-                    Exportar Lista
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => showToast('Descargando planilla de inventario...')}
+                    className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition"
+                  >
+                    Importar / Exportar
                   </button>
-                  <button className="px-4 py-2 rounded-lg bg-gradient-to-tr from-[#EA580C] to-[#F97316] text-white font-semibold text-xs shadow-md shadow-orange-500/20 hover:from-[#d94e07] hover:to-[#ea580c] transition flex items-center gap-1.5">
+                  <button
+                    onClick={() => showToast('Abriendo modal para registrar producto nuevo')}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold shadow-sm transition"
+                  >
                     <Plus className="h-4 w-4" />
                     <span>+ Nuevo Producto</span>
                   </button>
                 </div>
               </div>
 
-              {/* 4 KPIs de Inventario */}
+              {/* 4 KPIs con bordes superiores distintivos */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-[#F97316]">
-                  <span className="text-slate-500 text-xs font-semibold uppercase">Total Artículos</span>
-                  <div className="text-slate-900 text-3xl font-extrabold mt-1">428</div>
-                  <p className="text-slate-500 text-[11px] mt-1">Registrados en 6 categorías</p>
+                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-[#F97316] flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                      Total Productos Activos
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] border border-orange-200/60 flex items-center justify-center">
+                      <Package className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-3xl font-black text-slate-900">{products.length}</span>
+                    <span className="text-xs text-slate-400 ml-1">ítems en catálogo</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono">
+                    <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-medium">100% al día</span>
+                    <span className="text-[#EA580C] font-semibold bg-orange-50 px-2 py-0.5 rounded border border-orange-200/60">Mostrador + Web</span>
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-[#F97316] bg-gradient-to-b from-orange-50/20 to-white">
-                  <span className="text-slate-500 text-xs font-semibold uppercase">Stock Crítico en Estante</span>
-                  <div className="text-[#EA580C] text-3xl font-extrabold mt-1">8</div>
-                  <p className="text-amber-700 text-[11px] mt-1">Menos de 5 unidades restantes</p>
+                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-amber-500 flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                      Stock Crítico en Estante
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center">
+                      <AlertCircle className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-3xl font-black text-amber-600">{criticalStockCount}</span>
+                    <span className="text-xs text-amber-700 font-semibold ml-1.5">artículos en alerta</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-amber-800">
+                    <span>Reposición prioritaria</span>
+                    <button
+                      onClick={() => setInventoryFilterTab('low')}
+                      className="font-bold underline hover:text-amber-900"
+                    >
+                      Filtrar
+                    </button>
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-rose-500">
-                  <span className="text-slate-500 text-xs font-semibold uppercase">Agotados</span>
-                  <div className="text-rose-600 text-3xl font-extrabold mt-1">2</div>
-                  <p className="text-rose-700 text-[11px] mt-1">Tubos PVC y Mangueras sin stock</p>
+                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-rose-500 flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                      Agotados en Estantería
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center">
+                      <Minus className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-3xl font-black text-rose-600">{outOfStockCount}</span>
+                    <span className="text-xs text-rose-700 font-semibold ml-1.5">artículos en cero</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-rose-600 font-semibold">
+                    <span>Llegada prevista: Mañana 10:00</span>
+                    <button
+                      onClick={() => setInventoryFilterTab('out')}
+                      className="font-bold underline"
+                    >
+                      Ver
+                    </button>
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-[#F97316]">
-                  <span className="text-slate-500 text-xs font-semibold uppercase">Valor Inventario Tienda</span>
-                  <div className="text-slate-900 text-2xl font-extrabold font-mono mt-1">$18,450,000</div>
-                  <p className="text-emerald-700 text-[11px] mt-1 font-semibold">+44.1% margen promedio</p>
+                <div className="p-5 rounded-xl bg-white shadow-xs border-t-2 border-[#F97316] flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                      Valor Inventario Tienda
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] border border-orange-200/60 flex items-center justify-center">
+                      <DollarSign className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-2xl font-black text-slate-900">
+                      ${totalInventoryValue.toLocaleString('es-CO')}
+                    </span>
+                    <span className="text-xs font-mono text-slate-400 block">COP valorizado</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded">
+                      +44.1% margen promedio
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Tabla Detallada con Filtros */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6">
+              {/* Barra de Filtros y Búsqueda */}
+              <div className="p-5 rounded-xl bg-white shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div className="relative flex-1 max-w-xl">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#F97316] h-4 w-4" />
+                    <input
+                      className="w-full pl-10 pr-24 py-2.5 rounded-lg bg-orange-50/40 border border-orange-200/80 text-slate-800 placeholder-slate-400 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
+                      placeholder="Buscar por nombre, código SKU o pasillo..."
+                      type="text"
+                      value={inventorySearch}
+                      onChange={(e) => setInventorySearch(e.target.value)}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                      Filtro rápido
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <select
+                      className="px-3.5 py-2.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold cursor-pointer outline-none hover:bg-slate-100 focus:ring-2 focus:ring-[#F97316]"
+                      value={inventoryCategory}
+                      onChange={(e) => setInventoryCategory(e.target.value)}
+                    >
+                      <option value="all">Todas las categorías</option>
+                      <option value="Herramientas">Herramientas</option>
+                      <option value="Pinturas">Pinturas</option>
+                      <option value="Plomería">Plomería</option>
+                      <option value="Tornillería">Tornillería / Fijaciones</option>
+                      <option value="Electricidad">Electricidad</option>
+                    </select>
+
+                    <button
+                      onClick={() => showToast('¡Todos los cambios de inventario sincronizados!')}
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold transition shadow-sm ml-auto"
+                    >
+                      <Save className="h-4 w-4" />
+                      <span>Guardar Cambios</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-slate-100 text-xs">
+                  <span className="text-slate-500 font-semibold mr-1 flex items-center gap-1">
+                    <Filter className="h-3.5 w-3.5 text-[#F97316]" />
+                    Filtros rápidos:
+                  </span>
+                  <button
+                    onClick={() => setInventoryFilterTab('all')}
+                    className={`px-3 py-1 rounded-lg font-bold transition ${
+                      inventoryFilterTab === 'all'
+                        ? 'bg-[#F97316] text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-700 hover:bg-orange-50 hover:text-[#EA580C]'
+                    }`}
+                  >
+                    Todos ({products.length})
+                  </button>
+                  <button
+                    onClick={() => setInventoryFilterTab('low')}
+                    className={`px-3 py-1 rounded-lg font-semibold transition ${
+                      inventoryFilterTab === 'low'
+                        ? 'bg-[#F97316] text-white shadow-xs'
+                        : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+                    }`}
+                  >
+                    Bajo Stock ({criticalStockCount})
+                  </button>
+                  <button
+                    onClick={() => setInventoryFilterTab('out')}
+                    className={`px-3 py-1 rounded-lg font-semibold transition ${
+                      inventoryFilterTab === 'out'
+                        ? 'bg-[#F97316] text-white shadow-xs'
+                        : 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+                    }`}
+                  >
+                    Agotados ({outOfStockCount})
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabla de Inventario y Precios */}
+              <div className="rounded-xl bg-white shadow-xs border border-slate-200/80 overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                      <tr>
-                        <th className="py-2.5 px-3">Código SKU</th>
-                        <th className="py-2.5 px-3">Descripción</th>
-                        <th className="py-2.5 px-3">Categoría</th>
-                        <th className="py-2.5 px-3">Pasillo / Estante</th>
-                        <th className="py-2.5 px-3">Precio Venta (COP)</th>
-                        <th className="py-2.5 px-3">Stock Físico</th>
-                        <th className="py-2.5 px-3 text-right">Ajuste Rápido</th>
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-orange-50/70 border-b border-orange-100 text-slate-700 uppercase tracking-wider font-bold">
+                        <th className="py-3 px-4">Producto y Ubicación</th>
+                        <th className="py-3 px-4">Categoría</th>
+                        <th className="py-3 px-4">Costo Tienda</th>
+                        <th className="py-3 px-4">Precio Venta (IVA Inc.)</th>
+                        <th className="py-3 px-4">Stock en Mostrador</th>
+                        <th className="py-3 px-4">Canal Venta</th>
+                        <th className="py-3 px-4 text-right">Acciones</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      {inventoryList.map((item) => (
-                        <tr key={item.id} className="hover:bg-slate-50 transition">
-                          <td className="py-3 px-3 font-mono font-bold text-slate-800">{item.id}</td>
-                          <td className="py-3 px-3 font-semibold text-slate-900">{item.name}</td>
-                          <td className="py-3 px-3 text-slate-500">{item.category}</td>
-                          <td className="py-3 px-3 font-medium text-slate-600">{item.aisle}</td>
-                          <td className="py-3 px-3 font-mono font-bold text-slate-900">
-                            ${item.price.toLocaleString('es-CO')}
-                          </td>
-                          <td className="py-3 px-3">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
-                                item.status === 'ok'
-                                  ? 'bg-[#DCFCE7] text-[#15803D]'
-                                  : item.status === 'low'
-                                  ? 'bg-[#FEF3C7] text-[#B45309]'
-                                  : 'bg-[#FEE2E2] text-[#B91C1C]'
-                              }`}
-                            >
-                              {item.stock} un.
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-right">
-                            <div className="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredProducts.map((p) => {
+                        const marginPercent = Math.round(
+                          ((p.price_cop - p.cost_cop) / p.cost_cop) * 100
+                        );
+                        return (
+                          <tr key={p.id} className="hover:bg-orange-50/25 transition-colors">
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center overflow-hidden">
+                                  {p.image_url ? (
+                                    <img
+                                      src={p.image_url}
+                                      alt={p.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <Package className="h-5 w-5 text-slate-400" />
+                                  )}
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-slate-900 font-bold truncate max-w-xs">
+                                    {p.name}
+                                  </span>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="inline-flex items-center gap-1 text-[#EA580C] text-[11px] font-medium">
+                                      <MapPin className="h-3 w-3" />
+                                      {p.aisle}
+                                    </span>
+                                    <span className="text-slate-400 text-[11px] font-mono">
+                                      • SKU: {p.sku}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-mono font-semibold">
+                                {p.category}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 font-mono text-slate-500">
+                              ${p.cost_cop.toLocaleString('es-CO')} COP
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex flex-col gap-0.5">
+                                <div className="relative w-32">
+                                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#F97316] font-mono text-xs font-bold">
+                                    $
+                                  </span>
+                                  <input
+                                    className="w-full pl-6 pr-2 py-1 rounded bg-orange-50/60 border border-orange-200 text-slate-900 font-mono text-xs font-bold outline-none focus:bg-white focus:ring-1 focus:ring-[#F97316]"
+                                    type="number"
+                                    defaultValue={p.price_cop}
+                                    onBlur={(e) =>
+                                      updatePrice(p.id, parseInt(e.target.value) || p.price_cop)
+                                    }
+                                  />
+                                </div>
+                                <span className="font-mono text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded w-fit">
+                                  +{marginPercent}% margen
+                                </span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="inline-flex items-center rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shadow-xs">
+                                <button
+                                  onClick={() => adjustStock(p.id, -1)}
+                                  className="px-2.5 py-1 hover:bg-slate-200 text-slate-700 font-bold transition"
+                                >
+                                  -
+                                </button>
+                                <span className="w-10 text-center bg-white font-mono font-bold text-xs py-1 text-slate-900 border-x border-slate-200">
+                                  {p.stock_quantity}
+                                </span>
+                                <button
+                                  onClick={() => adjustStock(p.id, 1)}
+                                  className="px-2.5 py-1 hover:bg-slate-200 text-slate-700 font-bold transition"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex items-center gap-1 font-semibold text-slate-700">
+                                <Store className="h-3.5 w-3.5 text-[#F97316]" />
+                                Mostrador + Web Local
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-right">
                               <button
-                                onClick={() => adjustStock(item.id, -1)}
-                                className="px-2 py-1 bg-slate-50 hover:bg-slate-200 text-slate-700 font-bold transition"
+                                onClick={() => showToast(`Producto ${p.name} sincronizado en BD`)}
+                                className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition"
+                                title="Guardar producto"
                               >
-                                <Minus className="h-3 w-3" />
+                                <Check className="h-4 w-4" />
                               </button>
-                              <span className="px-2.5 font-mono font-bold text-slate-900">{item.stock}</span>
-                              <button
-                                onClick={() => adjustStock(item.id, 1)}
-                                className="px-2 py-1 bg-slate-50 hover:bg-slate-200 text-slate-700 font-bold transition"
-                              >
-                                <Plus className="h-3 w-3" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -797,419 +1382,670 @@ export default function AdminPage() {
           )}
 
           {/* ======================================================== */}
-          {/* MÓDULO 3: VENTAS DEL MOSTRADOR Y WEB (POS)                */}
+          {/* MÓDULO 3: VENTAS MOSTRADOR & WEB (POS OPERATIVO)           */}
           {/* ======================================================== */}
           {activeTab === 'pos' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-xs border-t-2 border-[#F97316]">
-                <div>
-                  <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                    Terminal de Ventas y Mostrador (POS)
-                  </h1>
-                  <p className="text-slate-500 text-xs mt-0.5">
-                    Atención ágil en mesón para vecinos y maestros. Emisión de ticket y comprobante.
-                  </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-4 rounded-xl shadow-xs border-t-2 border-[#F97316] flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                      Turno y Cajero
+                    </span>
+                    <span className="text-sm font-bold text-slate-900 mt-1">
+                      {profile?.fullName || user.email.split('@')[0]}
+                    </span>
+                    <span className="text-[11px] text-[#EA580C] font-mono mt-0.5">
+                      08:30 - 13:30 (Mañana)
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <Store className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Caja #1 • Lista para Vender
-                  </span>
+
+                <div className="bg-white p-4 rounded-xl shadow-xs border-t-2 border-[#F97316] flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                      Boletas Emitidas
+                    </span>
+                    <span className="text-xl font-bold text-slate-900 mt-1">34 boletas</span>
+                    <span className="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                      100% DIAN transmitidas
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <Receipt className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-xs border-t-2 border-[#F97316] flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                      Total Caja Turno
+                    </span>
+                    <span className="text-xl font-bold text-slate-900 mt-1">$428,500 COP</span>
+                    <span className="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                      ✓ Conciliado
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <DollarSign className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-xs border-t-2 border-[#F97316] flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                      Ticket Promedio
+                    </span>
+                    <span className="text-xl font-bold text-slate-900 mt-1">$14,280 COP</span>
+                    <span className="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                      ↑ +8% vs semana pasada
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <Zap className="h-5 w-5" />
+                  </div>
                 </div>
               </div>
 
-              {/* Área Operativa en 2 Columnas (65% / 35%) */}
+              {/* Área Operativa POS (65% / 35%) */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* Columna Izquierda: Buscador y Productos Frecuentes */}
-                <div className="lg:col-span-8 space-y-5">
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-                    <div className="relative">
-                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <div className="lg:col-span-8 flex flex-col gap-6">
+                  {/* Buscador y Lector de Código de Barras */}
+                  <div className="bg-white p-4 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-3">
+                    <div className="relative flex items-center">
+                      <Search className="absolute left-4 text-[#F97316] h-5 w-5" />
                       <input
+                        className="w-full pl-12 pr-28 py-3 bg-slate-50 rounded-lg text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
+                        placeholder="Escanear código de barra o buscar producto (ej: tornillo, esmalte, taladro)... [F3]"
                         type="text"
-                        placeholder="Escanear código de barra o buscar producto (F3)..."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:bg-white focus:border-[#F97316] focus:outline-none"
+                        value={posSearch}
+                        onChange={(e) => setPosSearch(e.target.value)}
                       />
+                      <div className="absolute right-3 flex items-center gap-1.5 pointer-events-none">
+                        <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[10px] font-bold">
+                          F3
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-[#F97316] text-white font-mono text-[10px] font-bold animate-pulse">
+                          LÁSER ACTIVO
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Acceso Rápido a Productos Más Vendidos */}
-                  <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                      Productos de Alta Rotación en Mesón
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {[
-                        { id: 'pos-1', name: 'Disco de Corte 4.5" DeWalt', price: 6500 },
-                        { id: 'pos-2', name: 'Cinta Aislante Negra 3M', price: 9200 },
-                        { id: 'pos-3', name: 'Cinta Teflón 3/4"', price: 4500 },
-                        { id: 'pos-4', name: 'Broca Concreto 1/4" Stanley', price: 12500 },
-                        { id: 'pos-5', name: 'Tornillo Drywall x100 und', price: 6800 },
-                        { id: 'pos-6', name: 'Pegamento PVC Pavco 1/4 Gal', price: 18900 },
-                      ].map((item) => (
-                        <button
+                  {/* Favoritos de Alta Rotación en Mesón */}
+                  <div className="bg-white p-5 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-5 w-5 text-[#F97316]" />
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Favoritos de Alta Rotación en Mesón
+                        </h3>
+                      </div>
+                      <span className="text-[11px] font-semibold text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
+                        Clic rápido para añadir
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {products.slice(0, 6).map((item) => (
+                        <div
                           key={item.id}
-                          onClick={() => addPosItem(item)}
-                          className="flex flex-col items-start p-3 rounded-lg border border-slate-200 hover:border-[#F97316] hover:bg-orange-50/50 transition text-left group"
+                          className="p-3.5 rounded-lg bg-slate-50 hover:bg-orange-50/50 transition-all flex flex-col justify-between gap-3 border border-slate-200/70 hover:border-[#F97316]"
                         >
-                          <span className="font-semibold text-slate-900 text-xs group-hover:text-[#F97316]">
-                            {item.name}
-                          </span>
-                          <span className="font-mono font-bold text-slate-600 text-xs mt-1">
-                            ${item.price.toLocaleString('es-CO')} COP
-                          </span>
-                          <span className="text-[10px] text-emerald-600 font-semibold mt-0.5">+ Agregar</span>
-                        </button>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-mono text-[#EA580C] font-bold">
+                              {item.sku}
+                            </span>
+                            <span className="text-xs font-bold text-slate-900 line-clamp-1 mt-0.5">
+                              {item.name}
+                            </span>
+                            <span className="text-[11px] text-slate-400">{item.aisle}</span>
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                            <span className="text-sm font-bold text-[#F97316]">
+                              ${item.price_cop.toLocaleString('es-CO')}
+                            </span>
+                            <button
+                              onClick={() => addPosItem(item)}
+                              className="px-2.5 py-1 rounded bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-semibold flex items-center gap-1 shadow-xs transition active:scale-95"
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                              <span>Sumar</span>
+                            </button>
+                          </div>
+                        </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Ticket de Venta Actual */}
+                  <div className="bg-white p-6 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Receipt className="h-5 w-5 text-[#F97316]" />
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Ticket de Venta en Mesón #0142
+                        </h3>
+                      </div>
+                      <button
+                        onClick={clearCart}
+                        className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-medium transition"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Limpiar Ticket</span>
+                      </button>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="bg-slate-50 text-slate-500 font-semibold uppercase border-y border-slate-200">
+                            <th className="py-2.5 px-4 rounded-l-lg">Producto / Ubicación</th>
+                            <th className="py-2.5 px-4 text-center">Cantidad</th>
+                            <th className="py-2.5 px-4 text-right">Precio Unit.</th>
+                            <th className="py-2.5 px-4 text-right">Total Línea</th>
+                            <th className="py-2.5 px-3 text-center rounded-r-lg w-10"></th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {posCart.map((item) => (
+                            <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                              <td className="py-3 px-4">
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-slate-800">{item.name}</span>
+                                  <span className="text-[10px] text-slate-400 font-mono">
+                                    {item.sku} • {item.aisle}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="py-3 px-4">
+                                <div className="flex items-center justify-center gap-1.5">
+                                  <button
+                                    onClick={() => updateCartQty(item.id, -1)}
+                                    className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-800 font-bold"
+                                  >
+                                    -
+                                  </button>
+                                  <span className="w-6 text-center font-mono font-bold text-xs">
+                                    {item.qty}
+                                  </span>
+                                  <button
+                                    onClick={() => updateCartQty(item.id, 1)}
+                                    className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-800 font-bold"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </td>
+                              <td className="py-3 px-4 text-right font-mono text-slate-600">
+                                ${item.price.toLocaleString('es-CO')}
+                              </td>
+                              <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                                ${(item.price * item.qty).toLocaleString('es-CO')}
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                <button
+                                  onClick={() => removeCartItem(item.id)}
+                                  className="text-slate-400 hover:text-rose-600 transition"
+                                >
+                                  ×
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                          {posCart.length === 0 && (
+                            <tr>
+                              <td colSpan={5} className="py-8 text-center text-slate-400">
+                                Ticket vacío. Haz clic en "Sumar" en los favoritos o busca un producto.
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mt-2 pt-4 bg-slate-50 rounded-xl p-5 flex flex-col gap-2 border border-slate-200/60 text-xs">
+                      <div className="flex justify-between items-center text-slate-600">
+                        <span>Subtotal Neto</span>
+                        <span className="font-mono font-semibold text-slate-800">
+                          ${posSubtotalNeto.toLocaleString('es-CO')} COP
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[#EA580C]">
+                        <span className="flex items-center gap-1.5 font-medium">
+                          Descuento Vecino Frecuente (Maestro Club 5%)
+                        </span>
+                        <span className="font-mono font-bold bg-orange-100/80 text-[#EA580C] px-2 py-0.5 rounded">
+                          -${posDiscount.toLocaleString('es-CO')} COP
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-600">
+                        <span>IVA (19% Incluido)</span>
+                        <span className="font-mono font-semibold text-slate-800">
+                          ${posIVA.toLocaleString('es-CO')} COP
+                        </span>
+                      </div>
+                      <div className="mt-3 pt-3 flex items-center justify-between bg-orange-500/10 p-4 rounded-xl border border-orange-300">
+                        <div className="flex flex-col">
+                          <span className="text-[11px] uppercase tracking-wider text-[#EA580C] font-extrabold">
+                            Total a Cobrar
+                          </span>
+                          <span className="text-[11px] text-slate-500">
+                            {posCart.reduce((sum, i) => sum + i.qty, 0)} artículos en ticket
+                          </span>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl font-black text-[#EA580C]">
+                            ${posTotalFinal.toLocaleString('es-CO')}
+                          </span>
+                          <span className="text-xs font-bold text-[#EA580C]">COP</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Columna Derecha: Ticket de Venta Actual */}
-                <div className="lg:col-span-4 bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                      <Receipt className="h-4 w-4 text-[#F97316]" />
-                      Ticket de Venta
-                    </h3>
-                    <button
-                      onClick={() => setPosCart([])}
-                      className="text-xs text-rose-500 hover:underline"
-                    >
-                      Vaciar
-                    </button>
-                  </div>
+                {/* Columna Derecha: Cliente y Cobro */}
+                <div className="lg:col-span-4 flex flex-col gap-6">
+                  <div className="bg-white p-5 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Cliente en Mesón
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono text-[10px] font-bold">
+                        Club Activo
+                      </span>
+                    </div>
 
-                  {/* Lista de Items */}
-                  <div className="space-y-2.5 max-h-64 overflow-y-auto">
-                    {posCart.length === 0 ? (
-                      <p className="text-xs text-slate-400 py-6 text-center">No hay productos en el ticket</p>
-                    ) : (
-                      posCart.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center text-xs pb-2 border-b border-slate-50">
-                          <div className="min-w-0 pr-2">
-                            <p className="font-semibold text-slate-900 truncate">{item.name}</p>
-                            <p className="text-[10px] text-slate-400">
-                              {item.qty} x ${item.price.toLocaleString('es-CO')}
-                            </p>
-                          </div>
-                          <span className="font-mono font-bold text-slate-900 shrink-0">
-                            ${(item.price * item.qty).toLocaleString('es-CO')}
+                    <div className="p-3 bg-slate-50 rounded-lg flex items-center justify-between gap-3 border border-slate-200/60">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-full bg-[#EA580C] text-white font-bold flex items-center justify-center shrink-0 text-sm">
+                          JP
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-xs font-bold text-slate-900 truncate">
+                            {posSelectedCustomer === 'regular'
+                              ? 'Juan Pérez'
+                              : 'Cliente Ocasional'}
+                          </span>
+                          <span className="text-[11px] text-slate-400 truncate">
+                            {posSelectedCustomer === 'regular'
+                              ? 'Pasaje 3 #410 • Maestro Club'
+                              : 'Venta rápida mostrador'}
                           </span>
                         </div>
-                      ))
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          setPosSelectedCustomer(
+                            posSelectedCustomer === 'regular' ? 'occasional' : 'regular'
+                          )
+                        }
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold text-center transition"
+                      >
+                        {posSelectedCustomer === 'regular'
+                          ? 'Cambiar a Ocasional'
+                          : 'Asignar a Juan Pérez'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-5 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Forma de Pago
+                      </span>
+                      <span className="text-[11px] font-semibold text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded-full">
+                        Caja Rápida
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <button
+                        onClick={() => setPosPaymentMethod('efectivo')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition font-bold gap-1.5 ${
+                          posPaymentMethod === 'efectivo'
+                            ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                            : 'bg-slate-50 border-transparent text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <DollarSign className="h-5 w-5" />
+                        <span>Efectivo</span>
+                      </button>
+
+                      <button
+                        onClick={() => setPosPaymentMethod('tarjeta')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition font-bold gap-1.5 ${
+                          posPaymentMethod === 'tarjeta'
+                            ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                            : 'bg-slate-50 border-transparent text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <CreditCard className="h-5 w-5" />
+                        <span>Tarjeta POS</span>
+                      </button>
+
+                      <button
+                        onClick={() => setPosPaymentMethod('qr')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition font-bold gap-1.5 ${
+                          posPaymentMethod === 'qr'
+                            ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                            : 'bg-slate-50 border-transparent text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <QrCode className="h-5 w-5" />
+                        <span>Transf. QR</span>
+                      </button>
+
+                      <button
+                        onClick={() => setPosPaymentMethod('fiado')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition font-bold gap-1.5 ${
+                          posPaymentMethod === 'fiado'
+                            ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                            : 'bg-slate-50 border-transparent text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <FileText className="h-5 w-5" />
+                        <span>Cuenta Fiado</span>
+                      </button>
+                    </div>
+
+                    {posPaymentMethod === 'efectivo' && (
+                      <div className="flex flex-col gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-500 font-medium">Billetes Rápidos:</span>
+                          <div className="flex items-center gap-1.5 font-mono">
+                            <button
+                              onClick={() => setCashGiven(posTotalFinal)}
+                              className="px-2 py-0.5 rounded bg-white border border-slate-200 font-bold hover:bg-orange-50 text-slate-700"
+                            >
+                              Justo
+                            </button>
+                            <button
+                              onClick={() => setCashGiven(posTotalFinal + 20000)}
+                              className="px-2 py-0.5 rounded bg-white border border-slate-200 font-bold hover:bg-orange-50 text-slate-700"
+                            >
+                              +20k
+                            </button>
+                            <button
+                              onClick={() => setCashGiven(500000)}
+                              className="px-2 py-0.5 rounded bg-[#F97316] text-white font-bold"
+                            >
+                              $500k
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="font-semibold text-slate-700">Recibido:</label>
+                          <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[#F97316] font-bold">
+                              $
+                            </span>
+                            <input
+                              className="w-full pl-7 pr-3 py-1.5 rounded-lg bg-white border border-slate-200 text-right font-mono font-bold text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#F97316]"
+                              type="number"
+                              value={cashGiven}
+                              onChange={(e) => setCashGiven(parseInt(e.target.value) || 0)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-lg bg-emerald-50 text-emerald-900 flex items-center justify-between border border-emerald-200">
+                          <span className="font-bold">Vuelto a entregar:</span>
+                          <span className="font-mono font-black text-sm text-emerald-800">
+                            ${cashChange.toLocaleString('es-CO')} COP
+                          </span>
+                        </div>
+                      </div>
                     )}
-                  </div>
 
-                  {/* Resumen de Total */}
-                  <div className="border-t border-slate-200 pt-3 space-y-1.5 text-xs">
-                    <div className="flex justify-between text-slate-500">
-                      <span>Subtotal</span>
-                      <span className="font-mono">${Math.round(posTotal * 0.81).toLocaleString('es-CO')}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-500">
-                      <span>IVA (19%)</span>
-                      <span className="font-mono">${Math.round(posTotal * 0.19).toLocaleString('es-CO')}</span>
-                    </div>
-                    <div className="flex justify-between text-base font-extrabold text-slate-900 pt-1 border-t border-slate-100">
-                      <span>Total COP</span>
-                      <span className="text-[#F97316] font-mono">${posTotal.toLocaleString('es-CO')}</span>
-                    </div>
-                  </div>
-
-                  {/* Métodos de Pago */}
-                  <div className="grid grid-cols-3 gap-1.5 pt-2">
                     <button
-                      onClick={() => setPosPaymentMethod('efectivo')}
-                      className={`py-2 px-1 text-center rounded text-[11px] font-bold border transition ${
-                        posPaymentMethod === 'efectivo'
-                          ? 'border-[#F97316] bg-orange-50 text-[#EA580C]'
-                          : 'border-slate-200 text-slate-600'
+                      onClick={handleCompletePosSale}
+                      disabled={posCart.length === 0}
+                      className={`w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm ${
+                        posSaleSuccess
+                          ? 'bg-emerald-600 text-white'
+                          : posCart.length === 0
+                          ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                          : 'bg-[#F97316] hover:bg-[#EA580C] text-white'
                       }`}
                     >
-                      Efectivo
-                    </button>
-                    <button
-                      onClick={() => setPosPaymentMethod('tarjeta')}
-                      className={`py-2 px-1 text-center rounded text-[11px] font-bold border transition ${
-                        posPaymentMethod === 'tarjeta'
-                          ? 'border-[#F97316] bg-orange-50 text-[#EA580C]'
-                          : 'border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      Datáfono
-                    </button>
-                    <button
-                      onClick={() => setPosPaymentMethod('transferencia')}
-                      className={`py-2 px-1 text-center rounded text-[11px] font-bold border transition ${
-                        posPaymentMethod === 'transferencia'
-                          ? 'border-[#F97316] bg-orange-50 text-[#EA580C]'
-                          : 'border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      QR / Nequi
+                      {posSaleSuccess ? (
+                        <>
+                          <CheckCircle className="h-4 w-4" />
+                          <span>¡Venta Exitosa y Boleta Emitida!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Printer className="h-4 w-4" />
+                          <span>Finalizar Venta y Emitir Boleta [F12]</span>
+                        </>
+                      )}
                     </button>
                   </div>
-
-                  {/* Botón de Cobro */}
-                  <button
-                    disabled={posCart.length === 0}
-                    onClick={() => {
-                      setPosSaleSuccess(true);
-                      setPosCart([]);
-                      setTimeout(() => setPosSaleSuccess(false), 3000);
-                    }}
-                    className="w-full bg-[#F97316] hover:bg-[#EA580C] disabled:bg-slate-200 text-white font-bold py-3 rounded-lg text-xs transition shadow-md shadow-orange-500/20"
-                  >
-                    Cobrar e Imprimir Comprobante
-                  </button>
-
-                  {posSaleSuccess && (
-                    <div className="p-2.5 rounded bg-emerald-50 text-emerald-800 text-xs font-semibold text-center border border-emerald-200">
-                      ✓ ¡Venta registrada y comprobante emitido!
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
           )}
 
           {/* ======================================================== */}
-          {/* MÓDULO 4: PEDIDOS Y RETIRO EN TIENDA                      */}
+          {/* MÓDULO 4: PEDIDOS Y RETIRO EN TIENDA (CLICK & COLLECT)    */}
           {/* ======================================================== */}
           {activeTab === 'orders' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-xs border-t-2 border-[#F97316]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                    Gestión de Pedidos Web y Retiro en Mesón
+                    Pedidos Online y Retiro en Mesón
                   </h1>
                   <p className="text-slate-500 text-xs mt-0.5">
-                    Clientes que compran en línea y retiran en el mostrador en 30 minutos.
+                    Click & Collect: valida con PIN de 4 dígitos o QR para entregas inmediatas en mostrador.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-orange-50 text-orange-700 border border-orange-200 text-xs font-semibold">
-                    Click & Collect Activo
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-100 text-[#EA580C] text-xs font-bold border border-orange-200">
+                    <Clock className="h-3.5 w-3.5" />
+                    Promedio entrega: 14 min
                   </span>
                 </div>
               </div>
 
-              {/* Formulario de Verificación por PIN de Retiro */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-                <h3 className="text-xs font-bold text-slate-900 mb-2">
-                  Entrega Rápida con PIN de Retiro (Mesón)
-                </h3>
-                <form onSubmit={handlePinDeliver} className="flex gap-2 max-w-lg">
-                  <input
-                    type="text"
-                    value={pinLookup}
-                    onChange={(e) => setPinLookup(e.target.value)}
-                    placeholder="Ingresa PIN (ej. 7492) o Nº Orden (FM-2025-001)..."
-                    className="flex-1 rounded bg-slate-50 border border-slate-200 py-2 px-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#F97316] focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-[#F97316] hover:bg-[#EA580C] text-white px-4 py-2 rounded text-xs font-bold transition shrink-0"
-                  >
-                    Verificar y Entregar
-                  </button>
-                </form>
+              {/* Caja de Validación PIN Rápido */}
+              <div className="rounded-2xl bg-gradient-to-r from-orange-500 to-[#EA580C] p-6 text-white shadow-md">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shrink-0">
+                      <ShieldCheck className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black tracking-tight leading-snug">
+                        Entrega Exprés en Mesón
+                      </h3>
+                      <p className="text-orange-100 text-xs">
+                        Ingresa el PIN de 4 dígitos que el cliente recibió por WhatsApp o correo.
+                      </p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleDeliverOrderByPin} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      maxLength={8}
+                      placeholder="Ej: 7492 o FM-001"
+                      value={pinLookup}
+                      onChange={(e) => setPinLookup(e.target.value)}
+                      className="px-4 py-2.5 rounded-xl bg-white text-slate-900 font-mono font-bold text-sm outline-none focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 placeholder:font-sans"
+                    />
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow transition active:scale-95"
+                    >
+                      Validar PIN
+                    </button>
+                  </form>
+                </div>
 
                 {pinAlert && (
-                  <div className="mt-3 p-2.5 rounded bg-orange-50 text-orange-800 text-xs font-semibold border border-orange-200">
-                    {pinAlert}
+                  <div
+                    className={`mt-4 p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                      pinAlert.type === 'success'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-rose-500 text-white'
+                    }`}
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    <span>{pinAlert.msg}</span>
                   </div>
                 )}
               </div>
 
-              {/* Cola de Pedidos */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                      <tr>
-                        <th className="py-2.5 px-3">Nº Orden</th>
-                        <th className="py-2.5 px-3">Cliente</th>
-                        <th className="py-2.5 px-3">Productos</th>
-                        <th className="py-2.5 px-3">Total COP</th>
-                        <th className="py-2.5 px-3">PIN Retiro</th>
-                        <th className="py-2.5 px-3">Estado</th>
-                        <th className="py-2.5 px-3 text-right">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      {ordersList.map((ord) => (
-                        <tr key={ord.id} className="hover:bg-slate-50 transition">
-                          <td className="py-3 px-3 font-mono font-bold text-slate-900">{ord.id}</td>
-                          <td className="py-3 px-3">
-                            <p className="font-semibold text-slate-900">{ord.customer}</p>
-                            <a
-                              href={`https://wa.me/57${ord.phone.replace(/\s+/g, '')}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-[11px] text-[#25D366] font-medium hover:underline flex items-center gap-1"
-                            >
-                              <Phone className="h-3 w-3" />
-                              {ord.phone}
-                            </a>
-                          </td>
-                          <td className="py-3 px-3">{ord.items}</td>
-                          <td className="py-3 px-3 font-mono font-bold text-slate-900">
-                            ${ord.total.toLocaleString('es-CO')}
-                          </td>
-                          <td className="py-3 px-3">
-                            <span className="bg-slate-900 text-white font-mono font-bold px-2 py-0.5 rounded text-[11px]">
-                              {ord.pin}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3">
-                            {ord.status === 'ready' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#DCFCE7] text-[#15803D]">
-                                Listo para Retiro
-                              </span>
-                            )}
-                            {ord.status === 'packing' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEF3C7] text-[#B45309]">
-                                Empacando en Bodega
-                              </span>
-                            )}
-                            {ord.status === 'delivered' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">
-                                Entregado
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-3 text-right">
-                            {ord.status === 'packing' && (
-                              <button
-                                onClick={() =>
-                                  setOrdersList((prev) =>
-                                    prev.map((o) => (o.id === ord.id ? { ...o, status: 'ready' } : o))
-                                  )
-                                }
-                                className="border border-slate-300 hover:bg-slate-100 text-slate-700 px-3 py-1 rounded text-[11px] font-semibold transition"
-                              >
-                                Marcar Listo
-                              </button>
-                            )}
-                            {ord.status === 'ready' && (
-                              <button
-                                onClick={() =>
-                                  setOrdersList((prev) =>
-                                    prev.map((o) => (o.id === ord.id ? { ...o, status: 'delivered' } : o))
-                                  )
-                                }
-                                className="bg-[#F97316] hover:bg-[#EA580C] text-white px-3 py-1 rounded text-[11px] font-bold transition"
-                              >
-                                Entregar
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ======================================================== */}
-          {/* MÓDULO 5: CLIENTES FRECUENTES                             */}
-          {/* ======================================================== */}
-          {activeTab === 'customers' && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-xs border-t-2 border-[#F97316]">
-                <div>
-                  <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                    Directorio de Clientes Frecuentes y Maestros
-                  </h1>
-                  <p className="text-slate-500 text-xs mt-0.5">
-                    Historial de compras, descuentos preferenciales y cuentas corrientes de confianza.
-                  </p>
-                </div>
-                <button className="px-4 py-2 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs shadow-md shadow-orange-500/20 transition">
-                  + Registrar Nuevo Cliente
+              {/* Tabs de Filtro de Pedidos */}
+              <div className="flex items-center gap-2 border-b border-slate-200 pb-3 text-xs font-semibold">
+                <button
+                  onClick={() => setOrderFilterStatus('all')}
+                  className={`px-3 py-1.5 rounded-lg transition ${
+                    orderFilterStatus === 'all'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Todos ({orders.length})
+                </button>
+                <button
+                  onClick={() => setOrderFilterStatus('preparing')}
+                  className={`px-3 py-1.5 rounded-lg transition ${
+                    orderFilterStatus === 'preparing'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Por Empacar
+                </button>
+                <button
+                  onClick={() => setOrderFilterStatus('ready_for_pickup')}
+                  className={`px-3 py-1.5 rounded-lg transition ${
+                    orderFilterStatus === 'ready_for_pickup'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Listos para Retiro
+                </button>
+                <button
+                  onClick={() => setOrderFilterStatus('delivered')}
+                  className={`px-3 py-1.5 rounded-lg transition ${
+                    orderFilterStatus === 'delivered'
+                      ? 'bg-[#F97316] text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Entregados
                 </button>
               </div>
 
-              {/* Tarjetas de Clientes Frecuentes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  {
-                    name: 'Hernán Morales',
-                    trade: 'Maestro de Obra Constructor',
-                    club: 'Club Maestro Oro (10% Dcto)',
-                    phone: '312 841 9011',
-                    balance: 180000,
-                    status: 'pending',
-                  },
-                  {
-                    name: 'Construcciones Del Valle S.A.S',
-                    trade: 'Empresa Contratista Local',
-                    club: 'Tarifa Constructor (15% Dcto)',
-                    phone: '300 555 4321',
-                    balance: 0,
-                    status: 'paid',
-                  },
-                  {
-                    name: 'Gladys Rodríguez',
-                    trade: 'Vecina Propietaria',
-                    club: 'Vecina Frecuente (5% Dcto)',
-                    phone: '315 222 3344',
-                    balance: 0,
-                    status: 'paid',
-                  },
-                  {
-                    name: 'Jaime Rincón',
-                    trade: 'Electricista Certificado',
-                    club: 'Club Electricista (10% Dcto)',
-                    phone: '310 999 1122',
-                    balance: 45000,
-                    status: 'pending',
-                  },
-                ].map((cust, idx) => (
-                  <div key={idx} className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+              {/* Lista de Pedidos Click & Collect */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {filteredOrders.map((ord) => (
+                  <div
+                    key={ord.id}
+                    className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 flex flex-col justify-between hover:shadow-md transition"
+                  >
                     <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                          {cust.name.slice(0, 2).toUpperCase()}
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-mono text-xs font-bold text-slate-800">
+                          #{ord.order_number}
+                        </span>
+                        {ord.status === 'ready_for_pickup' && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                            Listo para Retiro
+                          </span>
+                        )}
+                        {ord.status === 'preparing' && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-200">
+                            Por Empacar
+                          </span>
+                        )}
+                        {ord.status === 'delivered' && (
+                          <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
+                            Entregado
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 rounded-full bg-orange-100 text-[#EA580C] font-bold text-xs flex items-center justify-center shrink-0">
+                          {getInitials(ord.customer_name)}
                         </div>
-                        <div className="min-w-0">
-                          <h4 className="font-bold text-slate-900 text-xs truncate">{cust.name}</h4>
-                          <p className="text-[11px] text-slate-500 truncate">{cust.trade}</p>
+                        <div>
+                          <span className="font-bold text-xs text-slate-900 block">
+                            {ord.customer_name}
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-mono">
+                            {ord.customer_phone}
+                          </span>
                         </div>
                       </div>
 
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-[#EA580C] border border-orange-200 mb-3">
-                        {cust.club}
-                      </span>
-
-                      <div className="text-xs space-y-1 text-slate-600">
-                        <p className="flex items-center gap-1.5">
-                          <Phone className="h-3.5 w-3.5 text-slate-400" />
-                          <span>{cust.phone}</span>
+                      <div className="my-3 p-3 bg-slate-50 rounded-lg border border-slate-200/60 text-xs">
+                        <p className="text-slate-700 font-medium leading-relaxed">
+                          {ord.items_summary}
                         </p>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-slate-500 mb-4">
+                        <span>PIN Retiro:</span>
+                        <span className="font-mono font-bold text-slate-900 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded">
+                          {ord.pickup_pin}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block">Saldo Pendiente</span>
-                        <span className={`font-mono font-bold ${cust.balance > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                          ${cust.balance.toLocaleString('es-CO')} COP
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-400">Total Pedido</span>
+                        <span className="font-mono font-black text-sm text-[#F97316]">
+                          ${ord.total_cop.toLocaleString('es-CO')} COP
                         </span>
                       </div>
-                      <a
-                        href={`https://wa.me/57${cust.phone.replace(/\s+/g, '')}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-2 rounded bg-emerald-50 text-[#25D366] hover:bg-emerald-100 transition"
-                        title="Enviar WhatsApp"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                      </a>
+
+                      <div className="flex items-center gap-2">
+                        {ord.customer_phone && (
+                          <a
+                            href={`https://wa.me/57${ord.customer_phone.replace(/\s+/g, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition"
+                            title="Notificar por WhatsApp"
+                          >
+                            <Smartphone className="h-4 w-4" />
+                          </a>
+                        )}
+
+                        {ord.status === 'preparing' && (
+                          <button
+                            onClick={() => markOrderStatus(ord.id, 'ready_for_pickup')}
+                            className="px-3 py-1.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-semibold shadow-xs transition"
+                          >
+                            Marcar Listo
+                          </button>
+                        )}
+
+                        {ord.status === 'ready_for_pickup' && (
+                          <button
+                            onClick={() => markOrderStatus(ord.id, 'delivered')}
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition"
+                          >
+                            Entregar en Mesón
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1218,97 +2054,487 @@ export default function AdminPage() {
           )}
 
           {/* ======================================================== */}
-          {/* MÓDULO 6: CONFIGURACIÓN DE CAJA (ARQUEO Y CIERRE)        */}
+          {/* MÓDULO 5: CLIENTES FRECUENTES & ABONOS                    */}
           {/* ======================================================== */}
-          {activeTab === 'cash' && (
+          {activeTab === 'customers' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-xs border-t-2 border-[#F97316]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                    Configuración de Caja y Arqueo de Efectivo
+                    Clientes Frecuentes, Maestros y Cuentas Vecinales
                   </h1>
                   <p className="text-slate-500 text-xs mt-0.5">
-                    Conteo físico de billetes y monedas en gaveta para cuadre con el sistema.
+                    Libreta de créditos (fiado), abonos en mesón y descuentos del Club Ferretero.
                   </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
-                    Turno Mañana Abierto
-                  </span>
                 </div>
               </div>
 
-              {/* Calculadora Interactiva de Arqueo */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-5">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              {/* 4 KPIs Clientes */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-sm">
-                      Conteo de Billetes en Gaveta Metálica
-                    </h3>
-                    <p className="text-slate-500 text-xs">Ingresa cuántos billetes hay de cada denominación.</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs text-slate-400 block">Total Efectivo Contado:</span>
-                    <span className="text-xl font-black text-[#F97316] font-mono">
-                      ${totalCashCounted.toLocaleString('es-CO')} COP
+                    <span className="text-xs text-slate-500 uppercase font-semibold">
+                      Clientes Registrados
                     </span>
+                    <h3 className="text-2xl font-black text-slate-900 mt-1">
+                      {customers.length}
+                    </h3>
+                    <span className="text-[11px] text-emerald-700 font-semibold">
+                      Maestros y vecinos activos
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <Users className="h-5 w-5" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {Object.entries(cashDenominations).map(([denom, count]) => {
-                    const val = parseInt(denom);
+                <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 uppercase font-semibold">
+                      Saldo en Cuentas Vecinales
+                    </span>
+                    <h3 className="text-2xl font-black text-amber-700 mt-1">
+                      ${totalOutstandingCredit.toLocaleString('es-CO')}
+                    </h3>
+                    <span className="text-[11px] text-slate-400 font-mono">
+                      COP por cobrar (fiado)
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <CreditCard className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 uppercase font-semibold">
+                      Abonos Recibidos Hoy
+                    </span>
+                    <h3 className="text-2xl font-black text-emerald-700 mt-1">$890,000</h3>
+                    <span className="text-[11px] text-emerald-700 font-semibold">
+                      ↑ +14% vs semana previa
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <DollarSign className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 uppercase font-semibold">
+                      Cumplimiento de Pago
+                    </span>
+                    <h3 className="text-2xl font-black text-slate-900 mt-1">94%</h3>
+                    <span className="text-[11px] text-emerald-700 font-semibold">
+                      Alta lealtad de barrio
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Grid 65% / 35% */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-8 flex flex-col gap-4">
+                  {customers.map((c) => {
+                    const creditPct =
+                      c.credit_limit_cop > 0
+                        ? Math.min(100, Math.round((c.credit_balance_cop / c.credit_limit_cop) * 100))
+                        : 0;
+
                     return (
-                      <div key={denom} className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col gap-2">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="font-bold text-slate-900 font-mono">${val.toLocaleString('es-CO')}</span>
-                          <span className="text-slate-400 text-[10px]">Billete</span>
+                      <div
+                        key={c.id}
+                        className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5 flex flex-col gap-4 hover:shadow-md transition"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-orange-100 text-[#EA580C] font-black text-sm flex items-center justify-center shrink-0">
+                              {getInitials(c.full_name)}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-sm font-bold text-slate-900">{c.full_name}</h3>
+                                <span className="px-2 py-0.5 rounded bg-orange-50 border border-orange-200 text-[#EA580C] text-[10px] font-bold">
+                                  {c.club_tier}
+                                </span>
+                              </div>
+                              <span className="text-xs text-slate-500 font-medium">{c.trade}</span>
+                              <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                                <span>{c.phone}</span>
+                                <span>•</span>
+                                <span>{c.address}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setAbonoCustomerId(c.id);
+                                showToast(`Seleccionado para abono: ${c.full_name}`);
+                              }}
+                              className="px-3 py-1.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-semibold shadow-xs transition"
+                            >
+                              Registrar Abono
+                            </button>
+                            {c.phone && (
+                              <a
+                                href={`https://wa.me/57${c.phone.replace(/\s+/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition"
+                                title="Enviar recordatorio WhatsApp"
+                              >
+                                <Smartphone className="h-4 w-4" />
+                              </a>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() =>
-                              setCashDenominations((prev) => ({
-                                ...prev,
-                                [denom]: Math.max(0, (prev[denom] || 0) - 1),
-                              }))
-                            }
-                            className="w-7 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-200 transition"
-                          >
-                            -
-                          </button>
-                          <span className="flex-1 text-center font-mono font-bold text-slate-900 text-xs">
-                            {count}
-                          </span>
-                          <button
-                            onClick={() =>
-                              setCashDenominations((prev) => ({
-                                ...prev,
-                                [denom]: (prev[denom] || 0) + 1,
-                              }))
-                            }
-                            className="w-7 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-200 transition"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <div className="text-[11px] text-slate-500 font-mono text-right border-t border-slate-200/60 pt-1">
-                          Subtotal: ${(val * count).toLocaleString('es-CO')}
+
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex flex-col gap-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-600 font-medium">Línea de Crédito Utilizada:</span>
+                            <span className="font-mono font-bold text-slate-900">
+                              ${c.credit_balance_cop.toLocaleString('es-CO')} / $
+                              {c.credit_limit_cop.toLocaleString('es-CO')} COP
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${
+                                creditPct > 80
+                                  ? 'bg-rose-500'
+                                  : creditPct > 50
+                                  ? 'bg-amber-500'
+                                  : 'bg-emerald-500'
+                              }`}
+                              style={{ width: `${creditPct}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[11px] text-slate-400">
+                            <span>Compras acumuladas: ${c.total_purchases_cop.toLocaleString('es-CO')} COP</span>
+                            <span>{creditPct}% del cupo asignado</span>
+                          </div>
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="p-4 rounded-xl bg-orange-50 border border-orange-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                  <div>
-                    <span className="font-bold text-slate-900 block">Cuadre con Ventas Registradas:</span>
-                    <span className="text-slate-600">
-                      Ventas en efectivo registradas hoy: $1,395,000 COP | Base de caja inicial: $200,000 COP
-                    </span>
+                <div className="lg:col-span-4 flex flex-col gap-6">
+                  <div className="p-5 rounded-xl bg-white shadow-xs border border-slate-200/80 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-5 w-5 text-[#F97316]" />
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Ficha Rápida de Abono
+                        </h3>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-orange-50 text-[#EA580C] text-[10px] font-bold">
+                        Caja 01
+                      </span>
+                    </div>
+
+                    <form onSubmit={handleRecordAbono} className="flex flex-col gap-3 text-xs">
+                      <div>
+                        <label className="font-semibold text-slate-700 block mb-1">
+                          Cliente o Maestro:
+                        </label>
+                        <select
+                          className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 font-semibold outline-none focus:ring-2 focus:ring-[#F97316]"
+                          value={selectedAbonoCustomer?.id}
+                          onChange={(e) => setAbonoCustomerId(e.target.value)}
+                        >
+                          {customers.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.full_name} (${c.credit_balance_cop.toLocaleString('es-CO')} deudor)
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="p-3 bg-amber-50/60 rounded-lg border border-amber-200 text-amber-900 flex justify-between items-center font-mono">
+                        <span>Deuda Pendiente:</span>
+                        <span className="font-bold text-sm">
+                          ${selectedAbonoCustomer?.credit_balance_cop.toLocaleString('es-CO')} COP
+                        </span>
+                      </div>
+
+                      <div>
+                        <label className="font-semibold text-slate-700 block mb-1">
+                          Monto del Abono (COP):
+                        </label>
+                        <input
+                          type="number"
+                          step={5000}
+                          value={abonoAmount}
+                          onChange={(e) => setAbonoAmount(parseInt(e.target.value) || 0)}
+                          className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 font-mono font-bold text-sm outline-none focus:ring-2 focus:ring-[#F97316]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-semibold text-slate-700 block mb-1">
+                          Medio de Pago:
+                        </label>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setAbonoPaymentMethod('efectivo')}
+                            className={`py-1.5 text-center rounded-lg border font-bold ${
+                              abonoPaymentMethod === 'efectivo'
+                                ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                                : 'bg-slate-50 border-slate-200 text-slate-700'
+                            }`}
+                          >
+                            Efectivo
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setAbonoPaymentMethod('transferencia')}
+                            className={`py-1.5 text-center rounded-lg border font-bold ${
+                              abonoPaymentMethod === 'transferencia'
+                                ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                                : 'bg-slate-50 border-slate-200 text-slate-700'
+                            }`}
+                          >
+                            Transf.
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setAbonoPaymentMethod('tarjeta')}
+                            className={`py-1.5 text-center rounded-lg border font-bold ${
+                              abonoPaymentMethod === 'tarjeta'
+                                ? 'bg-orange-50 border-[#F97316] text-[#EA580C]'
+                                : 'bg-slate-50 border-slate-200 text-slate-700'
+                            }`}
+                          >
+                            Tarjeta
+                          </button>
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full py-2.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold transition shadow-sm mt-2"
+                      >
+                        Registrar Abono en Mesón
+                      </button>
+                    </form>
                   </div>
-                  <button className="px-4 py-2 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white font-bold transition shrink-0">
-                    Guardar y Cerrar Turno
-                  </button>
+
+                  <div className="p-4 rounded-xl bg-orange-50 border border-orange-200 text-slate-700 text-xs flex flex-col gap-2">
+                    <span className="font-bold text-[#EA580C] flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4" />
+                      Reglas de Crédito Vecinal FerroMax:
+                    </span>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-600">
+                      <li>Pago máximo a 30 días calendario.</li>
+                      <li>Descuento adicional de 2% por pago antes del día 15.</li>
+                      <li>Límite de fiado bloqueado automáticamente al superar el cupo.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* MÓDULO 6: CONFIGURACIÓN DE CAJA & ARQUEO DE EFECTIVO      */}
+          {/* ======================================================== */}
+          {activeTab === 'cash' && (
+            <div className="space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                    Cierre de Caja y Arqueo Físico de Efectivo
+                  </h1>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Conciliación de gaveta, desglose de billetes en pesos colombianos y estado de periféricos.
+                  </p>
+                </div>
+                <button
+                  onClick={handleSaveArqueo}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold shadow-sm transition"
+                >
+                  <Save className="h-4 w-4" />
+                  <span>Guardar Arqueo y Generar Acta</span>
+                </button>
+              </div>
+
+              {/* Grid 65% / 35% */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-8 flex flex-col gap-6">
+                  {/* Estado de Periféricos */}
+                  <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                      Estado de Periféricos de Caja
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex flex-col gap-1">
+                        <span className="font-bold">Gaveta de Dinero</span>
+                        <span className="text-[10px] text-emerald-600">● Conectada (RJ11)</span>
+                      </div>
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex flex-col gap-1">
+                        <span className="font-bold">Impresora 80mm</span>
+                        <span className="text-[10px] text-emerald-600">● En línea (Térmica)</span>
+                      </div>
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex flex-col gap-1">
+                        <span className="font-bold">Lector de Códigos</span>
+                        <span className="text-[10px] text-emerald-600">● Láser Activo</span>
+                      </div>
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex flex-col gap-1">
+                        <span className="font-bold">Datáfono POS</span>
+                        <span className="text-[10px] text-emerald-600">● Conectado (Redelcom)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desglose de Billetes y Monedas (COP) */}
+                  <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-5 w-5 text-[#F97316]" />
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Conteo Físico por Denominación (Pesos Colombianos)
+                        </h3>
+                      </div>
+                      <span className="text-xs font-bold text-slate-500">
+                        Cálculo en vivo
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                      {[
+                        { denom: '50000', label: '$50.000', sub: 'Billete Morado' },
+                        { denom: '20000', label: '$20.000', sub: 'Billete Naranja' },
+                        { denom: '10000', label: '$10.000', sub: 'Billete Azul Marino' },
+                        { denom: '5000', label: '$5.000', sub: 'Billete Café' },
+                        { denom: '2000', label: '$2.000', sub: 'Billete Celeste' },
+                        { denom: '1000', label: '$1.000', sub: 'Billete Verde' },
+                        { denom: '500', label: 'Monedas', sub: 'Monedas Mixtas' },
+                      ].map((d) => {
+                        const count = cashDenominations[d.denom] || 0;
+                        const subtotal = parseInt(d.denom) * count;
+                        return (
+                          <div
+                            key={d.denom}
+                            className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 flex flex-col justify-between gap-2"
+                          >
+                            <div>
+                              <span className="font-bold text-sm text-slate-900 block font-mono">
+                                {d.label}
+                              </span>
+                              <span className="text-[10px] text-slate-400">{d.sub}</span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => alterDenominationQty(d.denom, -1)}
+                                className="w-7 h-7 rounded bg-white border border-slate-200 text-slate-800 font-bold hover:bg-slate-100"
+                              >
+                                -
+                              </button>
+                              <span className="flex-1 text-center font-mono font-bold text-xs">
+                                {count}
+                              </span>
+                              <button
+                                onClick={() => alterDenominationQty(d.denom, 1)}
+                                className="w-7 h-7 rounded bg-white border border-slate-200 text-slate-800 font-bold hover:bg-slate-100"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div className="pt-2 border-t border-slate-200 flex justify-between text-[11px] font-mono">
+                              <span className="text-slate-400">Subtotal:</span>
+                              <span className="font-bold text-slate-800">
+                                ${subtotal.toLocaleString('es-CO')}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Columna Derecha: Conciliación */}
+                <div className="lg:col-span-4 flex flex-col gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-3 text-xs">
+                    <span className="font-bold uppercase tracking-wider text-slate-500">
+                      Resumen del Turno Actual
+                    </span>
+                    <div className="flex justify-between py-1 border-b border-slate-100">
+                      <span className="text-slate-500">Fondo Inicial de Caja:</span>
+                      <span className="font-mono font-bold text-slate-800">$200,000 COP</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-100">
+                      <span className="text-slate-500">Ventas en Efectivo:</span>
+                      <span className="font-mono font-bold text-slate-800">$1,195,000 COP</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-100">
+                      <span className="text-slate-500">Ventas con Datáfono / POS:</span>
+                      <span className="font-mono font-bold text-slate-800">$428,500 COP</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-100">
+                      <span className="text-slate-500">Transferencias QR (Nequi):</span>
+                      <span className="font-mono font-bold text-slate-800">$90,000 COP</span>
+                    </div>
+                  </div>
+
+                  <div className="p-5 rounded-xl bg-slate-900 text-white shadow-md flex flex-col gap-4">
+                    <div>
+                      <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">
+                        Total Contado en Gaveta
+                      </span>
+                      <div className="flex items-baseline gap-1 mt-1">
+                        <span className="text-3xl font-black text-[#F97316] font-mono">
+                          ${totalCashCounted.toLocaleString('es-CO')}
+                        </span>
+                        <span className="text-xs text-orange-200 font-bold">COP</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                      <span className="text-slate-400">Esperado en Sistema:</span>
+                      <span className="font-mono font-bold text-slate-200">
+                        ${expectedCashInDrawer.toLocaleString('es-CO')} COP
+                      </span>
+                    </div>
+
+                    <div
+                      className={`p-3 rounded-lg border flex items-center justify-between text-xs font-bold ${
+                        cashDifference === 0
+                          ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                          : cashDifference > 0
+                          ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                          : 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                      }`}
+                    >
+                      <span>
+                        {cashDifference === 0
+                          ? 'Caja Cuadrada Exacta'
+                          : cashDifference > 0
+                          ? 'Sobrante en Caja'
+                          : 'Faltante en Caja'}
+                      </span>
+                      <span className="font-mono text-sm">
+                        {cashDifference >= 0 ? '+' : ''}${cashDifference.toLocaleString('es-CO')} COP
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleSaveArqueo}
+                      className="w-full py-2.5 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs transition shadow-sm"
+                    >
+                      Confirmar Cierre de Turno
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
