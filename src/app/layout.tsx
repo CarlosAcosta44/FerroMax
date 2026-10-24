@@ -3,6 +3,7 @@ import './globals.css';
 import { Header } from '@/presentation/components/common/Header';
 import { Footer } from '@/presentation/components/common/Footer';
 import { CartProvider } from '@/presentation/context/CartContext';
+import { AuthProvider } from '@/presentation/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'FerroMax – Ferretería y Herramientas | Tu Ferretería de Barrio',
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900 antialiased selection:bg-orange-100 selection:text-orange-900">
-        <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
