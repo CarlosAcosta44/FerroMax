@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<title>Ferretería El Maestro - Panel de Administración</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+      body { overscroll-behavior: none; }
+      ::-webkit-scrollbar { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 antialiased min-h-screen flex">
+<!-- Sidebar Izquierdo: Consistente #0F172A -->
+<aside class="fixed left-0 top-0 h-full w-72 bg-[#0F172A] z-50 flex flex-col justify-between border-r border-slate-800 shadow-xl">
+<div class="flex flex-col">
+<!-- Logo y Nombre de Tienda -->
+<div class="px-6 pt-6 pb-5 border-b border-slate-800/80">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-[#F97316] flex items-center justify-center shadow-lg shadow-orange-500/20 text-white flex-shrink-0">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-white font-extrabold text-lg tracking-tight leading-none">EL MAESTRO</h1>
+<p class="text-[#F97316] font-medium text-xs mt-1">Tu Ferretería de Barrio</p>
+</div>
+</div>
+</div>
+<!-- Tarjeta de Perfil Don Carlos -->
+<div class="mx-4 my-4 p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#EA580C] to-[#F97316] flex items-center justify-center text-white font-bold text-sm shadow">
+          DC
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="text-white text-sm font-semibold truncate leading-snug">Don Carlos</span>
+<span class="text-slate-400 text-xs truncate">Dueño / Administrador</span>
+</div>
+</div>
+<!-- Navegación -->
+<nav class="flex flex-col gap-1.5 px-3 mt-1">
+<!-- Panel Principal (Activo) -->
+<a aria-current="page" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-[#F97316] text-white font-semibold text-sm shadow-md shadow-orange-500/20 transition-all" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Panel Principal</span>
+</a>
+<!-- Inventario y Precios -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium text-sm transition-colors" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Inventario y Precios</span>
+</a>
+<!-- Ventas del Mostrador y Web -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium text-sm transition-colors" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Ventas del Mostrador y Web</span>
+</a>
+<!-- Pedidos y Retiro en Tienda -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium text-sm transition-colors" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Pedidos y Retiro en Tienda</span>
+</a>
+<!-- Clientes Frecuentes -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium text-sm transition-colors" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Clientes Frecuentes</span>
+</a>
+<!-- Configuración de Caja -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium text-sm transition-colors" href="#">
+<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Configuración de Caja</span>
+</a>
+</nav>
+</div>
+<!-- Estado Inferior -->
+<div class="p-4 border-t border-slate-800">
+<div class="p-3 rounded-xl bg-slate-800/70 flex items-center justify-between border border-slate-700/40">
+<div class="flex items-center gap-2.5">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+</span>
+<span class="text-xs font-semibold text-emerald-300">Caja y Tienda Abierta</span>
+</div>
+<span class="text-[11px] font-mono text-slate-400 font-medium">Horario Normal</span>
+</div>
+</div>
+</aside>
+<!-- Contenedor Principal -->
+<div class="pl-72 flex-1 flex flex-col min-h-screen">
+<!-- Topbar Superior -->
+<header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 px-8 flex items-center justify-between shadow-xs">
+<!-- Buscador general de la ferretería -->
+<div class="flex items-center gap-3 flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-100 border-none text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all" placeholder="Buscar clavo, pintura, herramienta o cliente..." type="search"/>
+</div>
+</div>
+<!-- Estado y Acciones Rápidas -->
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Atención al público en mostrador</span>
+</div>
+<button aria-label="Notificaciones" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#F97316]"></span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span class="hidden md:inline">Salir</span>
+</button>
+</div>
+</header>
+<!-- Contenido de la Pantalla -->
+<main class="p-8 space-y-6">
+<!-- Título de Bienvenida y Botón de Acción -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-[#F97316] font-mono">Ferretería de Barrio</span>
+<span class="text-slate-300">•</span>
+<span class="text-xs text-slate-500 font-medium">Atención a Vecinos y Maestros</span>
+</div>
+<h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Panel de Administración - Don Carlos</h1>
+<p class="text-slate-500 text-sm mt-0.5">Control diario de caja, inventario en estantes y pedidos para retiro o entrega local.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-sm hover:shadow transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">point_of_sale</span>
+<span>Cierre de Caja del Día</span>
+</button>
+</div>
+</div>
+<!-- 3 Tarjetas KPI Superiores (#FFFFFF, borde #E2E8F0) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<!-- Tarjeta 1: Ventas Totales Hoy -->
+<div class="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Ventas Totales Hoy</span>
+<div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center text-[#F97316]">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+</div>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="text-3xl font-black text-slate-900 tracking-tight">$428.500</span>
+<span class="text-xs font-mono font-bold text-slate-400">CLP</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+<span>34 boletas del mostrador y web local</span>
+<span class="inline-flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+              Buen ritmo
+            </span>
+</div>
+</div>
+<!-- Tarjeta 2: Productos por Reponer (Alerta amarilla #FEF3C7 con texto #B45309) -->
+<div class="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Productos por Reponer</span>
+<div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-[20px]">notification_important</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-black text-[#B45309] tracking-tight">4</span>
+<span class="text-base font-bold text-amber-700">artículos críticos</span>
+</div>
+</div>
+<div class="mt-3 p-2.5 rounded-lg bg-[#FEF3C7] text-[#B45309] border border-amber-200/80 text-xs flex flex-col gap-1">
+<div class="flex items-center gap-1.5 font-bold">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span>Por agotarse en estantería:</span>
+</div>
+<p class="text-[11px] leading-tight text-amber-900 font-medium">Tornillos drywall, cinta aisladora, ampolletas LED, pintura esmalte.</p>
+</div>
+</div>
+<!-- Tarjeta 3: Pagos Recibidos -->
+<div class="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pagos Recibidos</span>
+<div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+</div>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="text-3xl font-black text-slate-900 tracking-tight">$395.000</span>
+<span class="text-xs font-mono font-bold text-slate-400">CLP</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+<div class="flex items-center justify-between text-xs text-slate-600">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Efectivo, Débito, Transferencia y Webpay
+              </span>
+</div>
+<span class="text-[11px] text-slate-400">Caja cuadrada al corte de las 16:30</span>
+</div>
+</div>
+</div>
+<!-- Tabla: Actualización Rápida de Inventario de Tienda -->
+<div class="bg-white rounded-xl border border-[#E2E8F0] shadow-sm p-6">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#F97316] text-[22px]">tune</span>
+<h2 class="text-lg font-bold text-slate-900">Actualización Rápida de Inventario de Tienda</h2>
+</div>
+<p class="text-slate-500 text-xs mt-0.5">Ajusta los precios del día y el stock disponible en estanterías para los vecinos.</p>
+</div>
+<!-- Filtro rápido de mostrador -->
+<div class="flex flex-wrap items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+<input class="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-[#F97316] focus:border-[#F97316] w-56" id="inventory-search" placeholder="Buscar producto en estante..." type="text"/>
+</div>
+<select class="py-1.5 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:ring-1 focus:ring-[#F97316]" id="category-filter">
+<option value="all">Todos los pasillos</option>
+<option value="herramientas">Herramientas Caseras</option>
+<option value="gasfiteria">Fijaciones y Gasfitería</option>
+<option value="pinturas">Pinturas y Adhesivos</option>
+</select>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition-colors" onclick="bulkSaveNotice()" type="button">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+<span>Guardar Todo</span>
+</button>
+</div>
+</div>
+<!-- Tabla de Artículos de Hogar -->
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead>
+<tr class="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
+<th class="py-3 px-4 rounded-l-lg">Producto en Tienda</th>
+<th class="py-3 px-4">Categoría Hogar</th>
+<th class="py-3 px-4 min-w-[150px]">Precio Público</th>
+<th class="py-3 px-4 min-w-[190px]">Stock en Mostrador</th>
+<th class="py-3 px-4 text-right rounded-r-lg">Acción</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100" id="inventory-table-body">
+<!-- Producto 1: Taladro Percutor Casero 650W -->
+<tr class="hover:bg-slate-50/80 transition-colors" data-category="herramientas">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+<img alt="Taladro Percutor Casero" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8zl5PBhCCUKzsZQjHRLJGwCC02U0w4g-kk7glrMoKMxAkt2_zY8A-2sL2_4VRtT9guAfTsEdjkXnK_XQVVrfYXsSEn8GgomWp460OFTN2v0Y7sxhspp8zxZ7kZ-EWb1om8ffdck613ZcUljXfzRwNUwhJTvd3517r5sIF59AXb1_uL9bmVIeZDXFNOtEEEUdEEibMEj4FBeTkPiDiSUSr630jy1s-QECAgEn0JqPvZFSsm5gOF-ad"/>
+</div>
+<div>
+<span class="font-bold text-slate-900 text-sm block">Taladro Percutor Casero 650W</span>
+<span class="text-slate-500 text-[11px]">Ideal para colgar cuadros y reparaciones caseras (Mandril 1/2)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-[#F97316]">
+                    Herramientas Caseras
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="relative flex items-center max-w-[130px]">
+<span class="absolute left-2.5 font-bold text-slate-400 text-xs">$</span>
+<input class="w-full pl-6 pr-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 text-xs focus:bg-white focus:ring-1 focus:ring-[#F97316]" type="text" value="38.990"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, -1)" type="button">-</button>
+<span class="w-8 text-center font-mono font-bold text-slate-800 stock-val">12</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, 1)" type="button">+</button>
+</div>
+<span class="text-slate-500 text-[11px]">cajas</span>
+</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-xs transition-colors" onclick="triggerRowUpdate(this)" type="button">
+<span class="material-symbols-outlined text-[15px]">save</span>
+<span>Guardar Cambios</span>
+</button>
+</td>
+</tr>
+<!-- Producto 2: Juego de Destornilladores x6 -->
+<tr class="hover:bg-slate-50/80 transition-colors" data-category="herramientas">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+<img alt="Juego Destornilladores" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV0eHYxd2sBiGTmnlJoesiPLNL8qic6YkPJUxDgQBkqCq3hVZchxV7BeQ9BFikilBLPJkMufUelWMhg3UnwkCDVSYUi7Sz-VAP0g-HkL0vdjB98bgZpDppvrBf0Gr3yLEZDj6NHmwgYHrImhIP7pxksxiZkqZk-gTSniRvRAUQ5KzimL-c1qDC5PF7p-5ZiJD3Bl9ZOlhqLiTFhPbKhfWW3cWQTtpi6b1sJILina67O5jDhfNcWzms"/>
+</div>
+<div>
+<span class="font-bold text-slate-900 text-sm block">Juego de Destornilladores x6</span>
+<span class="text-slate-500 text-[11px]">Puntas Phillips y paleta con mango ergonómico antideslizante</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-[#F97316]">
+                    Herramientas Caseras
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="relative flex items-center max-w-[130px]">
+<span class="absolute left-2.5 font-bold text-slate-400 text-xs">$</span>
+<input class="w-full pl-6 pr-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 text-xs focus:bg-white focus:ring-1 focus:ring-[#F97316]" type="text" value="6.990"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, -1)" type="button">-</button>
+<span class="w-8 text-center font-mono font-bold text-slate-800 stock-val">18</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, 1)" type="button">+</button>
+</div>
+<span class="text-slate-500 text-[11px]">sets</span>
+</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-xs transition-colors" onclick="triggerRowUpdate(this)" type="button">
+<span class="material-symbols-outlined text-[15px]">save</span>
+<span>Guardar Cambios</span>
+</button>
+</td>
+</tr>
+<!-- Producto 3: Cinta Teflón 1/2" x 10m -->
+<tr class="hover:bg-slate-50/80 transition-colors" data-category="gasfiteria">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+<img alt="Cinta Teflón" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbfFZNYm9V9DQ_Jtl8ZjCangNA5TzdoRu4m8E4gpD9Ny3LvVaVpKTWz330kJmrcYo3G6Y47vxuOOmTE41E7Boj3KggoV_zrfGIElEJ4ysgCDgIUaLNv0QbgiHo2Y08ASMycjVOrPB69QoohOTRPG5X7fJ3-SHhHjYOx6nMBwKWFdhVOBGDA6ZYPPMrnfp_Nu8g0DXzjRmverpoPodPWoV1ljb4vCK2KRDXmvbL-GJKAO2mMGVX_bKu"/>
+</div>
+<div>
+<span class="font-bold text-slate-900 text-sm block">Cinta Teflón 1/2" x 10m</span>
+<span class="text-slate-500 text-[11px]">Sello antifugas para llaves, duchas y cañerías del hogar</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700">
+                    Gasfitería Básica
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="relative flex items-center max-w-[130px]">
+<span class="absolute left-2.5 font-bold text-slate-400 text-xs">$</span>
+<input class="w-full pl-6 pr-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 text-xs focus:bg-white focus:ring-1 focus:ring-[#F97316]" type="text" value="990"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, -1)" type="button">-</button>
+<span class="w-8 text-center font-mono font-bold text-slate-800 stock-val">42</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, 1)" type="button">+</button>
+</div>
+<span class="text-slate-500 text-[11px]">rollos</span>
+</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-xs transition-colors" onclick="triggerRowUpdate(this)" type="button">
+<span class="material-symbols-outlined text-[15px]">save</span>
+<span>Guardar Cambios</span>
+</button>
+</td>
+</tr>
+<!-- Producto 4: Esmalte al Agua Blanco 1 Galón -->
+<tr class="hover:bg-slate-50/80 transition-colors" data-category="pinturas">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+<img alt="Esmalte al Agua" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZW7e9UPWO53NE_NaJNrVpgbDU9dJn4QunLvlXF_Tz0Qmp-ms6V6THDl3-6n1LzPGCyffCeeBXiboe9GC0W46X9i41C1GuYz-f0jOpxVOSC7x3PJUCC_xinbtwULQ4tFO9SRJ0yzzxvLKmG4wrF4SgMC43qIthNL-wvOcSuATMXFo6xmacVGz_ekS9vga9XwE_hXQofRavLAMj2iLkKQ1B-WmbWVWEXJBo_fSHw5y_0ywDVGQiO0Uf"/>
+</div>
+<div>
+<span class="font-bold text-slate-900 text-sm block">Esmalte al Agua Blanco 1 Galón</span>
+<span class="text-slate-500 text-[11px]">Acabado semibrillo lavable para piezas, living y baño</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
+                    Pinturas y Adhesivos
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="relative flex items-center max-w-[130px]">
+<span class="absolute left-2.5 font-bold text-slate-400 text-xs">$</span>
+<input class="w-full pl-6 pr-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 text-xs focus:bg-white focus:ring-1 focus:ring-[#F97316]" type="text" value="23.990"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, -1)" type="button">-</button>
+<span class="w-8 text-center font-mono font-bold text-amber-600 stock-val">3</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, 1)" type="button">+</button>
+</div>
+<span class="text-amber-600 text-[11px] font-semibold">¡Quedan 3!</span>
+</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-xs transition-colors" onclick="triggerRowUpdate(this)" type="button">
+<span class="material-symbols-outlined text-[15px]">save</span>
+<span>Guardar Cambios</span>
+</button>
+</td>
+</tr>
+<!-- Producto 5: Set Tarugos y Tornillos Hogar 50 pcs -->
+<tr class="hover:bg-slate-50/80 transition-colors" data-category="gasfiteria">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200">
+<img alt="Set Tarugos y Tornillos" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN-rbke8ilTNrUwY8c5-CZPo-sKzNa0XsTzD_Os6SetmYL2PSlaglqV9Y96aWuw6RR7Pr7pssQNXYUpyxdCTW83eE6l8lWjdYI2eXV0yrB3ch8Krk069Yd68dqSCTKJFn5-1mf2QdlFM5xqlw0kurVTZLAgaamCOOetvAJi9A1OG4ctZui9Bv9EcaIfg1_Nk4XKDHYhV_q32vQyVuBA1EZvIUF8UAbJBcLw7FhDegRcGgqDQsBgFVI"/>
+</div>
+<div>
+<span class="font-bold text-slate-900 text-sm block">Set Tarugos y Tornillos Hogar 50 pcs</span>
+<span class="text-slate-500 text-[11px]">Medidas N°6 y N°8 con broca incluida para concreto y tabiquería</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700">
+                    Fijaciones Hogar
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="relative flex items-center max-w-[130px]">
+<span class="absolute left-2.5 font-bold text-slate-400 text-xs">$</span>
+<input class="w-full pl-6 pr-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 font-mono font-bold text-slate-800 text-xs focus:bg-white focus:ring-1 focus:ring-[#F97316]" type="text" value="3.490"/>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, -1)" type="button">-</button>
+<span class="w-8 text-center font-mono font-bold text-slate-800 stock-val">25</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 font-bold text-slate-700" onclick="modifyStock(this, 1)" type="button">+</button>
+</div>
+<span class="text-slate-500 text-[11px]">estuches</span>
+</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F97316] hover:bg-orange-600 text-white font-semibold text-xs shadow-xs transition-colors" onclick="triggerRowUpdate(this)" type="button">
+<span class="material-symbols-outlined text-[15px]">save</span>
+<span>Guardar Cambios</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Tabla Inferior: Últimas Compras y Boletas (Clientes normales del barrio) -->
+<div class="bg-white rounded-xl border border-[#E2E8F0] shadow-sm p-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#F97316] text-[20px]">receipt_long</span>
+<h2 class="text-base font-bold text-slate-900">Últimas Compras y Boletas de Vecinos</h2>
+</div>
+<p class="text-slate-500 text-xs mt-0.5">Boletas electrónicas emitidas en mostrador y pedidos para retiro en el local.</p>
+</div>
+<span class="text-xs text-slate-500 font-medium">Mostrador 1 y Caja Central</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead>
+<tr class="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
+<th class="py-2.5 px-4 rounded-l-lg">Cliente Particular</th>
+<th class="py-2.5 px-4">N° de Boleta</th>
+<th class="py-2.5 px-4">Medio de Pago</th>
+<th class="py-2.5 px-4">Total Pagado</th>
+<th class="py-2.5 px-4">Hora</th>
+<th class="py-2.5 px-4 text-right rounded-r-lg">Estado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Cliente 1: Juan Pérez -->
+<tr class="hover:bg-slate-50/70 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs">
+                      JP
+                    </div>
+<div>
+<span class="font-bold text-slate-800 text-xs block">Juan Pérez</span>
+<span class="text-[11px] text-slate-400">Cliente frecuente (Vecino Pasaje 3)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-semibold text-slate-700">#BOL-10492</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 text-slate-700">
+<span class="material-symbols-outlined text-[15px] text-slate-500">payments</span>
+<span>Efectivo</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-bold text-slate-900">$12.490 CLP</td>
+<td class="py-3 px-4 text-slate-500">Hace 8 min</td>
+<td class="py-3 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-emerald-800 text-[11px] font-bold border border-emerald-200/80">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                    Pagado / Entregado
+                  </span>
+</td>
+</tr>
+<!-- Cliente 2: Marcela Soto -->
+<tr class="hover:bg-slate-50/70 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs">
+                      MS
+                    </div>
+<div>
+<span class="font-bold text-slate-800 text-xs block">Marcela Soto</span>
+<span class="text-[11px] text-slate-400">Reparación Baño (Retiro en local)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-semibold text-slate-700">#BOL-10491</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 text-slate-700">
+<span class="material-symbols-outlined text-[15px] text-slate-500">credit_card</span>
+<span>Débito Redcompra</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-bold text-slate-900">$45.900 CLP</td>
+<td class="py-3 px-4 text-slate-500">Hace 22 min</td>
+<td class="py-3 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-emerald-800 text-[11px] font-bold border border-emerald-200/80">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                    Pagado / Entregado
+                  </span>
+</td>
+</tr>
+<!-- Cliente 3: Pedro Morales -->
+<tr class="hover:bg-slate-50/70 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs">
+                      PM
+                    </div>
+<div>
+<span class="font-bold text-slate-800 text-xs block">Pedro Morales</span>
+<span class="text-[11px] text-slate-400">Maestro Chasquilla / Electricidad</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-semibold text-slate-700">#BOL-10490</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 text-slate-700">
+<span class="material-symbols-outlined text-[15px] text-slate-500">account_balance</span>
+<span>Transferencia Banco Estado</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-bold text-slate-900">$8.990 CLP</td>
+<td class="py-3 px-4 text-slate-500">Hace 45 min</td>
+<td class="py-3 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-emerald-800 text-[11px] font-bold border border-emerald-200/80">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                    Pagado / Entregado
+                  </span>
+</td>
+</tr>
+<!-- Cliente 4: Camila Valenzuela -->
+<tr class="hover:bg-slate-50/70 transition-colors">
+<td class="py-3 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs">
+                      CV
+                    </div>
+<div>
+<span class="font-bold text-slate-800 text-xs block">Camila Valenzuela</span>
+<span class="text-[11px] text-slate-400">Pintura y Brochas para pieza</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-semibold text-slate-700">#BOL-10489</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 text-slate-700">
+<span class="material-symbols-outlined text-[15px] text-slate-500">credit_card</span>
+<span>Débito Redcompra</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-bold text-slate-900">$28.480 CLP</td>
+<td class="py-3 px-4 text-slate-500">Hace 1 h 10 min</td>
+<td class="py-3 px-4 text-right">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-emerald-800 text-[11px] font-bold border border-emerald-200/80">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                    Pagado / Entregado
+                  </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pie de Tabla de Boletas -->
+<div class="pt-3 mt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-2">
+<span>Mostrando 4 de las 34 boletas emitidas hoy en caja</span>
+<a class="inline-flex items-center gap-1 text-[#F97316] hover:text-orange-600 font-bold transition-colors" href="#">
+<span>Ver historial completo de boletas de la semana</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</main>
+</div>
+<!-- Funcionalidades interactivas amigables -->
+<script>
+    function modifyStock(button, delta) {
+      const parent = button.parentElement;
+      const stockSpan = parent.querySelector('.stock-val');
+      let current = parseInt(stockSpan.textContent, 10);
+      if (!isNaN(current)) {
+        current = Math.max(0, current + delta);
+        stockSpan.textContent = current;
+      }
+    }
+
+    function triggerRowUpdate(button) {
+      const originalText = button.innerHTML;
+      button.innerHTML = '<span class="material-symbols-outlined text-[15px] animate-spin">refresh</span><span>Guardando...</span>';
+      button.disabled = true;
+      setTimeout(() => {
+        button.innerHTML = '<span class="material-symbols-outlined text-[15px]">check_circle</span><span>¡Listo!</span>';
+        button.classList.remove('bg-[#F97316]', 'hover:bg-orange-600');
+        button.classList.add('bg-emerald-600');
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove('bg-emerald-600');
+          button.classList.add('bg-[#F97316]', 'hover:bg-orange-600');
+          button.disabled = false;
+        }, 1500);
+      }, 400);
+    }
+
+    function bulkSaveNotice() {
+      const rows = document.querySelectorAll('#inventory-table-body tr');
+      rows.forEach(row => {
+        const btn = row.querySelector('button[onclick^="triggerRowUpdate"]');
+        if (btn) triggerRowUpdate(btn);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('inventory-search');
+      const categorySelect = document.getElementById('category-filter');
+      const rows = document.querySelectorAll('#inventory-table-body tr');
+
+      function filterTable() {
+        const query = (searchInput ? searchInput.value : '').toLowerCase();
+        const selectedCategory = categorySelect ? categorySelect.value : 'all';
+
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const rowCategory = row.getAttribute('data-category');
+          const matchesQuery = text.includes(query);
+          const matchesCategory = selectedCategory === 'all' || rowCategory === selectedCategory;
+
+          if (matchesQuery && matchesCategory) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      if (searchInput) searchInput.addEventListener('input', filterTable);
+      if (categorySelect) categorySelect.addEventListener('change', filterTable);
+    });
+  </script>
+</body></html>

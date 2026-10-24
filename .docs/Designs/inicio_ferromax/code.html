@@ -1,0 +1,880 @@
+<!DOCTYPE html><html lang="es" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary": "#000000", "on-error-container": "#93000a", "on-background": "#191c1e", "surface-dim": "#d8dadc", "surface": "#f7f9fb", "on-error": "#ffffff", "on-tertiary-fixed": "#002109", "secondary-fixed": "#ffdbca", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#002109", "on-primary": "#ffffff", "on-secondary-container": "#5c2400", "on-surface": "#191c1e", "error-container": "#ffdad6", "secondary-fixed-dim": "#ffb690", "error": "#ba1a1a", "on-tertiary-container": "#009844", "inverse-on-surface": "#eff1f3", "surface-bright": "#f7f9fb", "on-primary-fixed-variant": "#3f465c", "on-tertiary-fixed-variant": "#005322", "on-secondary": "#ffffff", "surface-container-high": "#e6e8ea", "surface-container-low": "#f2f4f6", "primary-fixed": "dae2fd", "surface-container-highest": "#e0e3e5", "primary-container": "#131b2e", "outline-variant": "#c6c6cd", "tertiary-fixed": "#66ff8e", "on-secondary-fixed-variant": "#783200", "on-tertiary": "#ffffff", "outline": "#76777d", "secondary-container": "#fd761a", "background": "#f7f9fb", "inverse-primary": "#bec6e0", "surface-tint": "#565e74", "inverse-surface": "#2d3133", "secondary": "#9d4300", "on-primary-fixed": "#131b2e", "tertiary": "#000000", "surface-variant": "#e0e3e5", "tertiary-fixed-dim": "#3de273", "on-primary-container": "#7c839b", "surface-container": "#eceef0", "on-surface-variant": "#45464d", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#341100" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "space-lg": "1.5rem", "margin-mobile": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "space-md": "1rem", "space-xl": "2.5rem", "margin": "2rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "display-lg-mobile": ["Inter"], "body-md": ["Inter"], "label-md": ["Inter"], "body-sm": ["Inter"], "label-code": ["JetBrains Mono"], "label-lg": ["Inter"], "display-lg": ["Inter"], "title-md": ["Inter"], "headline-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-code": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.025em", "fontWeight": "800" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 shadow-[0_1px_8px_rgba(0,0,0,0.06)]"><div class="bg-primary text-on-primary"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-9 text-label-md font-label-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[16px] text-secondary-container">local_shipping</span><span class="">Despacho a domicilio o retiro gratis en mesón en 1 hora</span></div><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-xs text-on-primary hover:text-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">chat</span><span class="">Atención WhatsApp B2B &amp; Clientes</span></a><span class="text-outline">|</span><span class="hidden md:inline text-on-primary-container">Lunes a Sábado 08:00 - 19:00 hrs</span></div></div></div><div class="bg-surface-container-lowest"><div class="h-20 max-w-7xl mx-auto px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-lg shrink-0"><a class="flex items-center gap-space-sm group" data-path="catalogo-de-productos" href="#"><div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[24px]">hardware</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none group-hover:text-secondary-container transition-colors">FerroMax</span><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-tight">Tu ferretería de confianza</span></div></a></div><div class="flex items-center gap-gutter shrink-0"><a class="hidden lg:flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="locales-y-retiro" href="#"><span class="material-symbols-outlined text-[22px] text-outline">store</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Retiro</span><span class="font-label-lg text-label-lg leading-tight">En Tienda</span></div></a><a class="hidden lg:flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="seguimiento-de-pedidos" href="#"><span class="material-symbols-outlined text-[22px] text-outline">inventory_2</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Estado</span><span class="font-label-lg text-label-lg leading-tight">Seguimiento</span></div></a><a class="flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="mi-cuenta-y-pedidos" href="#"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Mi Cuenta</span><span class="font-label-lg text-label-lg leading-tight">Ingresar</span></div></a><a class="flex items-center gap-space-sm bg-secondary-container hover:bg-secondary text-on-primary px-space-md py-space-sm rounded transition-colors shadow-sm" data-path="carro-de-compras" href="#"><div class="relative flex items-center"><span class="material-symbols-outlined text-[22px]">shopping_cart</span><span class="absolute -top-2 -right-2 bg-primary text-on-primary text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">3</span></div><span class="hidden sm:inline font-label-lg text-label-lg">$48.990</span></a></div></div></div><div class="bg-surface-container border-t border-outline-variant/20"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between"><nav class="flex items-center gap-space-lg overflow-x-auto py-space-sm scrollbar-none" data-active-classes="text-secondary-container font-bold border-b-2 border-secondary-container"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-herramientas" href="#">Herramientas</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-pinturas" href="#">Pinturas</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-gasfiteria" href="#">Gasfitería</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-electricidad" href="#">Electricidad</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-fijaciones-y-tornillos" href="#">Fijaciones &amp; Tornillos</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-jardin-y-hogar" href="#">Jardín &amp; Hogar</a><a class="font-label-lg text-label-lg text-secondary-container hover:text-secondary whitespace-nowrap font-bold transition-colors py-1 flex items-center gap-space-xs" data-path="ofertas-del-mes" href="#">Ofertas del Mes</a></nav><div class="hidden xl:flex items-center gap-space-sm text-label-code font-label-code text-on-surface-variant shrink-0 pl-space-md"><span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span><span class="">STOCK SUCURSALES EN LÍNEA</span></div></div></div></header><main class="w-full pt-[156px] bg-surface min-h-[calc(100vh-156px)]"><div class="flex flex-col w-full">
+<!-- 1. Hero Principal Cálido & Dinámico -->
+<section class="relative w-full bg-primary-container text-on-primary overflow-hidden shadow-md">
+<!-- Ambient glowing accents -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-secondary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-28 -left-20 w-80 h-80 bg-secondary/15 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative max-w-7xl mx-auto px-margin py-space-xl flex flex-col lg:flex-row items-center gap-space-xl">
+<!-- Columna Texto y CTA -->
+<div class="w-full lg:w-3/5 flex flex-col gap-space-md z-10">
+<div class="inline-flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container/20 text-secondary-fixed w-fit font-label-md text-label-md shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="">Stock de mesón actualizado en tiempo real</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-primary tracking-tight leading-tight">
+          Todo para tus proyectos de hogar, reparación y construcción
+        </h1>
+<p class="font-body-lg text-body-lg text-surface-container-high max-w-2xl">
+          Herramientas, pinturas, gasfitería y fijaciones con stock garantizado en tiempo real. Retira gratis en tienda en menos de 1 hora o pide a domicilio para empezar hoy mismo.
+        </p>
+<!-- CTAs de Acción -->
+<div class="flex flex-wrap items-center gap-space-md pt-space-xs">
+<a class="inline-flex items-center justify-center gap-space-xs bg-secondary-container hover:bg-secondary text-on-primary px-space-lg py-space-sm rounded font-label-lg text-label-lg shadow-md transition-transform hover:-translate-y-0.5" data-path="catalogo-de-productos" href="#">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+<span class="">Ver Catálogo Completo</span>
+</a>
+<a class="inline-flex items-center justify-center gap-space-xs bg-surface-container-lowest/10 hover:bg-surface-container-lowest/20 text-on-primary px-space-lg py-space-sm rounded font-label-lg text-label-lg transition-colors" href="#ofertas-semana">
+<span class="material-symbols-outlined text-[20px] text-secondary-container">local_fire_department</span>
+<span class="">Ver Ofertas de la Semana</span>
+</a>
+</div>
+<!-- Mini Buscador Rápido de Barrio -->
+<div class="w-full max-w-xl mt-space-sm bg-surface-container-lowest/95 rounded-lg p-space-xs shadow-lg flex items-center gap-space-sm text-on-surface">
+<span class="material-symbols-outlined text-outline ml-space-xs text-[22px]">search</span>
+<input class="w-full bg-transparent font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" id="quickSearchInput" placeholder="¿Qué necesitas reparar hoy? Ej. llave de paso, brocha, tarugos..." type="text">
+<button class="bg-secondary-container hover:bg-secondary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded transition-colors shrink-0" type="button">
+            Buscar
+          </button>
+</div>
+</div>
+<!-- Imagen Destacada de Maestro y Hogar -->
+<div class="w-full lg:w-2/5 relative">
+<div class="relative rounded-xl overflow-hidden shadow-2xl bg-surface-container-highest">
+<img class="w-full h-80 lg:h-96 object-cover" data-alt="Warm and inviting scene in a well-organized neighborhood hardware store, a friendly shop technician in an orange apron advising a smiling homeowner holding a cordless drill, bright clean shelves filled with tools and paint cans, professional lighting with warm orange and slate tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlkFAxkqI5zUp4Sx5gfJgalLRao2oZrV10MkFGa5hMwQJjuscAxXW1ZlOzrzYskmPAHL5NqKE6b6b6D44E07NTu4PrCehy1lYB9ivXmJ6CQ_RolsyruvhSE7bbs6yuFT1ENXCLJuTcgCZsaKhZ4RaJTnbrnpi0lJJ1cXzgTTraRT7kwb-ov6RMqZJTr6iVeBSZMQMCw-wJry1wz8OZsXnDzYG6rVcCuoTDakPo8TzZWi-_H7AC7bBM">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent flex flex-col justify-end p-space-md">
+<div class="flex items-center gap-space-sm bg-surface-container-lowest/95 text-on-surface rounded p-space-sm shadow-md">
+<span class="material-symbols-outlined text-secondary-container text-[28px]">handyman</span>
+<div>
+<p class="font-label-lg text-label-lg text-primary leading-tight">Asesoría FerroMax en Mesón</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-none">Te ayudamos a elegir la pieza exacta para tu arreglo</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Badges de Confianza Vecinales -->
+<div class="w-full bg-primary/40 backdrop-blur-sm">
+<div class="max-w-7xl mx-auto px-margin py-space-md grid grid-cols-2 md:grid-cols-4 gap-gutter text-on-primary">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-container/20 flex items-center justify-center text-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[24px]">timer</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg leading-tight">Retiro en 60 minutos</p>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-tight">Listo en mesón express</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-container/20 flex items-center justify-center text-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[24px]">electric_moped</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg leading-tight">Despacho Rápido</p>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-tight">A tu casa, taller u obra</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-container/20 flex items-center justify-center text-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[24px]">support_agent</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg leading-tight">Atención Experta</p>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-tight">Consejos claros y directos</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-container/20 flex items-center justify-center text-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[24px]">credit_card</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg leading-tight">Todos los Medios</p>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-tight">Débito, Crédito y Efectivo</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Categorías Populares (Explora por Departamento) -->
+<section class="max-w-7xl mx-auto px-margin py-space-xl w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg">
+<div>
+<div class="inline-flex items-center gap-space-xs text-secondary font-label-md text-label-md mb-1">
+<span class="material-symbols-outlined text-[16px]">category</span>
+<span class="">EXPLORA POR DEPARTAMENTO</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Encuentra lo que necesitas para tu proyecto
+        </h2>
+</div>
+<a class="text-secondary-container hover:text-secondary font-label-lg text-label-lg inline-flex items-center gap-space-xs transition-colors" data-path="catalogo-de-productos" href="#">
+<span class="">Ver todos los pasillos</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Cat 1: Herramientas -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-herramientas" href="#">
+<div class="w-14 h-14 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">construction</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Herramientas Manuales &amp; Eléctricas
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Taladros percutores, esmeriles, destornilladores, huinchas y cajas organizadoras para taller.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+1.420 productos</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+<!-- Cat 2: Pinturas -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-pinturas" href="#">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">format_paint</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Pinturas &amp; Accesorios
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Esmaltes al agua, brochas de cerda fina, rodillos antigota, selladores y siliconas antihongos.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+680 productos</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+<!-- Cat 3: Gasfitería -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-gasfiteria" href="#">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">plumbing</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Gasfitería &amp; Grifería
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Llaves mezcladoras, cañerías de cobre, tubos PVC sanitarios, flexibles mallados y cintas teflón.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+950 productos</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+<!-- Cat 4: Electricidad -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-electricidad" href="#">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">lightbulb</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Electricidad &amp; Iluminación
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Ampolletas LED bajo consumo, cables normalizados, enchufes modulares y disyuntores para el hogar.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+820 productos</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+<!-- Cat 5: Fijaciones y Clavos -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-fijaciones-y-tornillos" href="#">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">hardware</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Fijaciones, Clavos &amp; Tornillos
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Tornillos autoperforantes madera/metal, tarugos plásticos, pernos grado 2 y paquetes a granel.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+2.100 medidas</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+<!-- Cat 6: Jardín y Construcción -->
+<a class="group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all duration-200 flex items-start gap-space-md" data-path="categoria-jardin-y-hogar" href="#">
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0 group-hover:bg-secondary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[30px]">yard</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary-container transition-colors">
+            Jardín, Construcción &amp; Hogar
+          </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
+            Mangueras reforzadas, regadores, carretillas, sacos de cemento, adhesivos de montaje y escaleras.
+          </p>
+<span class="font-label-md text-label-md text-secondary-container mt-space-sm inline-flex items-center gap-space-xs">
+<span class="">+540 productos</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</a>
+</div>
+</section>
+<!-- 3. Sección de Inventario en Tiempo Real y Productos Destacados -->
+<section class="w-full bg-surface-container-low py-space-xl" id="ofertas-semana">
+<div class="max-w-7xl mx-auto px-margin flex flex-col gap-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div>
+<div class="inline-flex items-center gap-space-xs text-on-tertiary-container font-label-md text-label-md mb-1">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="">STOCK EN MESÓN VERIFICADO AL MINUTO</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+            Favoritos del Mesón &amp; Ofertas de la Semana
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Precios finales con IVA incluido. Sin sorpresas al pagar en caja o por internet.
+          </p>
+</div>
+<!-- Filtros Rápidos por Píldoras -->
+<div class="flex flex-wrap items-center gap-space-xs" id="productFilterButtons">
+<button class="filter-btn active bg-secondary-container text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-full shadow-sm transition-colors" data-filter="all" type="button">
+            Todos Disponibles
+          </button>
+<button class="filter-btn bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-md py-space-xs rounded-full shadow-sm transition-colors" data-filter="deals" type="button">
+            Ofertas de la Semana
+          </button>
+<button class="filter-btn bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-md py-space-xs rounded-full shadow-sm transition-colors" data-filter="bestsellers" type="button">
+            Más Vendidos del Mes
+          </button>
+<button class="filter-btn bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-md py-space-xs rounded-full shadow-sm transition-colors" data-filter="new" type="button">
+            Recién Llegados
+          </button>
+</div>
+</div>
+<!-- Grilla de Tarjetas de Producto -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="productsGrid">
+<!-- Producto 1: Taladro -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="deals bestsellers">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-secondary-container/10 text-secondary font-label-md text-label-md px-space-xs py-0.5 rounded">
+                -13% AHORRO
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: TL-650W</span>
+</div>
+<!-- Imagen del producto -->
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="High quality studio shot of a 650W impact corded drill with sturdy orange and slate black ergonomics, chuck key, side handle and depth ruler, perfectly lit on clean white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc7qxk-7mV1jZKuLxiJt4OygktrOwAXEi2Zdvc890gBs_oFW5YCUQbZcbwtUlBxu1WxJ2NmaEIzRtfurv63inZA7F3v3uC-wlDmg5gDeCKVKxKWuKPL6oq4U8m9z2k-Yb579lOSsgO8R7TpLq9rpNJ3pzonNYUTDw9vuxvVLPaY_nZ0zRk26MiL8s4a0Hj2ywloBjxdF5GyXd2whOOeBX039d2sBGUOaMNkjKjWvyuaVrRc9f41SM9">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">45 un. en tienda</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span class="">Herramienta Eléctrica</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Taladro Percutor Casero 650W con Mandril 13mm
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Ideal para muros de ladrillo, madera y armado de muebles.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$38.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$44.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 2: Esmalte al Agua -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="deals bestsellers">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-surface-container text-on-surface-variant font-label-md text-label-md px-space-xs py-0.5 rounded">
+                LÍDER VENTAS
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: PN-GAL-BL</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Clean product photograph of a 1 gallon can of white water-based enamel paint with ergonomic plastic handle and bright crisp label, isolated on neutral surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD2usRQaAITmD0FKzkeX63d4V7CYDAUnjTRx3ffshxgFzu8_W1dGidhoYYEm64xd-EX5_UjempBEDDti9BoGaoz-Q9BVEIQvUzT0JXw8TYEr5fLg2L4zGgtILo16v2fsMd_8Rj6kTxe0K0qHfE1qf1Of5BpiPAnE4OGHHYH91LuRVgKnzX2ZTse3jFkvkUFTfBqmb2vnmMw5lg2nAIk55k2OefUyfVxu3PgyS26TRqzzaCmV8McSUk">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">28 galones listos</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">format_paint</span>
+<span class="">Pinturas &amp; Esmaltes</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Esmalte al Agua Blanco Galón Kolor Terminación Satinada
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Lavable, antibacterial y de secado rápido sin olor fuerte.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$23.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$27.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 3: Mezcladora Ducha -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="deals">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-secondary-container/10 text-secondary font-label-md text-label-md px-space-xs py-0.5 rounded">
+                OFERTA BAÑO
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: GS-MZ-FAS</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Product photo of a shiny chrome-plated bathroom shower mixer faucet set with showerhead and flexible hose, displayed cleanly on a solid surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoHEt3NRBNZBXaecYKBxWoanVEpSRqjmBJJ2gZwSTniRfpITGqlQPrRhERyG6radWoanwB0fV10jBN3nC9qwbAtSXOxP8wy6_y93LKXOD8_3ZpbR-IUZImsOZH4D_m4TS39vsyUJEkYz0Vo-7JBH5BmKTYykhhnWVqw5MmZEQfAjydVj__LkL9qFG58omWEl3SCuboW_qvP2etYy2sW87uXVE74ieVauXxwb0XB6zGLHhigqf-Z3aC">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">12 un. en tienda</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">plumbing</span>
+<span class="">Gasfitería &amp; Baño</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Set Llave Mezcladora Ducha Cromada Fas con Flexible
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Cuerpo macizo antioxidante, incluye mango teléfono y soporte.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$18.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$22.490</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 4: Pack Ampolletas LED -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="bestsellers">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-surface-container-high text-on-surface font-label-md text-label-md px-space-xs py-0.5 rounded">
+                PACK ECONÓMICO
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: EL-LED-P4</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Crisp packaging and product photography of a pack of 4 LED light bulbs with warm amber glow icon, socket E27, clean minimalist hardware packaging on white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlIS0u2uST0fOE08YuqXYvuYUfVm1HegetPTn7_4jkXcxtCMqdddHypolRBkhZzRfyHojiu69qW_bmGkCqkFUsLv3U121RiFV6jtKgLtiRNNiQjXzjxoMPdYZQv5MoRJPUhOb-UJC5Y5QitSp3yyxj2aDUKVG0r3HMQkW9Q-P3TdkEeK1qju32-N9pEq8r2yCUScJ6WfyS44D7_PsQQFULbW1C9Vpfm4JW7pDajb0cxtNzyWsQpFl6">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">60 packs disponibles</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">lightbulb</span>
+<span class="">Iluminación LED</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Pack 4 Ampolletas LED Luz Cálida 9W Philips E27
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Ahorro de energía del 85%, encendido instantáneo para living o pieza.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$4.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$6.490</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 5: Caja Tarugos y Tornillos -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="bestsellers">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-surface-container text-on-surface-variant font-label-md text-label-md px-space-xs py-0.5 rounded">
+                BÁSICO DE HOGAR
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: FJ-TG-50</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Neat organized transparent storage box filled with assorted wall anchor plugs and zinc screws 50 pieces, arranged clearly on light neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGlzUTM6_U7r75aJAg9IfdbokO-efyiIeckEKVWfBwBHqs-JKJ5B3AHbdRWvI1lAVDD2ni9jStpC6AIbiQtqiFgdJvsyYvqLr9LLYFCe3uin2_LXWS1nxJmZ2kh6riQwbtCvvqKjrdlQm6uGo3u4Ir5wb-mFuyhTRddLIzAY_aipnvyH_vmXeVDGXX1KYtAXx8SbH9KHuLI2gnAutqz_ae1C4k9nWXuaP2XljY4UO5k9m14s3T8cra">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">80 cajas en mesón</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">hardware</span>
+<span class="">Fijaciones &amp; Tornillos</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Caja Surtida Tarugos y Tornillos 50 pcs Nº 6 y 8
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Para colgar cuadros, repisas, espejos y soportes de TV de forma segura.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$3.490</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 6: Cinta Teflón -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="bestsellers">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-surface-container text-on-surface-variant font-label-md text-label-md px-space-xs py-0.5 rounded">
+                ESENCIAL
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: GS-TF-34</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Roll of high density white teflon thread seal plumbing tape with blue spool and protective sleeve, macro shot on clean workshop surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcujS1yjljFmYRHDN-cR9U-_AOiE-iPYdpWc8VviMSIxAp_QpBlErQIWjYDIGLaESxDLQQEuJ2HE_pC_soQp9q5RVeQK9S_AMvTNTfZBGb3yMGlky1Entk5qhhVFCz_87NB1kNrzxTOJrABjgIXlNCeuqOnZd0eQxUU9fKBqSXa4LpCYGNd6Cj0--MjulPB9IhwkAlft8GWHddv6oNXu5N6ygC0hPUoIuj35z_mqQiobYgGEYjJ3jE">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">+100 unidades</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">plumbing</span>
+<span class="">Gasfitería Express</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Cinta Teflón Alta Densidad 3/4" Tigre 10 Metros
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Sellado hermético antigoteo para roscas de agua fría y caliente.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 7: Manguera de Jardín -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="new">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md px-space-xs py-0.5 rounded">
+                NUEVA TEMPORADA
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: JD-MG-15M</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Reinforced multi-layer green garden hose 15 meters coiled neatly with ergonomic brass connectors, bright crisp garden patio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeeaQuYYkJU2QrHKHrJu83DK942XwQKJVdnDKm4XHdGJhZOzGyUZIR4TauPzucRXU5qmU0Y0ijSdh4qNfeTZjETDDDLvHEuc6oOOcVIyC5-J6a6GpfjFaK3uhpmi71UsV2VjloLJCs7MQPXhDNzteX2nqKvj87B1ob_wihGZrpcEKmuWhlpIKLTOWp6qcF0tgxh330mreyVu6eOEmNFsCIDsZjm-hDxhVOEcXqeFR3gNmi0efct3en">
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 backdrop-blur-xs px-2 py-0.5 rounded text-label-code text-label-code font-bold text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<span class="">19 un. en mesón</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">yard</span>
+<span class="">Jardín &amp; Patio</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Manguera de Jardín Reforzada 1/2" 15m con Conectores
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Antitorsión de triple capa resistente a rayos UV con terminales listos.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$14.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$17.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+<!-- Producto 8: Juego de Destornilladores -->
+<div class="product-card group bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="deals new">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="bg-secondary-container/10 text-secondary font-label-md text-label-md px-space-xs py-0.5 rounded">
+                ¡ÚLTIMAS UNIDADES!
+              </span>
+<span class="font-label-code text-label-code text-on-surface-variant">SKU: HM-DT-06</span>
+</div>
+<div class="relative w-full h-44 bg-surface rounded-lg overflow-hidden flex items-center justify-center p-space-sm mb-space-sm">
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform" data-alt="Set of 6 magnetic screwdrivers with comfortable black and orange rubber handles, chrome vanadium steel shafts, organized neatly on plain backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrfnMCnOe8pv-a9OxBQ7Y0jRk4OhnzyESqfuLK5m_uOs1AjUM6DJI4BpcKVsnFaG9LWy6BkUB6hKn3ttBgfj5_np9dOeSdddap_TfgvA4fvTEF35nCcCA5aeLVjRf4eAMB3DZirIBOTf8cJhTGa7hZ9ENEMochYkDtWMbV6UozucdQHCdFGZkkLqOxCTdKWueCN4hdIVnq9nOFMLQ9RPvfSrgKDLnS7L6HWXc--GKS5K2YXDbeYrn0">
+<div class="absolute bottom-2 left-2 bg-error-container text-on-error-container px-2 py-0.5 rounded text-label-code text-label-code font-bold flex items-center gap-1 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span class="">¡Últimas 3 unidades en mesón!</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-body-sm text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">construction</span>
+<span class="">Herramientas Manuales</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary leading-snug">
+              Juego de Destornilladores x6 Mango Ergonómico Cr-V
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Puntas imantadas Phillips y Paleta de acero cromo vanadio forjado.
+            </p>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col gap-space-sm">
+<div class="flex items-baseline gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$6.990</span>
+<span class="font-body-sm text-body-sm text-outline line-through">$8.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incl.</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container rounded p-0.5 shrink-0">
+<button class="btn-qty-minus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">-</button>
+<input class="qty-input w-8 text-center bg-transparent font-label-code text-label-code text-primary font-bold focus:outline-none" readonly="" type="text" value="1">
+<button class="btn-qty-plus w-7 h-7 flex items-center justify-center text-on-surface hover:bg-surface-container-highest rounded text-body-md font-bold" type="button">+</button>
+</div>
+<button class="btn-add-cart flex-1 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg py-2 px-space-sm rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="">Retiro gratis hoy en 1 hr</span>
+</p>
+</div>
+</div>
+</div>
+<div class="w-full mt-space-md pt-space-sm flex justify-center"><a class="w-full md:w-auto inline-flex items-center justify-between md:justify-center gap-space-md bg-secondary-container hover:bg-secondary text-on-primary px-space-xl py-space-md rounded-xl font-headline-sm text-headline-sm shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 group" data-path="catalogo-de-productos" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[28px]">inventory_2</span><span class="">Ver Catálogo Completo e Inventario en Tiempo Real</span></div><span class="material-symbols-outlined text-[24px] group-hover:translate-x-1 transition-transform">arrow_forward</span></a></div></div>
+</section>
+<!-- 4. Banner Promocional Vecinal y Club Maestros -->
+<section class="max-w-7xl mx-auto px-margin py-space-xl w-full">
+<div class="relative bg-gradient-to-r from-primary via-primary-container to-secondary/90 rounded-2xl p-space-lg md:p-space-xl overflow-hidden shadow-xl text-on-primary">
+<div class="absolute -right-10 -bottom-10 w-72 h-72 bg-secondary-container/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="inline-flex items-center gap-space-xs bg-secondary-container text-on-primary px-space-sm py-0.5 rounded-full font-label-md text-label-md w-fit">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="">COMUNIDAD FERROMAX VECINAL</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-primary tracking-tight">
+            ¿Eres maestro, gásfiter, pintor o arreglas tu propia casa?
+          </h2>
+<p class="font-body-lg text-body-lg text-surface-container-high">
+            Inscríbete gratis al <strong class="text-secondary-fixed">Club Maestro FerroMax</strong>. Recibe descuentos por volumen, acumula puntos en cada compra para canjear por herramientas y accede a atención preferencial sin esperas.
+          </p>
+<div class="flex flex-wrap items-center gap-space-md pt-space-xs font-body-sm text-body-sm text-secondary-fixed">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">check_circle</span> Descuentos inmediatos</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">check_circle</span> Cotizaciones por WhatsApp directo</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">check_circle</span> Sin cobro de mantención</span>
+</div>
+</div>
+<div class="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-space-sm w-full lg:w-auto">
+<button class="bg-secondary-container hover:bg-secondary text-on-primary font-headline-sm text-headline-sm px-space-lg py-space-md rounded shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[24px]">badge</span>
+<span class="">Inscribirme al Club Maestro</span>
+</button>
+<a class="bg-surface-container-lowest/15 hover:bg-surface-container-lowest/25 text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded transition-colors text-center" href="#">
+            Conocer beneficios para vecinos
+          </a>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Sección de Locales, Retiro y Atención Vecinal -->
+<section class="w-full bg-surface-container-lowest py-space-xl">
+<div class="max-w-7xl mx-auto px-margin flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+<div>
+<div class="inline-flex items-center gap-space-xs text-secondary font-label-md text-label-md mb-1">
+<span class="material-symbols-outlined text-[16px]">store</span>
+<span class="">TIENDA FÍSICA &amp; CLICK &amp; COLLECT</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+            Ven a vernos o retira en mesón rápido
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Estacionamiento cómodo para clientes y retiro ágil sin filas para compras por internet.
+          </p>
+</div>
+<div class="inline-flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded font-label-code text-label-code text-primary">
+<span class="w-2.5 h-2.5 rounded-full bg-on-tertiary-container animate-pulse"></span>
+<span class="">TIENDA ABIERTA HOY HASTA LAS 19:30 HRS</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Tarjeta de Horarios y Sucursal -->
+<div class="bg-surface-container-low rounded-xl p-space-lg flex flex-col justify-between shadow-sm">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[24px]">location_on</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-primary">Local Central &amp; Patio Constructor</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Av. Industrial 4820, Esquina Los Aromos</p>
+</div>
+</div>
+<!-- Horarios detallados -->
+<div class="bg-surface-container-lowest rounded-lg p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-medium">Lunes a Viernes:</span>
+<span class="font-bold text-primary font-label-code">08:30 - 19:30 hrs</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-medium">Sábados continuado:</span>
+<span class="font-bold text-primary font-label-code">08:30 - 19:00 hrs</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-medium">Domingos y Festivos:</span>
+<span class="text-secondary font-bold font-label-code">09:30 - 14:30 hrs</span>
+</div>
+</div>
+<!-- Beneficios en tienda -->
+<ul class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">local_parking</span>
+<span class="">Estacionamiento amplio y gratuito para clientes</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">inventory</span>
+<span class="">Mesón Click &amp; Collect (Retira con tu número de orden)</span>
+</li>
+<li class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">content_cut</span>
+<span class="">Dimensionado de maderas y corte de cañerías en el acto</span>
+</li>
+</ul>
+</div>
+<div class="mt-space-lg pt-space-sm">
+<a class="w-full bg-on-tertiary-container hover:bg-tertiary-container text-on-primary py-space-sm px-space-md rounded font-label-lg text-label-lg flex items-center justify-center gap-space-sm shadow-md transition-colors" href="https://wa.me/56912345678" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[20px]">chat</span>
+<span class="">Consultar Stock por WhatsApp</span>
+</a>
+</div>
+</div>
+<!-- Mapa Dinámico del Local -->
+<div class="lg:col-span-2 relative rounded-xl overflow-hidden shadow-sm min-h-[320px]">
+<div class="w-full h-full min-h-[320px] bg-cover bg-center" data-location="Av. Industrial 4820, Santiago, Chile" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwJoUQN33ZTk3hXXtWxwvi48oBK9jU5ha-iIdiR05q0-73FGMxV8NBqZwEbeqADwMPbt5eXGjZem_283oCNwHkLe6GqHTuHLV5hWJzm3yYyIIjDIBuxWIOD1RxMMuNokyivxo8ds2lQ6wrhOF0uX8RNfoRp1AKfMzKiYXRW1IJVU-cFlVdKVwIrcdnWGq823Uu3uTfg_lX4IokT1Irv16a88GInPTM_6b2sgP8zmOV6iTNwQEcc75w')"></div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/95 backdrop-blur-sm p-space-sm rounded-lg shadow-md flex items-center gap-space-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary-container text-[24px]">directions</span>
+<div class="text-left">
+<p class="font-label-lg text-label-lg text-primary leading-none">¿Cómo llegar?</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-none">Fácil acceso desde autopista y metro</p>
+</div>
+<a class="ml-space-xs bg-secondary-container hover:bg-secondary text-on-primary text-label-md px-space-sm py-1 rounded" href="#">Abrir Ruta</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Notificación Toast Dinámica para el Carrito -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none bg-primary text-on-primary px-space-md py-space-sm rounded-lg shadow-2xl flex items-center gap-space-sm" id="cartToast">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<div class="flex flex-col">
+<p class="font-label-lg text-label-lg leading-tight" id="cartToastText">Producto agregado al carro</p>
+<p class="font-body-sm text-body-sm text-surface-container-high leading-tight">Retiro en mesón en 1 hora</p>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // 1. Filtros por Píldoras para Productos Destacados
+    const filterButtons = document.querySelectorAll('#productFilterButtons .filter-btn');
+    const productCards = document.querySelectorAll('#productsGrid .product-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remover estado activo de todos
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-secondary-container', 'text-on-primary');
+          b.classList.add('bg-surface-container-lowest', 'text-on-surface');
+        });
+
+        // Activar el seleccionado
+        btn.classList.add('bg-secondary-container', 'text-on-primary');
+        btn.classList.remove('bg-surface-container-lowest', 'text-on-surface');
+
+        const filterValue = btn.getAttribute('data-filter');
+
+        productCards.forEach(card => {
+          const cardCats = card.getAttribute('data-category') || '';
+          if (filterValue === 'all' || cardCats.includes(filterValue)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 2. Control de Cantidades (+ / -)
+    const plusButtons = document.querySelectorAll('.btn-qty-plus');
+    const minusButtons = document.querySelectorAll('.btn-qty-minus');
+
+    plusButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const input = e.target.closest('div').querySelector('.qty-input');
+        if (input) {
+          let val = parseInt(input.value) || 1;
+          input.value = val + 1;
+        }
+      });
+    });
+
+    minusButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const input = e.target.closest('div').querySelector('.qty-input');
+        if (input) {
+          let val = parseInt(input.value) || 1;
+          if (val > 1) {
+            input.value = val - 1;
+          }
+        }
+      });
+    });
+
+    // 3. Feedback Interactivo al Agregar al Carro (Toast)
+    const addCartButtons = document.querySelectorAll('.btn-add-cart');
+    const cartToast = document.getElementById('cartToast');
+    const cartToastText = document.getElementById('cartToastText');
+    let toastTimeout = null;
+
+    addCartButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.product-card');
+        const title = card ? card.querySelector('h3').textContent.trim() : 'Producto';
+        const qty = card ? card.querySelector('.qty-input').value : '1';
+
+        if (cartToast && cartToastText) {
+          cartToastText.textContent = `${qty}x ${title.substring(0, 28)}... agregado`;
+          cartToast.classList.remove('translate-y-32', 'opacity-0');
+          cartToast.classList.add('translate-y-0', 'opacity-100');
+
+          clearTimeout(toastTimeout);
+          toastTimeout = setTimeout(() => {
+            cartToast.classList.remove('translate-y-0', 'opacity-100');
+            cartToast.classList.add('translate-y-32', 'opacity-0');
+          }, 3500);
+        }
+      });
+    });
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30"><div class="bg-surface-container-low py-space-lg"><div class="max-w-7xl mx-auto px-margin grid grid-cols-1 md:grid-cols-4 gap-gutter"><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">schedule</span></div><div><p class="font-title-md text-title-md text-primary">Retiro en 1 Hora</p><p class="font-body-sm text-body-sm text-on-surface-variant">Disponible gratis en todas nuestras sucursales</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">local_shipping</span></div><div><p class="font-title-md text-title-md text-primary">Despacho Rápido</p><p class="font-body-sm text-body-sm text-on-surface-variant">Entregas en obra y domicilio el mismo día</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">verified</span></div><div><p class="font-title-md text-title-md text-primary">Garantía Industrial</p><p class="font-body-sm text-body-sm text-on-surface-variant">Marcas certificadas para maestros y empresas</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">request_quote</span></div><div><p class="font-title-md text-title-md text-primary">Cotizaciones B2B</p><p class="font-body-sm text-body-sm text-on-surface-variant">Factura electrónica y crédito ferretero</p></div></div></div></div><div class="max-w-7xl mx-auto px-margin py-space-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl"><div class="lg:col-span-2 flex flex-col gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded bg-secondary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[22px]">hardware</span></div><span class="font-headline-md text-headline-md text-primary font-bold">FerroMax</span></div><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Líderes en distribución de suministros industriales, herramientas de precisión, pinturas y materiales de construcción. Respaldando proyectos de contratistas y familias.</p><div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant mt-space-sm"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span><span class="">Casa Matriz &amp; Centro de Distribución: Av. Industrial 4820</span></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">call</span><span class="">Central telefónica: +56 2 2840 9000</span></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">mail</span><span class="">ventas@ferromax.cl | cotizaciones@ferromax.cl</span></div></div></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Líneas de Productos</h4><ul class="flex flex-col gap-space-sm font-body-md text-body-md text-on-surface-variant"><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Herramientas Manuales &amp; Eléctricas</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Gasfitería &amp; Cañerías</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Pinturas, Brochas y Selladores</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Tornillos, Pernos y Anclajes</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Cables &amp; Tableros Eléctricos</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Seguridad Industrial &amp; EPP</a></li></ul></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Atención al Cliente</h4><ul class="flex flex-col gap-space-sm font-body-md text-body-md text-on-surface-variant"><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Seguimiento de Despachos</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Políticas de Garantía y Devolución</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Red de Tiendas y Horarios</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Preguntas Frecuentes (FAQ)</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Venta a Empresas &amp; Obras (B2B)</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Formas de Pago y Crédito</a></li></ul></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Canal de Cotizaciones</h4><p class="font-body-sm text-body-sm text-on-surface-variant">Envía tu lista de materiales o proyecto para precios mayoristas por volumen.</p><a class="bg-on-tertiary-container hover:bg-tertiary-container text-on-primary py-space-sm px-space-md rounded font-label-lg text-label-lg flex items-center justify-center gap-space-sm transition-colors shadow-sm" href="#"><span class="material-symbols-outlined text-[18px]">chat</span><span class="">Cotizar por WhatsApp</span></a><div class="mt-space-sm"><span class="font-label-md text-label-md text-on-surface-variant block mb-space-xs">Métodos de Pago Aceptados</span><div class="flex flex-wrap gap-space-xs"><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Webpay Plus</span><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Transferencia</span><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Crédito B2B</span></div></div></div></div><div class="bg-surface-container-high py-space-md border-t border-outline-variant/30"><div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-sm text-body-sm font-body-sm text-on-surface-variant"><div class="">© 2025 FerroMax S.A. Todos los derechos reservados. Ferretería Industrial y Hogar.</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Términos y Condiciones</a><a class="hover:text-primary transition-colors" href="#">Privacidad y Seguridad</a><a class="hover:text-primary transition-colors" href="#">Libro de Reclamaciones</a></div></div></div></footer>
+
+</body></html>
