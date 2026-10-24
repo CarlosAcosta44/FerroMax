@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary": "#000000", "on-error-container": "#93000a", "on-background": "#191c1e", "surface-dim": "#d8dadc", "surface": "#f7f9fb", "on-error": "#ffffff", "on-tertiary-fixed": "#002109", "secondary-fixed": "#ffdbca", "primary-fixed-dim": "#bec6e0", "tertiary-container": "#002109", "on-primary": "#ffffff", "on-secondary-container": "#5c2400", "on-surface": "#191c1e", "error-container": "#ffdad6", "secondary-fixed-dim": "#ffb690", "error": "#ba1a1a", "on-tertiary-container": "#009844", "inverse-on-surface": "#eff1f3", "surface-bright": "#f7f9fb", "on-primary-fixed-variant": "#3f465c", "on-tertiary-fixed-variant": "#005322", "on-secondary": "#ffffff", "surface-container-high": "#e6e8ea", "surface-container-low": "#f2f4f6", "primary-fixed": "dae2fd", "surface-container-highest": "#e0e3e5", "primary-container": "#131b2e", "outline-variant": "#c6c6cd", "tertiary-fixed": "#66ff8e", "on-secondary-fixed-variant": "#783200", "on-tertiary": "#ffffff", "outline": "#76777d", "secondary-container": "#fd761a", "background": "#f7f9fb", "inverse-primary": "#bec6e0", "surface-tint": "#565e74", "inverse-surface": "#2d3133", "secondary": "#9d4300", "on-primary-fixed": "#131b2e", "tertiary": "#000000", "surface-variant": "#e0e3e5", "tertiary-fixed-dim": "#3de273", "on-primary-container": "#7c839b", "surface-container": "#eceef0", "on-surface-variant": "#45464d", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#341100" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.25rem", "space-lg": "1.5rem", "margin-mobile": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "space-md": "1rem", "space-xl": "2.5rem", "margin": "2rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "display-lg-mobile": ["Inter"], "body-md": ["Inter"], "label-md": ["Inter"], "body-sm": ["Inter"], "label-code": ["JetBrains Mono"], "label-lg": ["Inter"], "display-lg": ["Inter"], "title-md": ["Inter"], "headline-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-code": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.025em", "fontWeight": "800" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 shadow-[0_1px_8px_rgba(0,0,0,0.06)]"><div class="bg-primary text-on-primary"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-9 text-label-md font-label-md"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[16px] text-secondary-container">local_shipping</span><span class="">Despacho a domicilio o retiro gratis en mesón en 1 hora</span></div><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-xs text-on-primary hover:text-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-tertiary-fixed">chat</span><span class="">Atención WhatsApp B2B &amp; Clientes</span></a><span class="text-outline">|</span><span class="hidden md:inline text-on-primary-container">Lunes a Sábado 08:00 - 19:00 hrs</span></div></div></div><div class="bg-surface-container-lowest"><div class="h-20 max-w-7xl mx-auto px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-lg shrink-0"><a class="flex items-center gap-space-sm group" data-path="catalogo-de-productos" href="#"><div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[24px]">hardware</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none group-hover:text-secondary-container transition-colors">FerroMax</span><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-tight">Tu ferretería de confianza</span></div></a></div><div class="flex items-center gap-gutter shrink-0"><a class="hidden lg:flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="locales-y-retiro" href="#"><span class="material-symbols-outlined text-[22px] text-outline">store</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Retiro</span><span class="font-label-lg text-label-lg leading-tight">En Tienda</span></div></a><a class="hidden lg:flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="seguimiento-de-pedidos" href="#"><span class="material-symbols-outlined text-[22px] text-outline">inventory_2</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Estado</span><span class="font-label-lg text-label-lg leading-tight">Seguimiento</span></div></a><a class="flex items-center gap-space-xs text-on-surface hover:text-secondary-container transition-colors" data-path="mi-cuenta-y-pedidos" href="#"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface-variant font-normal leading-none">Mi Cuenta</span><span class="font-label-lg text-label-lg leading-tight">Ingresar</span></div></a><a class="flex items-center gap-space-sm bg-secondary-container hover:bg-secondary text-on-primary px-space-md py-space-sm rounded transition-colors shadow-sm" data-path="carro-de-compras" href="#"><div class="relative flex items-center"><span class="material-symbols-outlined text-[22px]">shopping_cart</span><span class="absolute -top-2 -right-2 bg-primary text-on-primary text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">3</span></div><span class="hidden sm:inline font-label-lg text-label-lg">$48.990</span></a></div></div></div><div class="bg-surface-container border-t border-outline-variant/20"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between"><nav class="flex items-center gap-space-lg overflow-x-auto py-space-sm scrollbar-none" data-active-classes="text-secondary-container font-bold border-b-2 border-secondary-container"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-herramientas" href="#">Herramientas</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-pinturas" href="#">Pinturas</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-gasfiteria" href="#">Gasfitería</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-electricidad" href="#">Electricidad</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-fijaciones-y-tornillos" href="#">Fijaciones &amp; Tornillos</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors py-1" data-path="categoria-jardin-y-hogar" href="#">Jardín &amp; Hogar</a><a class="font-label-lg text-label-lg text-secondary-container hover:text-secondary whitespace-nowrap font-bold transition-colors py-1 flex items-center gap-space-xs" data-path="ofertas-del-mes" href="#">Ofertas del Mes</a></nav><div class="hidden xl:flex items-center gap-space-sm text-label-code font-label-code text-on-surface-variant shrink-0 pl-space-md"><span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span><span class="">STOCK SUCURSALES EN LÍNEA</span></div></div></div></header><main class="w-full pt-[156px] bg-surface min-h-[calc(100vh-156px)]"><div class="flex flex-col w-full">
+<!-- Cabecera de Página & Breadcrumbs -->
+<section class="w-full bg-surface-container-low py-space-md shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex flex-col gap-space-sm">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-space-xs text-label-md font-label-md text-on-surface-variant">
+<a class="hover:text-secondary-container transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">home</span>
+<span class="">Inicio</span>
+</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-secondary-container transition-colors" href="#">Catálogo Completo</a>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-semibold">Inventario en Tiempo Real</span>
+</nav>
+<!-- Título y Estado en Vivo -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm pt-space-xs">
+<div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Catálogo e Inventario en Tiempo Real</h1>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-surface-container-lowest text-on-tertiary-container text-label-md font-label-md shadow-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-fixed opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-on-tertiary-container"></span>
+</span>
+              Stock Sincronizado en Vivo con la Tienda
+            </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+            Consulta disponibilidad inmediata para retiro en mesón o despacho a tu casa. Precios con IVA incluido garantizados.
+          </p>
+</div>
+<!-- Indicadores Rápidos -->
+<div class="flex items-center gap-space-sm flex-wrap shrink-0">
+<div class="flex items-center gap-2 bg-surface-container-lowest px-space-md py-space-sm rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">local_shipping</span>
+<span class="font-label-lg text-label-lg text-on-surface"><strong>428</strong> productos para entrega hoy</span>
+</div>
+<div class="flex items-center gap-2 bg-secondary-fixed text-on-secondary-container px-space-md py-space-sm rounded-lg font-label-lg text-label-lg shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span class="">Retiro gratis en 1 hora</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Filtro Superior & Barra de Búsqueda Rápida -->
+<section class="w-full bg-surface-container-lowest py-space-sm shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Searchbar Directa -->
+<div class="w-full md:w-1/2 flex items-center bg-surface-container-low rounded-lg px-space-md py-space-xs shadow-inner">
+<span class="material-symbols-outlined text-outline text-[20px] mr-2">search</span>
+<input class="w-full bg-transparent font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" placeholder="Buscar por nombre, herramienta, marca o código..." type="text">
+<button class="bg-secondary-container hover:bg-secondary text-on-primary px-3 py-1.5 rounded font-label-md text-label-md transition-colors shrink-0">
+          Buscar
+        </button>
+</div>
+<!-- Control de Ordenamiento y Visualización -->
+<div class="w-full md:w-auto flex items-center justify-between md:justify-end gap-space-md">
+<div class="flex items-center gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap" for="orden-catalogo">Ordenar por:</label>
+<div class="relative bg-surface-container-low rounded-lg px-space-sm py-1.5 shadow-sm">
+<select class="bg-transparent font-label-lg text-label-lg text-on-surface focus:outline-none cursor-pointer pr-4" id="orden-catalogo">
+<option>Más Vendidos</option>
+<option>Menor Precio</option>
+<option>Mayor Precio</option>
+<option>Mayor Disponibilidad</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+<button aria-label="Vista en cuadrícula" class="p-1.5 rounded bg-surface-container-lowest text-primary shadow-sm hover:text-secondary-container transition-all" id="view-grid-btn">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+<button aria-label="Vista en lista" class="p-1.5 rounded text-outline hover:text-primary transition-all" id="view-list-btn">
+<span class="material-symbols-outlined text-[20px]">view_list</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Contenedor Principal: 2 Columnas -->
+<div class="max-w-7xl mx-auto px-margin py-space-lg w-full">
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-gutter items-start">
+<!-- Columna Lateral Izquierda: Filtros Prácticos para el Hogar -->
+<aside class="lg:col-span-1 bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">tune</span>
+<h2 class="font-title-md text-title-md text-primary">Filtros Activos</h2>
+</div>
+<button class="font-label-md text-label-md text-secondary hover:underline">Limpiar Todo</button>
+</div>
+<!-- Toggles de Disponibilidad Inmediata -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-space-sm">
+<label class="flex items-center justify-between cursor-pointer select-none">
+<span class="font-label-md text-label-md text-on-surface">Stock hoy en tienda</span>
+<div class="relative inline-flex items-center">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-dim peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-container-lowest after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-on-tertiary-container"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer select-none">
+<span class="font-label-md text-label-md text-on-surface">Retiro en 1 hora</span>
+<div class="relative inline-flex items-center">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-dim peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-container-lowest after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary-container"></div>
+</div>
+</label>
+</div>
+<!-- Categorías Principales con Conteo -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-lg text-label-lg text-primary mb-1">Categorías de Hogar</span>
+<div class="flex flex-col gap-1.5 font-body-md text-body-md text-on-surface-variant">
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">construction</span> Herramientas
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">142</span>
+</a>
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">format_paint</span> Pinturas y Selladores
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">98</span>
+</a>
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">plumbing</span> Gasfitería y Baño
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">86</span>
+</a>
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">bolt</span> Electricidad e Iluminación
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">74</span>
+</a>
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">hub</span> Fijaciones y Tornillos
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">110</span>
+</a>
+<a class="flex items-center justify-between hover:text-secondary-container py-1 px-1.5 rounded transition-colors group" href="#">
+<span class="flex items-center gap-2 group-hover:text-primary font-medium">
+<span class="material-symbols-outlined text-[16px] text-outline">yard</span> Jardinería y Hogar
+              </span>
+<span class="font-label-code text-label-code bg-surface-container-low px-1.5 py-0.5 rounded text-outline">53</span>
+</a>
+</div>
+</div>
+<!-- Marcas Más Comunes -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<span class="font-label-lg text-label-lg text-primary mb-1">Marcas Destacadas</span>
+<div class="grid grid-cols-2 gap-2 text-label-md font-label-md">
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Bauker</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input checked="" class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Kolor</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input checked="" class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Stanley</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Philips</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Fas</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Bosch</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Tigre</span>
+</label>
+<label class="flex items-center gap-2 bg-surface-container-low px-2 py-1.5 rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-secondary-container rounded" type="checkbox">
+<span class="truncate">Henkel</span>
+</label>
+</div>
+</div>
+<!-- Rango de Precios -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-lg text-label-lg text-primary">Rango de Precio</span>
+<span class="font-label-code text-label-code text-secondary font-semibold">$500 - $150.000</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="bg-surface-container-low px-2.5 py-1 rounded flex-1 text-label-md font-label-md flex items-center">
+<span class="text-outline mr-1">$</span>
+<input class="bg-transparent w-full focus:outline-none text-on-surface" type="text" value="500">
+</div>
+<span class="text-outline text-label-md font-label-md">a</span>
+<div class="bg-surface-container-low px-2.5 py-1 rounded flex-1 text-label-md font-label-md flex items-center">
+<span class="text-outline mr-1">$</span>
+<input class="bg-transparent w-full focus:outline-none text-on-surface" type="text" value="150.000">
+</div>
+</div>
+</div>
+<!-- Banner Asistencia en Tienda -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex items-center gap-space-sm mt-space-sm">
+<span class="material-symbols-outlined text-secondary-container text-[24px]">contact_support</span>
+<div class="flex flex-col text-left">
+<span class="font-label-md text-label-md text-primary font-bold">¿Dudas con tu arreglo?</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pregunta por WhatsApp las medidas o compatibilidad.</span>
+</div>
+</div>
+</aside>
+<!-- Columna Derecha: Cuadrícula de Productos -->
+<main class="lg:col-span-3 flex flex-col gap-space-md">
+<!-- Píldoras de Filtros Activos -->
+<div class="flex flex-wrap items-center gap-space-xs bg-surface-container-lowest p-space-sm rounded-xl shadow-sm">
+<span class="font-label-md text-label-md text-on-surface-variant mr-1">Filtros aplicados:</span>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface font-label-md text-label-md">
+<span class="">En Stock en Tienda</span>
+<button aria-label="Eliminar filtro" class="hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</span>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface font-label-md text-label-md">
+<span class="">Retiro Hoy en 1h</span>
+<button aria-label="Eliminar filtro" class="hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</span>
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low text-on-surface font-label-md text-label-md">
+<span class="">Despacho Inmediato</span>
+<button aria-label="Eliminar filtro" class="hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+</span>
+<button class="font-label-md text-label-md text-secondary hover:underline ml-auto">
+            Restablecer
+          </button>
+</div>
+<!-- Cuadrícula 3x3 de Productos FerroMax -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Tarjeta 1: Taladro Percutor 650W -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  En Stock: 12 unidades
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: HD-650</span>
+</div>
+<!-- Imagen con Prompt Claro de Producto -->
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="A clean product photography of a modern electric impact drill in rugged black and safety orange finish, placed next to a tough protective carrying case with standard bit accessories, isolated in a bright hardware store lighting style against a crisp white studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAokTZ1M985K6c24UWvlIBYuB8p67Zvm6cZwSiDhmRB357x_z_v_4_JuNcL8LNyiqiqsxz_5JN4kkkHwosBt9SAy0KyC2Znafc3e_TSGIye8ChK6dUjylHmScqZl3xrO1SeIA8138LPBMSkmspqF8q8ixdhj_0P_7BPqKXvFMM6zeG8nT0U6t2L2R_bTrqRkbkUcxhrv_pLukIbkQZxO2oEU6VQY5cjEmMcAd-AzlJMOeUzOg6q2OeR">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 1 · Estante A</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Taladro Percutor 650W con maletín y accesorios
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Velocidad variable reversible para madera y concreto en el hogar.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$38.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 2: Esmalte al Agua Blanco Kolor -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                  ¡Últimos 3 galones!
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: PT-KL01</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="A clean studio photo of a one-gallon white premium water-based wall paint plastic bucket with a bold brand Kolor label, handle up, bright studio hardware lighting, surrounded by a splash of pure semi-gloss white paint on neutral surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4UJD-p9o20lbJ8O08as_EIYzU26KkfdLwbLiruv1nBXoEjFYXuvkshx5rQvG3mZgKxoNg_qtpv5zEM-QYftPhlK_XGViwCMBW5SDm2gRCF-XPDyRlek6yGOPVI8GJKA01zQX-Xw7yb8G3h65YXSUG6wN07VVHuwanYt6IGmWr3kE-H8SyVta3bg1jwHItthIJxwQu2GnWs071SZ0OOK-UQTP1q0j_0pxzv-xlL3cvsh0pN6wLS0al">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 3 · Sección Pinturas</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Esmalte al Agua Blanco Galón Kolor
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Acabado satinado lavable de secado rápido para muros interiores.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$23.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 3: Cinta Teflón Tigre -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  Stock Abundante (+40)
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: GS-TF10</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Macro product photo of a blue PTFE thread seal tape spool Tigre brand, with the white sealing film slightly unwrapped, positioned on a clean hardware table surface with soft shadow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCopzbTP1b0vmb-3svGdse4t1yaau2knTPppuE6K28VGe0GmZySYyWssITkYPlxV1jErErPuQqO_BfWmRp4WB0rdGXDSi79nZoKbshV7Zu4qmmtfMErFoUpA_ILi6tGvAX5uBXWqAIvbWnqYFnsJsNtpbaWklPQHFUVFkuyMb0y7lrsoAX2in9vKnqGe4YYcI4pP6CkCEFcHcC8LYfLdIPrqdDGvgGvUpChScVhh_92nY3r9CMfDCo">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 4 · Cajón B-12</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Cinta Teflón 1/2" x 10m Tigre
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sellado hermético antigoteo para llaves de paso y fitting.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 4: Set Tarugos y Tornillos 50 pcs -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  En Stock: 25 packs
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: FJ-TT50</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Pack of wall plugs and galvanized wood screws neatly arranged in an organizer clear plastic blister box, household fixing supplies displayed with clear studio lighting on a neutral gray workbench." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI-C7WiC0K_oGw2zu8Od0u2eKKZf-PqZ34SMTym8I8fYAvdSZKL2khBpE2WIkMoF5K-5P8njEhrhytFiW36ecy4LzwdZbxf_B1BkUCxXEbBqIM2QbEgEEkFJ3b_MJ2z9Y5qHR1F8W19JDFId1ZeaUBQTsd5r_dQEtoSMtgzp_oMQb-zAVp8WSA442wDsA67b5jf1vLQ72IPhtvYQTMAlSUKBvbKvqDubuyU88sq5KmFEK8-xMOi22r">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 5 · Estante Tornillos</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Set Tarugos y Tornillos Hogar 50 pcs
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Ideal para colgar cuadros, repisas y muebles livianos en muro sólido.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$3.490</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 5: Llave Mezcladora Ducha Fas -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                  Últimas 2 unidades
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: GF-FS88</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Polished chrome dual handle shower mixing tap faucet, sparkling reflective bathroom fitting, shown with accessories on a pristine white ceramic countertop with gentle warm reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxM8TQgR2_pxhZ427cfmKmrLPw_l08UDYPDgmtHXuaT0n8u7fCGeLJs1ww-Uv4qa64o7Wv75c48wLlRW8ewgGGY_9RlvDLCfAPmx3eSiCpgvoRQyhVUHkgVXSSKZBPGAguGIK6BFxJ5qt_eVOlV668QRJ-kyrWYbdgX_oGTHwWvLgup1hYfhRsTM7elU3OuHl5gSVn1yVVI5_a_0_fgEuXleS84SW33U3SghEGQPe0eLvb2zfYkC9T">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 4 · Vitrina Grifería</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Llave Mezcladora Ducha Cromada Fas
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Conexión estándar con cartucho cerámico duradero y cuerpo de latón.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$18.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 6: Pack 4 Ampolletas LED Philips -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  En Stock: 18 cajas
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: IL-PH04</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Cardboard multi-pack of 4 warm LED light bulbs 9W Philips brand, showing one clean modern bulb resting in front of the packaging box with energy saving ratings." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOvfT3ZUWA3iJmVEZ4qqVdm08Uh_lhnbqtn_Ds3VWpENqpcd7eXxBEw7_H596CLEgJD_2Rt43D1Hk2tUkglxM-mUzythGbH3LOk5Sg8cZDWNwenHbyH6DilFFpfOBsojklOb3nV4pqyv6nYoG2UBwr54VHKApADnZP0HXbXKsJ5-LM2TFGviGUINB-JXD4de3Vb9-DS8nUCbHmZ2pqOpyFje8ND05fEgRbJIuay8OA7PN8AEECQ4jH">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 2 · Cabezal Iluminación</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Pack 4 Ampolletas LED Cálidas 9W Philips
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Rosca común E27, 85% de ahorro energético y luz acogedora para piezas.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$4.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 7: Manguera de Jardín 15m (Agotada con alerta) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group opacity-90">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                  Agotado temporal (Llega mañana)
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: JD-MG15</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Coiled flexible green reinforced garden hose 15 meters with brass fittings on both ends, clean studio packshot, bright lighting on neutral soft surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4vCPyu1pwXI_Bmjns-2yYz6wEzn-Dmt4WkBNUa_-5y_bnhCGbiDcQjTJK6Nyu9uJEH7bLpgnrTQawNJqUvIFJRa0hValtpGNLFnrhQ4JRUPaHVGgAzNbB3PMN3EANQSYYIoWqPYUOJN1QGMgSghEkOQ3D1iq3tppL82l1eMaAuJLNlq7Wy7n16zJx0caZNl37cceKM1XWvmmVWcHmvz2Jtx8WQ5CG238JvTPBWWZT_rdotuM8sha0">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-outline">location_off</span>
+<span class="">Pasillo 6 · Reposición Programada</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Manguera de Jardín Reforzada 1/2" 15m
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">3 capas antitorsión resistente a los rayos UV con conectores rápidos.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-outline font-bold line-through">$14.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<button class="w-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-secondary">notifications_active</span>
+<span class="">Avisarme cuando llegue</span>
+</button>
+</div>
+</div>
+<!-- Tarjeta 8: Juego Destornilladores x6 Stanley -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  En Stock: 18 sets
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: HM-DS06</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="A 6-piece ergonomic magnetic tip screwdriver set Stanley style with yellow and black comfortable handles, both flat head and phillips bits, set in retail clear organizer packaging on clean workbench." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiR25afR-L2VB5bu4Qc7SqL4SxrjXvAGJLaP-7EZEtDtroHhq9pZYhYLe0CPi0WwFzzAuS9H-r_OJEii99m7HJmcKe4Ld3cP5HBma8H29NGt0EDYScK-rQoxOQN880ctAKRIWQ_2X1m--38qaw6ssIP9k1aCwHHhya1sz2M6Rrlzy-YcN3eomUnCiCC76qxAP4wsEannh9jI_VN63coWJoho4R1Dl15tUevRenpCa6vPIFXsiwGs-x">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 1 · Panel Central</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Juego Destornilladores x6 Mango Ergonómico
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Puntas magnéticas con aleación cromo-vanadio para apriete seguro.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$6.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta 9: Candado de Seguridad 50mm -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  En Stock: 30 unidades
+                </span>
+<span class="font-label-code text-label-code text-outline">SKU: SG-CD50</span>
+</div>
+<div class="w-full h-44 rounded-lg bg-surface-container-low mb-space-sm overflow-hidden flex items-center justify-center p-2">
+<img class="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Heavy solid brass 50mm padlock with hardened steel shackle and 3 silver cut keys lying beside it on an oak workshop table with bright natural hardware lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB9i0Y0R0ltP7lYYKBnIjW6h9qTa4tVfKz4pV8rZRzsT8RDrkRCK64YmDpqQVzSkAjXUUKSmAuAKstZ1g0ZypZrELnrabFLnSj11rnjItpTZ6J6Zx4rJ0qYwNhRdLxYlCPabU5g2zAjqzKAs-EbbxC7E-ABVO8C8I9hQGcEgNC_AT43oXkKMhfUE11HTAcGUtU9M4OG2ongv4qcC_7jX1ooQJbLDKtSG6K7OqOJRos-uFtpQLtDC9G">
+</div>
+<div class="flex items-center gap-1 text-label-md font-label-md text-outline mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">navigation</span>
+<span class="">Pasillo 5 · Vitrina Cerrajería</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary font-bold line-clamp-2">
+                Candado de Seguridad 50mm con 3 Llaves
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Cuerpo de latón macizo con arco de acero endurecido antizizalla.</p>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-baseline gap-1 mb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">$5.990</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-normal">IVA incluido</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center bg-surface-container-low rounded font-label-code text-label-code">
+<button aria-label="Disminuir" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">-</button>
+<span class="px-2.5 py-1 text-center font-bold">1</span>
+<button aria-label="Aumentar" class="px-2 py-1.5 hover:bg-surface-container transition-colors text-primary">+</button>
+</div>
+<button class="flex-1 bg-secondary-container hover:bg-secondary text-on-primary py-2 px-space-sm rounded font-label-lg text-label-lg font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span class="">Agregar</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Paginador Amigable -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-sm mt-space-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+            Mostrando <strong>1 - 9</strong> de <strong>428</strong> productos disponibles
+          </span>
+<nav aria-label="Paginación de productos" class="flex items-center gap-1.5">
+<button aria-label="Anterior" class="p-2 rounded hover:bg-surface-container text-outline hover:text-primary transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-secondary-container text-on-primary font-bold font-label-md text-label-md shadow-sm">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors">3</button>
+<span class="px-1 text-outline font-label-md text-label-md">...</span>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors">12</button>
+<button aria-label="Siguiente" class="p-2 rounded hover:bg-surface-container text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</nav>
+</div>
+<!-- Banner Asistencia Directa WhatsApp FerroMax -->
+<div class="bg-primary text-on-primary rounded-xl p-space-md flex flex-col md:flex-row items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-on-tertiary-container flex items-center justify-center text-on-primary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[28px]">chat</span>
+</div>
+<div>
+<p class="font-title-md text-title-md font-bold text-on-primary">¿No encuentras la medida o pieza exacta?</p>
+<p class="font-body-sm text-body-sm text-inverse-on-surface opacity-90">Escríbenos por WhatsApp con una foto del repuesto y un asesor de tienda te responderá al instante con stock y pasillo.</p>
+</div>
+</div>
+<a class="shrink-0 bg-on-tertiary-container hover:bg-tertiary-container text-on-primary font-label-lg text-label-lg font-bold px-space-lg py-space-sm rounded flex items-center gap-2 transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">phone_iphone</span>
+<span class="">Chatear con un Asesor</span>
+</a>
+</div>
+</main>
+</div>
+</div>
+</div>
+<script>
+  // Micro-interacción: conmutador de visualización de catálogo
+  const gridBtn = document.getElementById('view-grid-btn');
+  const listBtn = document.getElementById('view-list-btn');
+  
+  if (gridBtn && listBtn) {
+    gridBtn.addEventListener('click', () => {
+      gridBtn.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-sm');
+      gridBtn.classList.remove('text-outline');
+      listBtn.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-sm');
+      listBtn.classList.add('text-outline');
+    });
+
+    listBtn.addEventListener('click', () => {
+      listBtn.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-sm');
+      listBtn.classList.remove('text-outline');
+      gridBtn.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-sm');
+      gridBtn.classList.add('text-outline');
+    });
+  }
+</script></main><footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30"><div class="bg-surface-container-low py-space-lg"><div class="max-w-7xl mx-auto px-margin grid grid-cols-1 md:grid-cols-4 gap-gutter"><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">schedule</span></div><div><p class="font-title-md text-title-md text-primary">Retiro en 1 Hora</p><p class="font-body-sm text-body-sm text-on-surface-variant">Disponible gratis en todas nuestras sucursales</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">local_shipping</span></div><div><p class="font-title-md text-title-md text-primary">Despacho Rápido</p><p class="font-body-sm text-body-sm text-on-surface-variant">Entregas en obra y domicilio el mismo día</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">verified</span></div><div><p class="font-title-md text-title-md text-primary">Garantía Industrial</p><p class="font-body-sm text-body-sm text-on-surface-variant">Marcas certificadas para maestros y empresas</p></div></div><div class="flex items-center gap-space-md"><div class="w-12 h-12 rounded bg-surface-container-lowest flex items-center justify-center text-secondary-container shadow-sm"><span class="material-symbols-outlined text-[28px]">request_quote</span></div><div><p class="font-title-md text-title-md text-primary">Cotizaciones B2B</p><p class="font-body-sm text-body-sm text-on-surface-variant">Factura electrónica y crédito ferretero</p></div></div></div></div><div class="max-w-7xl mx-auto px-margin py-space-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl"><div class="lg:col-span-2 flex flex-col gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded bg-secondary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[22px]">hardware</span></div><span class="font-headline-md text-headline-md text-primary font-bold">FerroMax</span></div><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Líderes en distribución de suministros industriales, herramientas de precisión, pinturas y materiales de construcción. Respaldando proyectos de contratistas y familias.</p><div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant mt-space-sm"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span><span class="">Casa Matriz &amp; Centro de Distribución: Av. Industrial 4820</span></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">call</span><span class="">Central telefónica: +56 2 2840 9000</span></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] text-primary">mail</span><span class="">ventas@ferromax.cl | cotizaciones@ferromax.cl</span></div></div></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Líneas de Productos</h4><ul class="flex flex-col gap-space-sm font-body-md text-body-md text-on-surface-variant"><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Herramientas Manuales &amp; Eléctricas</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Gasfitería &amp; Cañerías</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Pinturas, Brochas y Selladores</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Tornillos, Pernos y Anclajes</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Cables &amp; Tableros Eléctricos</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Seguridad Industrial &amp; EPP</a></li></ul></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Atención al Cliente</h4><ul class="flex flex-col gap-space-sm font-body-md text-body-md text-on-surface-variant"><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Seguimiento de Despachos</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Políticas de Garantía y Devolución</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Red de Tiendas y Horarios</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Preguntas Frecuentes (FAQ)</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Venta a Empresas &amp; Obras (B2B)</a></li><li class="hover:text-secondary-container transition-colors"><a href="#" class="">Formas de Pago y Crédito</a></li></ul></div><div class="flex flex-col gap-space-md"><h4 class="font-title-md text-title-md text-primary">Canal de Cotizaciones</h4><p class="font-body-sm text-body-sm text-on-surface-variant">Envía tu lista de materiales o proyecto para precios mayoristas por volumen.</p><a class="bg-on-tertiary-container hover:bg-tertiary-container text-on-primary py-space-sm px-space-md rounded font-label-lg text-label-lg flex items-center justify-center gap-space-sm transition-colors shadow-sm" href="#"><span class="material-symbols-outlined text-[18px]">chat</span><span class="">Cotizar por WhatsApp</span></a><div class="mt-space-sm"><span class="font-label-md text-label-md text-on-surface-variant block mb-space-xs">Métodos de Pago Aceptados</span><div class="flex flex-wrap gap-space-xs"><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Webpay Plus</span><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Transferencia</span><span class="bg-surface-container px-space-sm py-space-xs rounded font-label-code text-label-code text-on-surface-variant">Crédito B2B</span></div></div></div></div><div class="bg-surface-container-high py-space-md border-t border-outline-variant/30"><div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-sm text-body-sm font-body-sm text-on-surface-variant"><div class="">© 2025 FerroMax S.A. Todos los derechos reservados. Ferretería Industrial y Hogar.</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Términos y Condiciones</a><a class="hover:text-primary transition-colors" href="#">Privacidad y Seguridad</a><a class="hover:text-primary transition-colors" href="#">Libro de Reclamaciones</a></div></div></div></footer>
+
+</body></html>
