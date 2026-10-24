@@ -1,20 +1,30 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { Wrench, MapPin, Phone, Clock, MessageSquare, ShieldCheck } from '@/presentation/components/common/Icons';
+import { usePathname } from 'next/navigation';
+import { MapPin, Phone, Clock, MessageSquare, ShieldCheck } from '@/presentation/components/common/Icons';
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Hide public footer when inside admin panel
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-slate-800 bg-[#0F172A] text-slate-400">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Brand & Purpose */}
+          {/* Brand & Purpose - Logo icon removed */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F97316] text-white shadow-md shadow-orange-500/20">
-                <Wrench className="h-5 w-5 stroke-[2.5]" />
-              </div>
-              <span className="text-xl font-black tracking-tight text-white leading-none">
+            <div className="flex flex-col">
+              <span className="text-2xl font-black tracking-tight text-white leading-none">
                 FERRO<span className="text-[#F97316]">MAX</span>
+              </span>
+              <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase mt-1">
+                Tu Ferretería de Barrio
               </span>
             </div>
             <p className="text-xs leading-relaxed text-slate-400">
@@ -90,7 +100,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/admin" className="text-slate-500 transition hover:text-slate-300">
-                  Acceso Administrador (Don Carlos)
+                  Acceso Administrador
                 </Link>
               </li>
             </ul>

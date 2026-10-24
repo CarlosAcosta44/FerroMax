@@ -131,7 +131,7 @@ export default async function HomePage() {
               <div className="space-y-3 pt-3 border-t border-slate-800 text-xs text-slate-300">
                 <div className="flex items-center gap-2.5">
                   <CheckCircle className="h-4 w-4 text-[#25D366] shrink-0" />
-                  <span>Atención directa de Don Carlos y asesores técnicos</span>
+                  <span>Atención directa de asesores técnicos especializados</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Clock className="h-4 w-4 text-[#F97316] shrink-0" />
