@@ -16,94 +16,41 @@ import {
   Phone,
 } from '@/presentation/components/common/Icons';
 import { ProductCard } from '@/presentation/components/catalog/ProductCard';
+import { SupabaseProductRepository } from '@/infrastructure/repositories/SupabaseProductRepository';
+import { SupabaseCategoryRepository } from '@/infrastructure/repositories/SupabaseCategoryRepository';
 import { Product } from '@/domain/entities/Product';
+import { Category } from '@/domain/entities/Category';
 
-// Sample featured products for initial render & demo
-const FEATURED_PRODUCTS: Product[] = [
-  {
-    id: 'p-1',
-    categoryId: 'c-1',
-    name: 'Taladro Percutor 1/2" 650W DeWalt',
-    slug: 'taladro-percutor-dewalt-650w',
-    sku: 'DW-DWD024',
-    brand: 'DeWalt',
-    description: 'Velocidad variable reversible, mandril metálico de 1/2 pulgada y mango ergonómico.',
-    priceCop: 289000,
-    stockQuantity: 8,
-    minStockAlert: 3,
-    unitMeasure: 'unidad',
-    imageUrl: null,
-    isActive: true,
-    featured: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p-2',
-    categoryId: 'c-1',
-    name: 'Pulidora Angular 4-1/2" 850W Bosch',
-    slug: 'pulidora-angular-bosch-850w',
-    sku: 'BS-GWS850',
-    brand: 'Bosch',
-    description: 'Guarda con seguro antitorsión y bloqueo de husillo para cambio rápido de disco.',
-    priceCop: 245000,
-    stockQuantity: 4,
-    minStockAlert: 3,
-    unitMeasure: 'unidad',
-    imageUrl: null,
-    isActive: true,
-    featured: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p-3',
-    categoryId: 'c-2',
-    name: 'Juego de Destornilladores 6 Piezas Stanley',
-    slug: 'juego-destornilladores-stanley-6pz',
-    sku: 'ST-62002',
-    brand: 'Stanley',
-    description: 'Barras de acero tratado con puntas magnéticas para mejor ajuste en tornillería.',
-    priceCop: 42000,
-    stockQuantity: 15,
-    minStockAlert: 5,
-    unitMeasure: 'unidad',
-    imageUrl: null,
-    isActive: true,
-    featured: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p-4',
-    categoryId: 'c-5',
-    name: 'Pintura Vinilo Tipo 1 Blanco Galón Pintuco',
-    slug: 'pintura-vinilo-tipo-1-blanco-galon',
-    sku: 'PT-VIN1B',
-    brand: 'Pintuco',
-    description: 'Alto poder de cubrimiento, bajo olor y lavable para paredes de interior.',
-    priceCop: 68000,
-    stockQuantity: 2,
-    minStockAlert: 4,
-    unitMeasure: 'galon',
-    imageUrl: null,
-    isActive: true,
-    featured: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+// Next.js ISR: Revalidar datos cada 60 segundos
+export const revalidate = 60;
 
-const CATEGORIES = [
-  { name: 'Herramientas Eléctricas', slug: 'herramientas-electricas', icon: Zap, count: '18 productos' },
-  { name: 'Herramientas Manuales', slug: 'herramientas-manuales', icon: Hammer, count: '34 productos' },
-  { name: 'Plomería y Tuberías', slug: 'plomeria-griferia', icon: Droplet, count: '26 productos' },
-  { name: 'Electricidad y Cables', slug: 'electricidad-iluminacion', icon: Zap, count: '22 productos' },
-  { name: 'Pinturas y Siliconas', slug: 'pinturas-adhesivos', icon: Paintbrush, count: '15 productos' },
-  { name: 'Tornillos y Fijaciones', slug: 'tornilleria-fijaciones', icon: Package, count: '45 productos' },
-];
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  'herramientas-electricas': Zap,
+  'herramientas-manuales': Hammer,
+  'plomeria-griferia': Droplet,
+  'electricidad-iluminacion': Zap,
+  'pinturas-adhesivos': Paintbrush,
+  'tornilleria-fijaciones': Package,
+};
 
-export default function HomePage() {
+export default async function HomePage() {
+  const productRepo = new SupabaseProductRepository();
+  const categoryRepo = new SupabaseCategoryRepository();
+
+  let featuredProducts: Product[] = [];
+  let categories: Category[] = [];
+
+  try {
+    const [prods, cats] = await Promise.all([
+      productRepo.findAll({ featuredOnly: true }),
+      categoryRepo.findAll(),
+    ]);
+    featuredProducts = prods;
+    categories = cats;
+  } catch (err) {
+    console.error('Error al consultar datos desde Supabase:', err);
+  }
+
   return (
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
@@ -112,7 +59,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400">
               <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              Inventario en Tiempo Real Sincronizado
+              Stock de Mesón Sincronizado en Tiempo Real
             </div>
 
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -123,8 +70,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
-              Verifica existencias reales antes de salir de casa, paga fácil por PSE o tarjeta,
-              y recoge en el mostrador sin filas o recibe en tu domicilio.
+              Herramientas, pinturas, plomería y fijaciones con stock garantizado en tiempo real.
+              Retira gratis en mostrador en 30 minutos o pide a domicilio para empezar hoy mismo.
             </p>
 
             {/* Quick Search Bar */}
@@ -134,7 +81,7 @@ export default function HomePage() {
                 className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 py-3.5 text-sm font-bold text-zinc-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400"
               >
                 <Search className="h-4 w-4" />
-                Explorar Catálogo con Stock
+                Explorar Catálogo con Stock Real
               </Link>
               <a
                 href="https://wa.me/573001234567"
@@ -159,14 +106,14 @@ export default function HomePage() {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-blue-400" />
-                <span>Comprobante digital descargable</span>
+                <span>Comprobante digital con código QR</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Grid */}
+      {/* Categories Grid (Direct from Supabase) */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -185,26 +132,31 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <Link
-                key={cat.slug}
-                href={`/catalogo?categoria=${cat.slug}`}
-                className="group flex flex-col items-center rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-center transition hover:border-amber-500/40 hover:bg-zinc-900"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-800 text-amber-500 transition group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-zinc-950">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <span className="mt-3 text-xs font-semibold text-zinc-200 group-hover:text-amber-400">
-                  {cat.name}
-                </span>
-                <span className="mt-1 text-[11px] text-zinc-500">{cat.count}</span>
-              </Link>
-            );
-          })}
-        </div>
+        {categories.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {categories.map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.slug] || Wrench;
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/catalogo?categoria=${cat.slug}`}
+                  className="group flex flex-col items-center rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-center transition hover:border-amber-500/40 hover:bg-zinc-900"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-800 text-amber-500 transition group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-zinc-950">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <span className="mt-3 text-xs font-semibold text-zinc-200 group-hover:text-amber-400">
+                    {cat.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-zinc-800 p-8 text-center text-xs text-zinc-500">
+            Cargando categorías desde la base de datos de Supabase...
+          </div>
+        )}
       </section>
 
       {/* Featured Products with Real-time Stock Badges */}
@@ -227,11 +179,20 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURED_PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {featuredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-zinc-800 p-8 text-center text-xs text-zinc-400">
+            <p>Conectando con la base de datos de Supabase para obtener productos destacados...</p>
+            <p className="mt-1 text-[11px] text-zinc-500">
+              Ejecuta el script SQL en Supabase para visualizar el catálogo en vivo.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* How It Works Flow */}
