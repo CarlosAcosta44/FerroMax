@@ -84,7 +84,7 @@ export default function LoginPage() {
     try {
       const { profile } = await signIn({ email, password });
       
-      // Role-based routing
+      // Role-based routing configured from Supabase
       if (profile.role === 'admin') {
         router.push('/admin');
       } else {
@@ -203,7 +203,7 @@ export default function LoginPage() {
           {/* Quick Demo Credentials Assistant */}
           <div className="mt-6 border-t border-slate-100 pt-5">
             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5 text-center">
-              Acceso Rápido para Pruebas (Roles)
+              Acceso Rápido para Pruebas
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <button
@@ -213,9 +213,9 @@ export default function LoginPage() {
               >
                 <div className="flex items-center gap-1.5 text-[#EA580C] font-bold text-[11px]">
                   <LayoutDashboard className="h-3.5 w-3.5" />
-                  <span>Rol: Admin</span>
+                  <span>Cuenta Admin</span>
                 </div>
-                <span className="text-[10px] text-slate-600 mt-0.5">Don Carlos (Dueño)</span>
+                <span className="text-[10px] text-slate-600 mt-0.5">Don Carlos</span>
               </button>
 
               <button
@@ -225,9 +225,9 @@ export default function LoginPage() {
               >
                 <div className="flex items-center gap-1.5 text-slate-700 font-bold text-[11px]">
                   <User className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Rol: Cliente</span>
+                  <span>Cuenta Cliente</span>
                 </div>
-                <span className="text-[10px] text-slate-500 mt-0.5">Comprador de Barrio</span>
+                <span className="text-[10px] text-slate-500 mt-0.5">Comprador</span>
               </button>
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function LoginPage() {
               href="/registro"
               className="font-bold text-[#F97316] hover:underline"
             >
-              Crear cuenta con rol de Admin o Cliente
+              Crear una cuenta nueva
             </Link>
           </p>
         </div>

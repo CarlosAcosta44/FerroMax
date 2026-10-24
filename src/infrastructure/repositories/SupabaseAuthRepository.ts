@@ -4,7 +4,9 @@ import { UserProfile, UserRole } from '@/domain/entities/UserProfile';
 
 export class SupabaseAuthRepository implements IAuthRepository {
   async signUp(dto: SignUpDTO): Promise<{ user: any; profile: UserProfile }> {
-    const { email, password, fullName, phone, role } = dto;
+    const { email, password, fullName, phone } = dto;
+    // Every new user account always defaults to 'cliente'
+    const role: UserRole = 'cliente';
 
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -13,7 +15,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
         data: {
           full_name: fullName,
           phone: phone || '',
-          role: role,
+          role: 'cliente',
         },
       },
     });
@@ -34,18 +36,18 @@ export class SupabaseAuthRepository implements IAuthRepository {
       email: data.user.email || email,
       fullName: fullName,
       phone: phone || '',
-      role: role,
+      role: 'cliente',
       createdAt: data.user.created_at,
     };
 
-    // Try to ensure public.profiles table has the record
+    // Ensure public.profiles table has the record as 'cliente'
     try {
       await supabase.from('profiles').upsert({
         id: data.user.id,
         email: data.user.email || email,
         full_name: fullName,
         phone: phone || '',
-        role: role,
+        role: 'cliente',
         updated_at: new Date().toISOString(),
       });
     } catch (e) {
@@ -111,6 +113,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
 
   async getProfile(userId: string, userAuthObject?: any): Promise<UserProfile> {
     try {
+      // Primary source of truth: public.profiles managed in Supabase
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -123,7 +126,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
           email: data.email,
           fullName: data.full_name || '',
           phone: data.phone || '',
-          role: (data.role as UserRole) || 'cliente',
+          role: (data.role as UserRole) === 'admin' ? 'admin' : 'cliente',
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -132,7 +135,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
       console.warn('Profiles table query error, falling back to auth metadata:', e);
     }
 
-    // Resilient Fallback to user metadata
+    // Fallback if table is not yet migrated
     let role: UserRole = 'cliente';
     let fullName = 'Usuario FerroMax';
     let phone = '';
@@ -142,10 +145,7 @@ export class SupabaseAuthRepository implements IAuthRepository {
       email = userAuthObject.email || '';
       fullName = userAuthObject.user_metadata?.full_name || email.split('@')[0];
       phone = userAuthObject.user_metadata?.phone || '';
-      const metaRole = userAuthObject.user_metadata?.role;
-      if (metaRole === 'admin' || metaRole === 'cliente') {
-        role = metaRole;
-      } else if (email.toLowerCase().includes('admin') || email.toLowerCase().includes('doncarlos')) {
+      if (userAuthObject.user_metadata?.role === 'admin') {
         role = 'admin';
       }
     }

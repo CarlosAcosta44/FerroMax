@@ -9,26 +9,21 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
   AlertCircle,
   User,
   Phone,
-  LayoutDashboard,
-  Check,
 } from '@/presentation/components/common/Icons';
 import { useAuth } from '@/presentation/context/AuthContext';
-import { UserRole } from '@/domain/entities/UserProfile';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { signUp, currentUser } = useAuth() as any;
+  const { signUp } = useAuth();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('cliente');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,20 +49,17 @@ export default function RegisterPage() {
 
     setIsSubmitting(true);
     try {
-      const { profile } = await signUp({
+      // All new accounts are automatically created with 'cliente' role.
+      // Roles are managed directly in Supabase.
+      await signUp({
         email: email.trim(),
         password,
         fullName: fullName.trim(),
         phone: phone.trim(),
-        role,
+        role: 'cliente',
       });
 
-      // Redirect based on selected role
-      if (profile.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      router.push('/');
     } catch (err: any) {
       setErrorMsg(err.message || 'Error al crear la cuenta. Por favor intenta de nuevo.');
     } finally {
@@ -76,8 +68,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[90vh] flex flex-col justify-center items-center px-4 py-12 bg-[#F8FAFC]">
-      <div className="w-full max-w-lg">
+    <div className="min-h-[85vh] flex flex-col justify-center items-center px-4 py-12 bg-[#F8FAFC]">
+      <div className="w-full max-w-md">
         {/* Brand Header */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex flex-col items-center group">
@@ -89,10 +81,10 @@ export default function RegisterPage() {
             </span>
           </Link>
           <h1 className="text-xl font-extrabold text-slate-900 tracking-tight mt-4">
-            Crear Nueva Cuenta
+            Crear Cuenta de Usuario
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Regístrate para comprar en línea o gestionar la ferretería
+            Regístrate para comprar en línea con retiro en mesón en 30 minutos
           </p>
         </div>
 
@@ -117,107 +109,49 @@ export default function RegisterPage() {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Ej. Don Carlos Acosta / Juan Pérez"
+                  placeholder="Ej. Juan Pérez"
                   required
                   className="w-full rounded bg-white border border-slate-300 py-2.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] focus:outline-none transition"
                 />
               </div>
             </div>
 
-            {/* Email & Phone Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Correo Electrónico *
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="correo@ejemplo.com"
-                    required
-                    className="w-full rounded bg-white border border-slate-300 py-2.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] focus:outline-none transition"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Teléfono / WhatsApp
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="300 123 4567"
-                    className="w-full rounded bg-white border border-slate-300 py-2.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] focus:outline-none transition"
-                  />
-                </div>
+            {/* Email Field */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Correo Electrónico *
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="correo@ejemplo.com"
+                  required
+                  className="w-full rounded bg-white border border-slate-300 py-2.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] focus:outline-none transition"
+                />
               </div>
             </div>
 
-            {/* Role Selection */}
+            {/* Phone Field */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-2">
-                Selecciona tu Rol en la Plataforma *
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Teléfono / WhatsApp (Opcional)
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Cliente Option */}
-                <button
-                  type="button"
-                  onClick={() => setRole('cliente')}
-                  className={`flex flex-col text-left p-3.5 rounded-lg border transition relative ${
-                    role === 'cliente'
-                      ? 'border-[#F97316] bg-orange-50/50 ring-1 ring-[#F97316]'
-                      : 'border-slate-200 hover:border-slate-300 bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                      <User className="h-4 w-4 text-slate-600" />
-                      Cliente Comprador
-                    </span>
-                    {role === 'cliente' && (
-                      <span className="h-4 w-4 rounded-full bg-[#F97316] text-white flex items-center justify-center">
-                        <Check className="h-3 w-3" />
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-snug">
-                    Consulta inventario, compra con retiro en mesón (30 min) y revisa comprobantes con QR.
-                  </p>
-                </button>
-
-                {/* Admin Option */}
-                <button
-                  type="button"
-                  onClick={() => setRole('admin')}
-                  className={`flex flex-col text-left p-3.5 rounded-lg border transition relative ${
-                    role === 'admin'
-                      ? 'border-[#EA580C] bg-orange-50/70 ring-1 ring-[#EA580C]'
-                      : 'border-slate-200 hover:border-slate-300 bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-[#EA580C] flex items-center gap-1.5">
-                      <LayoutDashboard className="h-4 w-4 text-[#EA580C]" />
-                      Administrador (Don Carlos)
-                    </span>
-                    {role === 'admin' && (
-                      <span className="h-4 w-4 rounded-full bg-[#EA580C] text-white flex items-center justify-center">
-                        <Check className="h-3 w-3" />
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-snug">
-                    Acceso total a caja, actualización de inventario físico, POS y pedidos de clientes.
-                  </p>
-                </button>
+              <div className="relative">
+                <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="300 123 4567"
+                  className="w-full rounded bg-white border border-slate-300 py-2.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] focus:outline-none transition"
+                />
               </div>
+              <p className="text-[10px] text-slate-400 mt-1">
+                Para notificarte cuando tu pedido esté empacado y listo para retiro en mesón.
+              </p>
             </div>
 
             {/* Password & Confirm Grid */}
@@ -278,7 +212,7 @@ export default function RegisterPage() {
                 </>
               ) : (
                 <>
-                  <span>Registrar Cuenta en FerroMax</span>
+                  <span>Registrarme en FerroMax</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </>
               )}

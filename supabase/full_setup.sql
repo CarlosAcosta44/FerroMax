@@ -250,8 +250,10 @@ ON CONFLICT DO NOTHING;
 
 
 -- ==============================================================================
+-- ==============================================================================
 -- FerroMax: User Profiles & Roles System
--- Supports 'admin' (Don Carlos / Store Owner) and 'cliente' (Retail Buyer)
+-- Supports 'admin' (Don Carlos / Store Owner) and 'cliente' (Default Buyer)
+-- All new registrations default to 'cliente'. Roles are managed directly in Supabase.
 -- ==============================================================================
 
 CREATE TABLE IF NOT EXISTS public.profiles (
@@ -263,6 +265,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
 
 -- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -289,6 +295,7 @@ CREATE POLICY "Users can update their own profile"
     USING (auth.uid() = id);
 
 -- Function & Trigger to automatically synchronize profile on user signup
+-- New accounts ALWAYS default to 'cliente'. Roles are managed directly in Supabase.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -298,13 +305,13 @@ BEGIN
         new.email,
         COALESCE(new.raw_user_meta_data->>'full_name', ''),
         COALESCE(new.raw_user_meta_data->>'phone', ''),
-        COALESCE(new.raw_user_meta_data->>'role', 'cliente')
+        'cliente'
     )
     ON CONFLICT (id) DO UPDATE SET
         email = excluded.email,
         full_name = COALESCE(NULLIF(excluded.full_name, ''), public.profiles.full_name),
         phone = COALESCE(NULLIF(excluded.phone, ''), public.profiles.phone),
-        role = COALESCE(NULLIF(excluded.role, ''), public.profiles.role),
+        role = public.profiles.role,
         updated_at = now();
     RETURN new;
 END;
