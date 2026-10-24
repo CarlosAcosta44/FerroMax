@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+@theme {
+  /* =============================================
+   * FERROMAX — Design Tokens (Industrial Hardware)
+   * ============================================= */
+
+  --color-background: #0f1012;
+  --color-surface: #15171a;
+  --color-surface-container: #1b1e22;
+  --color-surface-high: #24282e;
+  --color-surface-highest: #2d323a;
+
+  /* Brand: Industrial Amber & Mechanical Orange */
+  --color-primary: #f59e0b;
+  --color-primary-hover: #fbbf24;
+  --color-orange-brand: #ea580c;
+
+  /* Stock & Success */
+  --color-stock-available: #10b981;
+  --color-stock-low: #f59e0b;
+  --color-stock-out: #ef4444;
+
+  /* Text */
+  --color-on-surface: #f4f4f6;
+  --color-on-surface-muted: #9ca3af;
+  --color-on-surface-faint: #6b7280;
+
+  /* Borders */
+  --color-border: #272a30;
+  --color-border-subtle: #1f2227;
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f1012;
+}
+::-webkit-scrollbar-thumb {
+  background: #272a30;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f444e;
+}
