@@ -38,7 +38,7 @@ export default function LoginPage() {
             Has iniciado sesión como <span className="font-semibold text-slate-800">{currentUser.email}</span>
           </p>
           <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-orange-200 bg-orange-50 text-[#EA580C]">
-            Rol: {currentRole === 'admin' ? 'Administrador / Don Carlos' : 'Cliente Comprador'}
+            Rol: {currentRole === 'admin' ? 'Administrador' : 'Cliente Comprador'}
           </div>
 
           <div className="mt-6 flex flex-col gap-2.5">

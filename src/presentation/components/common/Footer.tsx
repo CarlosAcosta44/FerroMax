@@ -1,8 +1,18 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { MapPin, Phone, Clock, MessageSquare, ShieldCheck } from '@/presentation/components/common/Icons';
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Hide public footer when inside admin panel
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-slate-800 bg-[#0F172A] text-slate-400">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -90,7 +100,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/admin" className="text-slate-500 transition hover:text-slate-300">
-                  Acceso Administrador (Don Carlos)
+                  Acceso Administrador
                 </Link>
               </li>
             </ul>

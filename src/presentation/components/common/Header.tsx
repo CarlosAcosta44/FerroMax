@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   ShoppingCart,
   Phone,
@@ -18,11 +18,17 @@ import { useCart } from '@/presentation/context/CartContext';
 import { useAuth } from '@/presentation/context/AuthContext';
 
 export function Header() {
+  const pathname = usePathname();
   const { totalItems, setIsCartOpen } = useCart();
   const { user, profile, role, signOut } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // Hide the public header when inside the admin panel
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -51,7 +57,7 @@ export function Header() {
     if (email) {
       return email.slice(0, 2).toUpperCase();
     }
-    return 'FM';
+    return 'AD';
   };
 
   return (
@@ -72,7 +78,7 @@ export function Header() {
                 className="flex items-center gap-1 text-[#F97316] font-medium transition hover:text-orange-400"
               >
                 <LayoutDashboard className="h-3.5 w-3.5" />
-                Panel Admin (Don Carlos)
+                Panel de Administración
               </Link>
             ) : (
               <Link
@@ -98,7 +104,7 @@ export function Header() {
 
       {/* Main Navbar */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        {/* Brand Logo - Pure typographic brand, logo icon removed as requested */}
+        {/* Brand Logo - Pure typography */}
         <Link href="/" className="flex flex-col group py-0.5">
           <span className="text-2xl font-black tracking-tight text-white leading-none transition-colors group-hover:text-slate-100">
             FERRO<span className="text-[#F97316]">MAX</span>
@@ -183,7 +189,7 @@ export function Header() {
                     {role === 'admin' ? (
                       <span className="inline-flex items-center gap-1 rounded bg-[#F97316]/15 border border-[#F97316]/40 px-2 py-0.5 text-[11px] font-bold text-[#F97316]">
                         <ShieldCheck className="h-3 w-3" />
-                        Administrador (Don Carlos)
+                        Administrador
                       </span>
                     ) : (
                       <span className="inline-flex items-center rounded bg-slate-800 border border-slate-700 px-2 py-0.5 text-[11px] font-medium text-slate-300">
