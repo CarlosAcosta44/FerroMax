@@ -11,7 +11,6 @@ import {
   ArrowRight,
   ShieldCheck,
   AlertCircle,
-  User,
   LayoutDashboard,
 } from '@/presentation/components/common/Icons';
 import { useAuth } from '@/presentation/context/AuthContext';
@@ -84,7 +83,7 @@ export default function LoginPage() {
     try {
       const { profile } = await signIn({ email, password });
       
-      // Role-based routing configured from Supabase
+      // Role-based routing configured directly from Supabase
       if (profile.role === 'admin') {
         router.push('/admin');
       } else {
@@ -95,12 +94,6 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleQuickDemo = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setErrorMsg(null);
   };
 
   return (
@@ -120,7 +113,7 @@ export default function LoginPage() {
             Ingreso al Sistema
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Inicia sesión para gestionar pedidos, retiro en mesón o inventario
+            Inicia sesión con tu correo electrónico y contraseña
           </p>
         </div>
 
@@ -199,38 +192,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Credentials Assistant */}
-          <div className="mt-6 border-t border-slate-100 pt-5">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5 text-center">
-              Acceso Rápido para Pruebas
-            </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('admin@ferromax.com', 'Admin123*')}
-                className="flex flex-col items-start p-2.5 rounded-lg border border-orange-200 bg-orange-50/60 hover:bg-orange-100/70 transition text-left group"
-              >
-                <div className="flex items-center gap-1.5 text-[#EA580C] font-bold text-[11px]">
-                  <LayoutDashboard className="h-3.5 w-3.5" />
-                  <span>Cuenta Admin</span>
-                </div>
-                <span className="text-[10px] text-slate-600 mt-0.5">Don Carlos</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('cliente@ferromax.com', 'Cliente123*')}
-                className="flex flex-col items-start p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 transition text-left group"
-              >
-                <div className="flex items-center gap-1.5 text-slate-700 font-bold text-[11px]">
-                  <User className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Cuenta Cliente</span>
-                </div>
-                <span className="text-[10px] text-slate-500 mt-0.5">Comprador</span>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Link to Register */}
