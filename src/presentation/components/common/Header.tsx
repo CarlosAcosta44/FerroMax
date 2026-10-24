@@ -25,11 +25,6 @@ export function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Hide the public header when inside the admin panel
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -59,6 +54,11 @@ export function Header() {
     }
     return 'AD';
   };
+
+  // Rule of Hooks: early return MUST be placed AFTER all hooks have executed unconditionally
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-[#0F172A]">
