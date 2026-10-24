@@ -21,7 +21,6 @@ import { SupabaseCategoryRepository } from '@/infrastructure/repositories/Supaba
 import { Product } from '@/domain/entities/Product';
 import { Category } from '@/domain/entities/Category';
 
-// Next.js ISR: Revalidar datos cada 60 segundos
 export const revalidate = 60;
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -52,190 +51,293 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="flex flex-col gap-16 pb-16">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-zinc-800 bg-gradient-to-b from-zinc-900/60 to-transparent py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              Stock de Mesón Sincronizado en Tiempo Real
+    <div className="flex flex-col gap-14 pb-16 bg-[#F8FAFC]">
+      {/* 1. Hero Principal Cálido & Dinámico (Diseño inicio_ferromax) */}
+      <section className="relative w-full bg-[#0F172A] text-white overflow-hidden shadow-lg border-b border-slate-800">
+        {/* Ambient glowing accents */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#F97316]/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-28 -left-20 w-80 h-80 bg-orange-600/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 flex flex-col lg:flex-row items-center gap-12">
+          {/* Columna Texto y CTAs */}
+          <div className="w-full lg:w-3/5 flex flex-col gap-5 z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F97316]/20 text-[#F97316] w-fit text-xs font-semibold border border-[#F97316]/30">
+              <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse"></span>
+              <span>Stock de mesón actualizado en tiempo real</span>
             </div>
 
-            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Tu ferretería de confianza,{' '}
-              <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-                ahora en tu pantalla.
-              </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white">
+              Todo para tus proyectos de hogar, reparación y construcción
             </h1>
 
-            <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
+            <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
               Herramientas, pinturas, plomería y fijaciones con stock garantizado en tiempo real.
-              Retira gratis en mostrador en 30 minutos o pide a domicilio para empezar hoy mismo.
+              Retira gratis en tienda en menos de 1 hora o pide a domicilio para empezar hoy mismo.
             </p>
 
-            {/* Quick Search Bar */}
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {/* CTAs de Acción */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link
                 href="/catalogo"
-                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 py-3.5 text-sm font-bold text-zinc-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400"
+                className="inline-flex items-center justify-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-white px-5 py-3 rounded font-semibold text-xs sm:text-sm shadow-md transition-all hover:-translate-y-0.5"
               >
-                <Search className="h-4 w-4" />
-                Explorar Catálogo con Stock Real
+                <Wrench className="h-4 w-4" />
+                <span>Ver Catálogo Completo</span>
               </Link>
-              <a
-                href="https://wa.me/573001234567"
-                target="_blank"
-                rel="noreferrer"
-                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900/80 px-6 py-3.5 text-sm font-semibold text-zinc-200 transition hover:border-emerald-500/50 hover:text-emerald-400"
+              <Link
+                href="#ofertas"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded font-semibold text-xs sm:text-sm border border-slate-700 transition-colors"
               >
-                <Phone className="h-4 w-4 text-emerald-400" />
-                Consultar por WhatsApp
-              </a>
+                <span>Ver Ofertas de la Semana</span>
+                <ArrowRight className="h-4 w-4 text-[#F97316]" />
+              </Link>
             </div>
 
-            {/* Trust Badges */}
-            <div className="mt-10 grid grid-cols-1 gap-4 pt-8 border-t border-zinc-800/80 sm:grid-cols-3 text-xs text-zinc-400">
-              <div className="flex items-center justify-center gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-400" />
-                <span>Stock físico verificado en tienda</span>
+            {/* Mini Buscador Rápido de Barrio */}
+            <form
+              method="GET"
+              action="/catalogo"
+              className="w-full max-w-xl mt-3 bg-white rounded-lg p-1.5 shadow-lg flex items-center gap-2 text-slate-800"
+            >
+              <Search className="h-5 w-5 text-slate-400 ml-2.5 shrink-0" />
+              <input
+                type="text"
+                name="buscar"
+                placeholder="¿Qué necesitas reparar hoy? Ej. llave de paso, brocha, tarugos..."
+                className="w-full bg-transparent text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none py-1.5"
+              />
+              <button
+                type="submit"
+                className="bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-semibold px-4 py-2 rounded transition-colors shrink-0"
+              >
+                Buscar
+              </button>
+            </form>
+          </div>
+
+          {/* Tarjeta Visual de Asesoría en Mesón */}
+          <div className="w-full lg:w-2/5 flex flex-col items-center">
+            <div className="w-full rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 p-6 shadow-2xl relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#F97316]/20 border border-[#F97316]/40 flex items-center justify-center text-[#F97316]">
+                  <Wrench className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Asesoría FerroMax en Mesón</h3>
+                  <p className="text-xs text-slate-400">Te ayudamos a elegir la pieza exacta para tu arreglo</p>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <Clock className="h-4 w-4 text-amber-400" />
-                <span>Retiro en mostrador en 30 min</span>
+
+              <div className="space-y-3 pt-3 border-t border-slate-800 text-xs text-slate-300">
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle className="h-4 w-4 text-[#25D366] shrink-0" />
+                  <span>Atención directa de Don Carlos y asesores técnicos</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Clock className="h-4 w-4 text-[#F97316] shrink-0" />
+                  <span>Tu pedido empacado y listo en 30 minutos</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck className="h-4 w-4 text-sky-400 shrink-0" />
+                  <span>Garantía oficial y comprobante digital con QR</span>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-blue-400" />
-                <span>Comprobante digital con código QR</span>
+
+              <div className="mt-5 pt-4 border-t border-slate-800 flex justify-between items-center">
+                <span className="text-[11px] text-slate-400">¿Dudas sobre medidas o roscas?</span>
+                <a
+                  href="https://wa.me/573001234567"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#25D366] hover:underline"
+                >
+                  <Phone className="h-3 w-3" />
+                  Escribir a WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Badges de Confianza Vecinales */}
+        <div className="w-full bg-slate-950/60 border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-slate-200 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#F97316]/15 flex items-center justify-center text-[#F97316] shrink-0">
+                <Clock className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-white leading-tight">Retiro en 30 min</p>
+                <p className="text-[11px] text-slate-400">Listo en mesón express</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#F97316]/15 flex items-center justify-center text-[#F97316] shrink-0">
+                <CheckCircle className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-white leading-tight">Despacho Rápido</p>
+                <p className="text-[11px] text-slate-400">A tu casa, taller u obra</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#F97316]/15 flex items-center justify-center text-[#F97316] shrink-0">
+                <Wrench className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-white leading-tight">Atención Experta</p>
+                <p className="text-[11px] text-slate-400">Consejos claros y directos</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#F97316]/15 flex items-center justify-center text-[#F97316] shrink-0">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-white leading-tight">Todos los Medios</p>
+                <p className="text-[11px] text-slate-400">PSE, Tarjeta y Efectivo</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Grid (Direct from Supabase) */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
+      {/* 2. Categorías Populares (Explora por Departamento) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-6">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-white">
-              Departamentos y Materiales
+            <div className="inline-flex items-center gap-1.5 text-[#F97316] font-semibold text-xs tracking-wider uppercase mb-1">
+              <span>EXPLORA POR DEPARTAMENTO</span>
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Encuentra lo que necesitas para tu proyecto
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
-              Encuentra lo que necesitas por categoría con inventario disponible.
-            </p>
           </div>
           <Link
             href="/catalogo"
-            className="hidden sm:flex items-center gap-1 text-xs font-semibold text-amber-500 hover:text-amber-400"
+            className="text-[#F97316] hover:text-[#EA580C] font-semibold text-xs inline-flex items-center gap-1"
           >
-            Ver todos los productos <ArrowRight className="h-3.5 w-3.5" />
+            <span>Ver todos los pasillos</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         {categories.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {categories.map((cat) => {
               const Icon = CATEGORY_ICONS[cat.slug] || Wrench;
               return (
                 <Link
                   key={cat.id}
                   href={`/catalogo?categoria=${cat.slug}`}
-                  className="group flex flex-col items-center rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-center transition hover:border-amber-500/40 hover:bg-zinc-900"
+                  className="group bg-white rounded-lg p-4 shadow-sm hover:shadow-md border border-[#E2E8F0] hover:border-[#CBD5E1] transition-all flex items-start gap-4"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-800 text-amber-500 transition group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-zinc-950">
+                  <div className="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center text-[#F97316] shrink-0 group-hover:bg-[#F97316] group-hover:text-white transition-colors">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <span className="mt-3 text-xs font-semibold text-zinc-200 group-hover:text-amber-400">
-                    {cat.name}
-                  </span>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#F97316] transition-colors">
+                      {cat.name}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
+                      {cat.description || 'Disponibilidad de stock en tienda física.'}
+                    </p>
+                  </div>
                 </Link>
               );
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-zinc-800 p-8 text-center text-xs text-zinc-500">
-            Cargando categorías desde la base de datos de Supabase...
+          <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center text-xs text-slate-500 bg-white">
+            Cargando departamentos desde la base de datos de Supabase...
           </div>
         )}
       </section>
 
-      {/* Featured Products with Real-time Stock Badges */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
+      {/* 3. Productos Destacados con Stock en Vivo */}
+      <section id="ofertas" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F97316] uppercase tracking-wider mb-1">
               <Wrench className="h-3.5 w-3.5" />
-              Disponibilidad Inmediata
+              <span>DISPONIBILIDAD INMEDIATA</span>
             </div>
-            <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
-              Herramientas y Materiales Más Buscados
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Herramientas y Materiales con Stock en Tienda
             </h2>
           </div>
           <Link
             href="/catalogo"
-            className="text-xs font-semibold text-amber-500 hover:text-amber-400 flex items-center gap-1"
+            className="text-xs font-semibold text-[#F97316] hover:text-[#EA580C] flex items-center gap-1"
           >
-            Ir al catálogo completo <ArrowRight className="h-3.5 w-3.5" />
+            <span>Ir al catálogo completo</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         {featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-zinc-800 p-8 text-center text-xs text-zinc-400">
-            <p>Conectando con la base de datos de Supabase para obtener productos destacados...</p>
-            <p className="mt-1 text-[11px] text-zinc-500">
-              Ejecuta el script SQL en Supabase para visualizar el catálogo en vivo.
+          <div className="rounded-lg border border-dashed border-slate-300 p-10 text-center text-xs text-slate-500 bg-white">
+            <p className="font-semibold text-slate-700">Conectando con la base de datos de Supabase...</p>
+            <p className="mt-1 text-slate-400">
+              Ejecuta el script SQL en Supabase para visualizar el inventario en vivo.
             </p>
           </div>
         )}
       </section>
 
-      {/* How It Works Flow */}
-      <section className="border-y border-zinc-800 bg-zinc-900/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl font-bold text-white">
+      {/* 4. ¿Cómo Funciona la Compra Vecinal? */}
+      <section className="border-y border-slate-200 bg-white py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold text-[#F97316] uppercase tracking-wider">
+              Ágil, Fácil y sin Filas
+            </span>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">
               ¿Cómo funciona comprar en FerroMax?
             </h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              Ahorra tiempo y asegura tus herramientas en 4 sencillos pasos.
+            <p className="text-xs text-slate-500 mt-2">
+              Asegura tus piezas desde el celular y retira en el mesón en minutos.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-5">
-              <span className="text-2xl font-black text-amber-500">01</span>
-              <h3 className="mt-2 text-base font-semibold text-white">Busca tu producto</h3>
-              <p className="mt-1 text-xs text-zinc-400">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-5">
+              <span className="text-xl font-black text-[#F97316]">01</span>
+              <h3 className="mt-2 text-sm font-bold text-slate-900">Busca tu producto</h3>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
                 Encuentra taladros, tornillos, pinturas o tubos en nuestro catálogo organizado.
               </p>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-5">
-              <span className="text-2xl font-black text-amber-500">02</span>
-              <h3 className="mt-2 text-base font-semibold text-white">Verifica el stock</h3>
-              <p className="mt-1 text-xs text-zinc-400">
+            <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-5">
+              <span className="text-xl font-black text-[#F97316]">02</span>
+              <h3 className="mt-2 text-sm font-bold text-slate-900">Verifica el stock</h3>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
                 Observa cuántas unidades exactas quedan en la tienda física en tiempo real.
               </p>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-5">
-              <span className="text-2xl font-black text-amber-500">03</span>
-              <h3 className="mt-2 text-base font-semibold text-white">Paga o reserva</h3>
-              <p className="mt-1 text-xs text-zinc-400">
+            <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-5">
+              <span className="text-xl font-black text-[#F97316]">03</span>
+              <h3 className="mt-2 text-sm font-bold text-slate-900">Paga o reserva</h3>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
                 Realiza tu pago en línea de forma segura o contacta al asesor por WhatsApp.
               </p>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-5">
-              <span className="text-2xl font-black text-amber-500">04</span>
-              <h3 className="mt-2 text-base font-semibold text-white">Retira sin filas</h3>
-              <p className="mt-1 text-xs text-zinc-400">
+            <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-5">
+              <span className="text-xl font-black text-[#F97316]">04</span>
+              <h3 className="mt-2 text-sm font-bold text-slate-900">Retira sin filas</h3>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
                 Pasa por el mostrador en 30 minutos o recibe tu pedido a domicilio en tu casa u obra.
               </p>
             </div>
@@ -243,50 +345,50 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Location & Store Hours */}
-      <section id="ubicacion" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8">
+      {/* 5. Punto de Venta Físico y Contacto */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-center">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F97316] uppercase tracking-wider">
                 <MapPin className="h-3.5 w-3.5" />
                 Punto de Venta Físico
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-white">
+              <h2 className="mt-2 text-2xl font-bold text-slate-900">
                 Visítanos en nuestra sede principal
               </h2>
-              <p className="mt-3 text-sm text-zinc-300 leading-relaxed">
-                Estamos ubicados en el corazón del sector comercial para atenderte de forma
+              <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Estamos ubicados en el sector comercial para atenderte de forma
                 personalizada con la atención experta del ferretero tradicional.
               </p>
 
-              <div className="mt-6 space-y-3 text-sm text-zinc-300">
+              <div className="mt-5 space-y-2.5 text-xs text-slate-700">
                 <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-amber-500 shrink-0" />
+                  <MapPin className="h-4 w-4 text-[#F97316] shrink-0" />
                   <span>Calle Principal #45-12, Sector Comercial</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-amber-500 shrink-0" />
+                  <Clock className="h-4 w-4 text-[#F97316] shrink-0" />
                   <span>Lun - Sáb: 7:30 AM a 6:30 PM | Dom: 8:30 AM a 2:00 PM</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <Phone className="h-4 w-4 text-[#25D366] shrink-0" />
                   <span>WhatsApp directo: 300 123 4567</span>
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-center">
-              <Wrench className="h-10 w-10 text-amber-500 mb-3" />
-              <h3 className="text-lg font-bold text-white">¿Dudas sobre qué material elegir?</h3>
-              <p className="mt-1 text-xs text-zinc-400 max-w-xs">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-[#F8FAFC] p-6 text-center">
+              <Wrench className="h-10 w-10 text-[#F97316] mb-3" />
+              <h3 className="text-base font-bold text-slate-900">¿Dudas sobre qué material elegir?</h3>
+              <p className="mt-1 text-xs text-slate-500 max-w-xs">
                 Escríbenos directamente y un asesor de mostrador te orientará en segundos.
               </p>
               <a
                 href="https://wa.me/573001234567"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-xs font-bold text-zinc-950 transition hover:bg-emerald-400"
+                className="mt-4 inline-flex items-center gap-2 rounded bg-[#25D366] hover:bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors"
               >
                 <Phone className="h-3.5 w-3.5" />
                 Chatear con el Ferretero
