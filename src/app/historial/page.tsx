@@ -231,7 +231,7 @@ export default function HistorialPage() {
 
         {/* Mensaje de Asistencia */}
         {order.status === 'ready_for_pickup' && (
-          <div className="mt-3.5 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 text-xs text-emerald-800 flex items-center justify-between gap-2">
+          <div className="mt-3.5 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <span>
               💡 Acércate a nuestro mostrador y presenta tu PIN <strong>{order.pickupPin}</strong> para entrega inmediata sin filas.
             </span>
@@ -239,7 +239,7 @@ export default function HistorialPage() {
               href={`https://wa.me/573001234567?text=Hola%20FerroMax,%20voy%20en%20camino%20a%20recoger%20mi%20pedido%20%23${order.orderNumber}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 bg-[#25D366] text-white px-2.5 py-1 rounded text-[11px] font-bold hover:bg-emerald-600 shrink-0"
+              className="inline-flex items-center justify-center gap-1 bg-[#25D366] text-white px-3 py-1.5 rounded text-[11px] font-bold hover:bg-emerald-600 shrink-0"
             >
               <Phone className="h-3 w-3" />
               <span>Avisar por WhatsApp</span>

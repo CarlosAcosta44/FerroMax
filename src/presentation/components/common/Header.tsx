@@ -13,6 +13,9 @@ import {
   ShoppingBag,
   ChevronDown,
   ShieldCheck,
+  Menu,
+  X,
+  Wrench,
 } from '@/presentation/components/common/Icons';
 import { useCart } from '@/presentation/context/CartContext';
 import { useAuth } from '@/presentation/context/AuthContext';
@@ -22,6 +25,7 @@ export function Header() {
   const { totalItems, setIsCartOpen } = useCart();
   const { user, profile, role, signOut } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -256,8 +260,97 @@ export function Header() {
               </span>
             )}
           </button>
+
+          {/* Mobile Navigation Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+            className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-slate-700 bg-slate-800/80 text-slate-200 transition hover:border-[#F97316]/60 hover:bg-slate-800"
+            aria-label={isMobileNavOpen ? 'Cerrar menú móvil' : 'Abrir menú móvil'}
+          >
+            {isMobileNavOpen ? <X className="h-5 w-5 text-[#F97316]" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      {isMobileNavOpen && (
+        <div className="md:hidden border-t border-slate-800 bg-[#0F172A] px-4 py-4 space-y-3 animate-fade-in shadow-2xl">
+          <div className="flex flex-col gap-1 text-sm font-medium text-slate-200">
+            <Link
+              href="/catalogo"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition flex items-center justify-between"
+            >
+              <span>Catálogo Completo</span>
+              <span className="text-xs text-[#F97316] font-bold">Ver Todo →</span>
+            </Link>
+            <Link
+              href="/catalogo?categoria=herramientas-electricas"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              ⚡ Herramientas Eléctricas
+            </Link>
+            <Link
+              href="/catalogo?categoria=herramientas-manuales"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              🔨 Herramientas Manuales
+            </Link>
+            <Link
+              href="/catalogo?categoria=plomeria-griferia"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              💧 Plomería y Grifería
+            </Link>
+            <Link
+              href="/catalogo?categoria=electricidad-iluminacion"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              💡 Electricidad e Iluminación
+            </Link>
+            <Link
+              href="/catalogo?categoria=pinturas-adhesivos"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              🎨 Pinturas y Adhesivos
+            </Link>
+            <Link
+              href="/catalogo?categoria=tornilleria-fijaciones"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-[#F97316] transition text-slate-300"
+            >
+              🔩 Tornillería y Fijaciones
+            </Link>
+          </div>
+
+          <div className="border-t border-slate-800 pt-3 flex flex-col gap-2 text-xs">
+            <Link
+              href="/historial"
+              onClick={() => setIsMobileNavOpen(false)}
+              className="px-3 py-2.5 rounded-lg bg-slate-800/80 text-slate-200 hover:text-white transition flex items-center justify-between font-semibold"
+            >
+              <span>Consultar o Seguir mi Pedido</span>
+              <span>🔍</span>
+            </Link>
+
+            <a
+              href="https://wa.me/573001234567"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold flex items-center justify-between"
+            >
+              <span>Atención WhatsApp: 300 123 4567</span>
+              <span>💬</span>
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

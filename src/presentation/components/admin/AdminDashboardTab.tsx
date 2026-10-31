@@ -175,8 +175,8 @@ export function AdminDashboardTab({
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table className="w-full text-left text-xs min-w-[650px]">
             <thead>
               <tr className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
                 <th className="py-2.5 px-4 rounded-l-lg">Producto</th>
@@ -279,7 +279,7 @@ export function AdminDashboardTab({
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
           {orders.length === 0 ? (
             <div className="py-8 text-center text-slate-400 bg-slate-50 rounded-xl border border-slate-100">
               <Receipt className="h-7 w-7 text-slate-300 mx-auto mb-2" />
@@ -289,7 +289,7 @@ export function AdminDashboardTab({
               </p>
             </div>
           ) : (
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[650px]">
               <thead>
                 <tr className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider border-y border-slate-200">
                   <th className="py-2.5 px-4 rounded-l-lg">Cliente</th>

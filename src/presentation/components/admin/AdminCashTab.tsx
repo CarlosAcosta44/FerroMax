@@ -203,16 +203,16 @@ export function AdminCashTab({
           </div>
 
           {/* SECCIÓN 1: Billetes de Colombia */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
               <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-[#F97316]" />
+                <DollarSign className="h-5 w-5 text-[#F97316] shrink-0" />
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">Billetes de Colombia</h3>
                   <p className="text-[11px] text-slate-400">Denominaciones vigentes en circulación nacional</p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Subtotal Billetes</span>
                 <span className="text-sm font-black font-mono text-slate-800">
                   ${subtotalBilletes.toLocaleString('es-CO')} COP
@@ -279,16 +279,16 @@ export function AdminCashTab({
           </div>
 
           {/* SECCIÓN 2: Monedas de Colombia */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200/80 shadow-xs flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
               <div className="flex items-center gap-2">
-                <Coins className="h-5 w-5 text-amber-500" />
+                <Coins className="h-5 w-5 text-amber-500 shrink-0" />
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">Monedas de Colombia</h3>
                   <p className="text-[11px] text-slate-400">Monedas de $1.000, $500, $200, $100 y $50</p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Subtotal Monedas</span>
                 <span className="text-sm font-black font-mono text-amber-700">
                   ${subtotalMonedas.toLocaleString('es-CO')} COP

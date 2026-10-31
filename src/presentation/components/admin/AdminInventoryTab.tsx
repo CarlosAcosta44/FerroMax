@@ -207,16 +207,16 @@ export function AdminInventoryTab({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
           <button
             onClick={() => showToast('Descargando planilla de inventario...')}
-            className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition"
+            className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition cursor-pointer"
           >
             Importar / Exportar
           </button>
           <button
             onClick={() => showToast('Abriendo modal para registrar producto nuevo')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold shadow-sm transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold shadow-sm transition cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>+ Nuevo Producto</span>
@@ -322,13 +322,13 @@ export function AdminInventoryTab({
           <div className="relative flex-1 max-w-xl">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#F97316] h-4 w-4" />
             <input
-              className="w-full pl-10 pr-24 py-2.5 rounded-lg bg-orange-50/40 border border-orange-200/80 text-slate-800 placeholder-slate-400 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
+              className="w-full pl-10 pr-4 sm:pr-24 py-2.5 rounded-lg bg-orange-50/40 border border-orange-200/80 text-slate-800 placeholder-slate-400 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
               placeholder="Buscar por nombre, código SKU o pasillo..."
               type="text"
               value={inventorySearch}
               onChange={(e) => handleSearchChange(e.target.value)}
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            <span className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 pointer-events-none">
               Filtro rápido
             </span>
           </div>
@@ -390,7 +390,7 @@ export function AdminInventoryTab({
       {/* Tabla de Inventario y Precios */}
       <div className="rounded-xl bg-white shadow-xs border border-slate-200/80 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs border-collapse min-w-[720px]">
             <thead>
               <tr className="bg-orange-50/70 border-b border-orange-100 text-slate-700 uppercase tracking-wider font-bold">
                 <th className="py-3 px-4">Producto y Ubicación</th>
@@ -611,13 +611,13 @@ export function AdminInventoryTab({
               </button>
             </div>
 
-            <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
-              <div className="flex gap-4 items-start">
-                <div className="w-24 h-24 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+            <div className="p-4 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
                   {viewingProduct.image_url ? (
                     <img src={viewingProduct.image_url} alt={viewingProduct.name} className="w-full h-full object-cover" />
                   ) : (
-                    <Package className="h-10 w-10 text-slate-300" />
+                    <Package className="h-8 sm:h-10 w-8 sm:w-10 text-slate-300" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -625,7 +625,7 @@ export function AdminInventoryTab({
                     {viewingProduct.category}
                   </span>
                   <h4 className="text-base font-extrabold text-slate-900 leading-snug">{viewingProduct.name}</h4>
-                  <div className="flex items-center gap-3 mt-1.5 text-slate-500 font-mono text-[11px]">
+                  <div className="flex items-center gap-3 mt-1.5 text-slate-500 font-mono text-[11px] flex-wrap">
                     <span>SKU: {viewingProduct.sku}</span>
                     <span>•</span>
                     <span className="text-[#EA580C] font-semibold flex items-center gap-1">
@@ -637,7 +637,7 @@ export function AdminInventoryTab({
               </div>
 
               {/* Grid de precios y stock */}
-              <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
                   <span className="text-[10px] font-bold uppercase text-slate-400 block">Precio Venta (PVP)</span>
                   <span className="text-lg font-black text-[#EA580C] font-mono mt-0.5 block">

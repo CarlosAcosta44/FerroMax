@@ -15,6 +15,9 @@ import {
   ChevronDown,
   ShieldCheck,
   Search,
+  ShoppingBag,
+  Menu,
+  X,
 } from '@/presentation/components/common/Icons';
 import { useAuth } from '@/presentation/context/AuthContext';
 import {
@@ -43,6 +46,7 @@ export default function AdminPage() {
   const router = useRouter();
   const { user, profile, role, isLoading: isAuthLoading, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -247,12 +251,28 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* 1. SIDEBAR IZQUIERDO: Deep Slate #0F172A strictly following DESIGN.md */}
-      <aside className="fixed left-0 top-0 h-full w-72 bg-[#0F172A] z-50 flex flex-col justify-between border-r border-slate-800 shadow-xl select-none">
+      {/* Mobile Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 lg:hidden transition-opacity"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* 1. SIDEBAR IZQUIERDO: Responsive Off-canvas on Mobile, Persistent on lg */}
+      <aside
+        className={`fixed left-0 top-0 h-full w-72 bg-[#0F172A] z-50 flex flex-col justify-between border-r border-slate-800 shadow-2xl select-none transition-transform duration-300 ease-in-out ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
         <div className="flex flex-col">
-          {/* Logo y Nombre de Tienda: FerroMax */}
-          <div className="px-6 pt-6 pb-5 border-b border-slate-800/80">
-            <Link href="/" className="flex flex-col group">
+          {/* Logo y Nombre de Tienda: FerroMax + Botón Cerrar en Móvil */}
+          <div className="px-6 pt-5 pb-4 border-b border-slate-800/80 flex items-center justify-between">
+            <Link
+              href="/"
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="flex flex-col group"
+            >
               <span className="text-2xl font-black tracking-tight text-white leading-none">
                 FERRO<span className="text-[#F97316]">MAX</span>
               </span>
@@ -260,6 +280,15 @@ export default function AdminPage() {
                 Panel de Administración
               </p>
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              aria-label="Cerrar barra lateral"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Tarjeta de Perfil del Administrador */}
@@ -304,7 +333,10 @@ export default function AdminPage() {
                 <div className="py-1">
                   <Link
                     href="/"
-                    onClick={() => setIsProfileMenuOpen(false)}
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      setIsMobileSidebarOpen(false);
+                    }}
                     className="flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition"
                   >
                     <Store className="h-4 w-4 text-slate-400" />
@@ -312,7 +344,10 @@ export default function AdminPage() {
                   </Link>
                   <Link
                     href="/catalogo"
-                    onClick={() => setIsProfileMenuOpen(false)}
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      setIsMobileSidebarOpen(false);
+                    }}
                     className="flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition"
                   >
                     <Package className="h-4 w-4 text-slate-400" />
@@ -336,7 +371,10 @@ export default function AdminPage() {
           {/* Navegación de los 6 Módulos Oficiales del Diseño */}
           <nav className="flex flex-col gap-1.5 px-3 mt-1 text-sm font-medium">
             <button
-              onClick={() => setActiveTab('dashboard')}
+              onClick={() => {
+                setActiveTab('dashboard');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'dashboard'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -348,7 +386,10 @@ export default function AdminPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('inventory')}
+              onClick={() => {
+                setActiveTab('inventory');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'inventory'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -370,7 +411,10 @@ export default function AdminPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('pos')}
+              onClick={() => {
+                setActiveTab('pos');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'pos'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -382,7 +426,10 @@ export default function AdminPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('orders')}
+              onClick={() => {
+                setActiveTab('orders');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'orders'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -390,16 +437,25 @@ export default function AdminPage() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 shrink-0" />
-                <span>Retiro en Mesón</span>
+                <ShoppingBag className="h-5 w-5 shrink-0" />
+                <span>Compras en Línea</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/40">
-                Online
-              </span>
+              {orders.filter((o) => (o.channel === 'web' || !o.order_number.startsWith('POS-')) && o.status !== 'delivered').length > 0 ? (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/40">
+                  {orders.filter((o) => (o.channel === 'web' || !o.order_number.startsWith('POS-')) && o.status !== 'delivered').length} activos
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-xs font-medium">
+                  Al día
+                </span>
+              )}
             </button>
 
             <button
-              onClick={() => setActiveTab('customers')}
+              onClick={() => {
+                setActiveTab('customers');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'customers'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -411,7 +467,10 @@ export default function AdminPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab('cash')}
+              onClick={() => {
+                setActiveTab('cash');
+                setIsMobileSidebarOpen(false);
+              }}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all text-left ${
                 activeTab === 'cash'
                   ? 'bg-[#F97316] text-white font-semibold shadow-md shadow-orange-500/20'
@@ -434,31 +493,44 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      {/* 2. ÁREA PRINCIPAL DE CONTENIDO */}
-      <div className="flex-1 ml-72 flex flex-col min-h-screen">
+      {/* 2. ÁREA PRINCIPAL DE CONTENIDO: Responsive Full Width with lg:ml-72 */}
+      <div className="flex-1 w-full lg:ml-72 flex flex-col min-h-screen">
         {/* Top Navbar */}
-        <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-8 py-3.5 flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-4">
-            <span className="px-2.5 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-bold border border-orange-200 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#EA580C]" />
-              Tienda Abierta • 07:30 a 18:30
-            </span>
-            <span className="text-slate-300">|</span>
-            <span className="text-xs text-slate-500 font-medium">
-              Mesón Principal y Despacho Local
-            </span>
+        <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-3">
+            {/* Hamburger Button for Mobile */}
+            <button
+              type="button"
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+              aria-label="Abrir menú de navegación"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <span className="px-2.5 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-bold border border-orange-200 flex items-center gap-1.5 whitespace-nowrap">
+                <span className="w-2 h-2 rounded-full bg-[#EA580C]" />
+                <span className="hidden sm:inline">Tienda Abierta • </span>07:30 - 18:30
+              </span>
+              <span className="hidden md:inline text-slate-300">|</span>
+              <span className="hidden md:inline text-xs text-slate-500 font-medium truncate">
+                Mesón Principal y Despacho Local
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200/80">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span>Base de Datos Conectada</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 text-[11px] sm:text-xs font-semibold border border-emerald-200/80">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span className="hidden sm:inline">Base de Datos Conectada</span>
+              <span className="sm:hidden">Online</span>
             </div>
           </div>
         </header>
 
         {/* Contenido Dinámico por Pestaña */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           {activeTab === 'dashboard' && (
             <AdminDashboardTab
               products={products}

@@ -272,40 +272,40 @@ export function AdminPosTab({
           {/* Buscador y Lector de Código de Barras */}
           <div className="bg-white p-4 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-3">
             <div className="relative flex items-center">
-              <Search className="absolute left-4 text-[#F97316] h-5 w-5" />
+              <Search className="absolute left-3.5 sm:left-4 text-[#F97316] h-4 sm:h-5 w-4 sm:w-5" />
               <input
-                className="w-full pl-12 pr-28 py-3 bg-slate-50 rounded-lg text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
-                placeholder="Escanear código de barra o buscar producto (ej: tornillo, brocha, cerradura)... [F3]"
+                className="w-full pl-10 sm:pl-12 pr-12 sm:pr-28 py-2.5 sm:py-3 bg-slate-50 rounded-lg text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#F97316] transition-all"
+                placeholder="Escanear código de barra o buscar producto (ej: tornillo, brocha, cerradura)..."
                 type="text"
                 value={posSearch}
                 onChange={(e) => setPosSearch(e.target.value)}
               />
-              <div className="absolute right-3 flex items-center gap-1.5 pointer-events-none">
-                <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[10px] font-bold">
+              <div className="absolute right-2.5 sm:right-3 flex items-center gap-1 sm:gap-1.5 pointer-events-none">
+                <span className="hidden sm:inline-flex px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-[10px] font-bold">
                   F3
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#F97316] text-white font-mono text-[10px] font-bold animate-pulse">
-                  LÁSER ACTIVO
+                <span className="px-2 py-0.5 rounded-full bg-[#F97316] text-white font-mono text-[9px] sm:text-[10px] font-bold animate-pulse">
+                  LÁSER
                 </span>
               </div>
             </div>
           </div>
 
           {/* Favoritos de Alta Rotación en Mesón */}
-          <div className="bg-white p-5 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+          <div className="bg-white p-4 sm:p-5 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-[#F97316]" />
+                <Zap className="h-5 w-5 text-[#F97316] shrink-0" />
                 <h3 className="text-sm font-bold text-slate-900">
                   {posSearch ? 'Resultados de Búsqueda Rápida' : 'Favoritos de Alta Rotación en Mesón'}
                 </h3>
               </div>
-              <span className="text-[11px] font-semibold text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
+              <span className="text-[11px] font-semibold text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200 w-fit">
                 Clic rápido para añadir
               </span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {filteredCatalogForPos.map((item) => (
                 <div
                   key={item.id}
@@ -322,7 +322,7 @@ export function AdminPosTab({
                     </span>
                     <button
                       onClick={() => addPosItem(item)}
-                      className="px-2.5 py-1 rounded bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-semibold flex items-center gap-1 shadow-xs transition active:scale-95"
+                      className="px-2.5 py-1 rounded bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-semibold flex items-center gap-1 shadow-xs transition active:scale-95 cursor-pointer"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Sumar</span>
@@ -334,7 +334,7 @@ export function AdminPosTab({
           </div>
 
           {/* Ticket de Venta Actual */}
-          <div className="bg-white p-6 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
+          <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xs border border-slate-200/80 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Receipt className="h-5 w-5 text-[#F97316]" />
@@ -342,15 +342,15 @@ export function AdminPosTab({
               </div>
               <button
                 onClick={clearCart}
-                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-medium transition"
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-medium transition cursor-pointer"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 <span>Limpiar Ticket</span>
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+              <table className="w-full text-left text-xs min-w-[480px]">
                 <thead>
                   <tr className="bg-slate-50 text-slate-500 font-semibold uppercase border-y border-slate-200">
                     <th className="py-2.5 px-4 rounded-l-lg">Producto / Ubicación</th>
@@ -648,11 +648,11 @@ export function AdminPosTab({
                 </div>
 
                 {/* Input de Efectivo Recibido */}
-                <div className="flex items-center justify-between gap-3 pt-1 border-t border-slate-200">
-                  <label className="font-bold text-slate-700 whitespace-nowrap">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-2 border-t border-slate-200">
+                  <label className="font-bold text-slate-700 whitespace-nowrap text-xs">
                     Efectivo Recibido:
                   </label>
-                  <div className="relative flex-1">
+                  <div className="relative w-full sm:flex-1">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[#F97316] font-bold text-sm">
                       $
                     </span>
