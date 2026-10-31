@@ -5,6 +5,8 @@ import { Footer } from '@/presentation/components/common/Footer';
 import { CartProvider } from '@/presentation/context/CartContext';
 import { AuthProvider } from '@/presentation/context/AuthContext';
 
+import { CartDrawer } from '@/presentation/components/cart/CartDrawer';
+
 export const metadata: Metadata = {
   title: 'FerroMax – Ferretería y Herramientas | Tu Ferretería de Barrio',
   description:
@@ -22,6 +24,7 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <Header />
+            <CartDrawer />
             <main className="flex-1">{children}</main>
             <Footer />
           </CartProvider>

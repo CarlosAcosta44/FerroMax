@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, setIsCartOpen } = useCart();
   const stockStatus = getProductStockStatus(product);
 
   const formattedPrice = new Intl.NumberFormat('es-CO', {
@@ -63,7 +63,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Title */}
         <h3 className="mt-2.5 text-sm font-semibold text-slate-900 transition group-hover:text-[#F97316] line-clamp-2 leading-snug">
-          <Link href={`/catalogo/${product.slug}`}>{product.name}</Link>
+          <Link href={`/catalogo/${product.slug}`} className="hover:underline">
+            {product.name}
+          </Link>
         </h3>
 
         {/* Unit Measure */}
@@ -92,9 +94,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="grid grid-cols-5 gap-2">
           {/* Primary Action Button (Industrial Orange) */}
           <button
-            onClick={() => addToCart(product)}
+            onClick={() => {
+              addToCart(product);
+              setIsCartOpen(true);
+            }}
             disabled={stockStatus === 'out_of_stock'}
-            className="col-span-4 flex items-center justify-center gap-1.5 rounded bg-[#F97316] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#EA580C] active:bg-[#C2410C] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 shadow-sm"
+            className="col-span-4 flex items-center justify-center gap-1.5 rounded bg-[#F97316] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#EA580C] active:bg-[#C2410C] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 shadow-sm cursor-pointer"
           >
             <ShoppingCart className="h-3.5 w-3.5" />
             {stockStatus === 'out_of_stock' ? 'Sin Stock' : 'Agregar a orden'}
