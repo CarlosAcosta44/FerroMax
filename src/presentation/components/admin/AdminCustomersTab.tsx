@@ -7,6 +7,9 @@ import {
   DollarSign,
   ShieldCheck,
   Smartphone,
+  Search,
+  ShoppingCart,
+  User,
 } from '@/presentation/components/common/Icons';
 import { AdminCustomer } from '@/infrastructure/repositories/SupabaseAdminRepository';
 import { recordCustomerAbonoAction } from '@/app/actions/customerActions';
@@ -26,10 +29,39 @@ export function AdminCustomersTab({
   getInitials,
   showToast,
 }: AdminCustomersTabProps) {
+  const [filterType, setFilterType] = useState<'all' | 'online' | 'credit'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [abonoCustomerId, setAbonoCustomerId] = useState<string>(customers[0]?.id || '');
   const [abonoAmount, setAbonoAmount] = useState<number>(50000);
   const [abonoPaymentMethod, setAbonoPaymentMethod] = useState<'efectivo' | 'transferencia' | 'tarjeta'>('efectivo');
   const [isSubmittingAbono, setIsSubmittingAbono] = useState(false);
+
+  const onlineCustomersCount = useMemo(
+    () => customers.filter((c) => c.customer_type === 'online_user').length,
+    [customers]
+  );
+
+  const creditCustomersCount = useMemo(
+    () => customers.filter((c) => (c.credit_balance_cop || 0) > 0).length,
+    [customers]
+  );
+
+  const filteredCustomers = useMemo(() => {
+    return customers.filter((c) => {
+      if (filterType === 'online' && c.customer_type !== 'online_user') return false;
+      if (filterType === 'credit' && (c.credit_balance_cop || 0) <= 0) return false;
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchName = c.full_name.toLowerCase().includes(q);
+        const matchEmail = c.email?.toLowerCase().includes(q);
+        const matchPhone = c.phone?.includes(q);
+        if (!matchName && !matchEmail && !matchPhone) return false;
+      }
+
+      return true;
+    });
+  }, [customers, filterType, searchQuery]);
 
   const selectedAbonoCustomer = useMemo(
     () => customers.find((c) => c.id === abonoCustomerId) || customers[0],
@@ -67,11 +99,14 @@ export function AdminCustomersTab({
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            Clientes Frecuentes, Maestros y Cuentas Vecinales
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <span>Gestión de Clientes y Usuarios Registrados</span>
+            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-[#EA580C] border border-orange-200">
+              {customers.length} Clientes Activos
+            </span>
           </h1>
-          <p className="text-slate-500 text-xs mt-0.5">
-            Libreta de créditos (fiado), abonos en mesón y descuentos del Club Ferretero.
+          <p className="text-slate-500 text-xs mt-1">
+            Usuarios que compran en línea por la plataforma web y maestros con libreta de crédito.
           </p>
         </div>
       </div>
@@ -81,11 +116,11 @@ export function AdminCustomersTab({
         <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 uppercase font-semibold">
-              Clientes Registrados
+              Total Clientes
             </span>
             <h3 className="text-2xl font-black text-slate-900 mt-1">{customers.length}</h3>
             <span className="text-[11px] text-emerald-700 font-semibold">
-              Maestros y vecinos activos
+              Sincronizados con la BD
             </span>
           </div>
           <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
@@ -93,16 +128,33 @@ export function AdminCustomersTab({
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-xl border-t-2 border-sky-500 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 uppercase font-semibold">
-              Saldo en Cuentas Vecinales
+              Usuarios en Línea (Web)
+            </span>
+            <h3 className="text-2xl font-black text-sky-700 mt-1">
+              {onlineCustomersCount}
+            </h3>
+            <span className="text-[11px] text-sky-600 font-semibold">
+              Compradores registrados
+            </span>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+            <User className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-xl border-t-2 border-amber-500 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs text-slate-500 uppercase font-semibold">
+              Cartera por Cobrar
             </span>
             <h3 className="text-2xl font-black text-amber-700 mt-1">
               ${totalOutstandingCredit.toLocaleString('es-CO')}
             </h3>
             <span className="text-[11px] text-slate-400 font-mono">
-              COP por cobrar (fiado)
+              Fiados pendientes
             </span>
           </div>
           <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -110,45 +162,80 @@ export function AdminCustomersTab({
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-xl border-t-2 border-emerald-500 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 uppercase font-semibold">
-              Cupo Total Habilitado
+              Compras Totales Acumuladas
             </span>
             <h3 className="text-2xl font-black text-emerald-700 mt-1">
-              ${customers.reduce((sum, c) => sum + (c.credit_limit_cop || 0), 0).toLocaleString('es-CO')}
+              ${customers.reduce((sum, c) => sum + (c.total_purchases_cop || 0), 0).toLocaleString('es-CO')}
             </h3>
             <span className="text-[11px] text-emerald-700 font-semibold">
-              Límite total asignado
+              Facturación acumulada
             </span>
           </div>
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <DollarSign className="h-5 w-5" />
           </div>
         </div>
+      </div>
 
-        <div className="bg-white p-5 rounded-xl border-t-2 border-[#F97316] shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-500 uppercase font-semibold">
-              Cuentas con Saldo
-            </span>
-            <h3 className="text-2xl font-black text-slate-900 mt-1">
-              {customers.filter((c) => (c.credit_balance_cop || 0) > 0).length} de {customers.length}
-            </h3>
-            <span className="text-[11px] text-slate-500 font-medium">
-              Clientes con fiado pendiente
-            </span>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#F97316] flex items-center justify-center">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
+      {/* Barra de Filtros y Búsqueda */}
+      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 overflow-x-auto max-w-full">
+          <button
+            type="button"
+            onClick={() => setFilterType('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+              filterType === 'all'
+                ? 'bg-white text-slate-900 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Todos ({customers.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterType('online')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+              filterType === 'online'
+                ? 'bg-sky-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-sky-700'
+            }`}
+          >
+            Usuarios en Línea ({onlineCustomersCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterType('credit')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+              filterType === 'credit'
+                ? 'bg-[#EA580C] text-white shadow-xs'
+                : 'text-slate-600 hover:text-[#EA580C]'
+            }`}
+          >
+            Con Fiado Activo ({creditCustomersCount})
+          </button>
+        </div>
+
+        <div className="relative w-full md:max-w-sm">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar por nombre, correo o celular..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#F97316]"
+          />
         </div>
       </div>
 
-      {/* Grid 65% / 35% */}
+      {/* Grid de Contenido (65% / 35%) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Columna Izquierda: Tarjetas de Clientes */}
         <div className="lg:col-span-8 flex flex-col gap-4">
-          {customers.map((c) => {
+          {filteredCustomers.map((c) => {
+            const isOnline = c.customer_type === 'online_user';
             const creditPct =
               c.credit_limit_cop > 0
                 ? Math.min(100, Math.round((c.credit_balance_cop / c.credit_limit_cop) * 100))
@@ -161,20 +248,39 @@ export function AdminCustomersTab({
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-orange-100 text-[#EA580C] font-black text-sm flex items-center justify-center shrink-0">
-                      {getInitials(c.full_name)}
+                    <div
+                      className={`w-12 h-12 rounded-xl font-black text-sm flex items-center justify-center shrink-0 ${
+                        isOnline
+                          ? 'bg-sky-100 text-sky-700'
+                          : 'bg-orange-100 text-[#EA580C]'
+                      }`}
+                    >
+                      {getInitials(c.full_name, c.email)}
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-sm font-bold text-slate-900">{c.full_name}</h3>
-                        <span className="px-2 py-0.5 rounded bg-orange-50 border border-orange-200 text-[#EA580C] text-[10px] font-bold">
-                          {c.club_tier}
-                        </span>
+                        {isOnline ? (
+                          <span className="px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-700 text-[10px] font-bold">
+                            🌐 Comprador en Línea
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded bg-orange-50 border border-orange-200 text-[#EA580C] text-[10px] font-bold">
+                            {c.club_tier}
+                          </span>
+                        )}
+                        {c.credit_balance_cop > 0 && (
+                          <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">
+                            Deuda: ${c.credit_balance_cop.toLocaleString('es-CO')}
+                          </span>
+                        )}
                       </div>
-                      <span className="text-xs text-slate-500 font-medium">{c.trade}</span>
-                      <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                      <span className="text-xs text-slate-500 font-medium block mt-0.5">{c.trade}</span>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 flex-wrap">
+                        {c.email && <span>{c.email}</span>}
+                        {c.email && c.phone && <span>•</span>}
                         <span>{c.phone}</span>
-                        <span>•</span>
+                        {c.address && <span>•</span>}
                         <span>{c.address}</span>
                       </div>
                     </div>
@@ -190,13 +296,13 @@ export function AdminCustomersTab({
                     >
                       Registrar Abono
                     </button>
-                    {c.phone && (
+                    {c.phone && c.phone.length >= 7 && (
                       <a
-                        href={`https://wa.me/57${c.phone.replace(/\s+/g, '')}?text=Hola%20${encodeURIComponent(c.full_name)},%20te%20saludamos%20de%20FerroMax.%20Tu%20saldo%20actual%20en%20cuenta%20es%20de%20$${c.credit_balance_cop.toLocaleString('es-CO')}%20COP.`}
+                        href={`https://wa.me/57${c.phone.replace(/\s+/g, '')}?text=Hola%20${encodeURIComponent(c.full_name)},%20te%20saludamos%20de%20FerroMax.`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition"
-                        title="Enviar recordatorio WhatsApp"
+                        title="Contactar por WhatsApp"
                       >
                         <Smartphone className="h-4 w-4" />
                       </a>
@@ -204,12 +310,12 @@ export function AdminCustomersTab({
                   </div>
                 </div>
 
+                {/* Resumen de Compras & Cartera */}
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex flex-col gap-2">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-600 font-medium">Línea de Crédito Utilizada:</span>
+                    <span className="text-slate-600 font-medium">Línea de Crédito:</span>
                     <span className="font-mono font-bold text-slate-900">
-                      ${c.credit_balance_cop.toLocaleString('es-CO')} / $
-                      {c.credit_limit_cop.toLocaleString('es-CO')} COP
+                      ${c.credit_balance_cop.toLocaleString('es-CO')} / ${c.credit_limit_cop.toLocaleString('es-CO')} COP
                     </span>
                   </div>
                   <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
@@ -224,16 +330,25 @@ export function AdminCustomersTab({
                       style={{ width: `${creditPct}%` }}
                     />
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400">
-                    <span>Compras acumuladas: ${c.total_purchases_cop.toLocaleString('es-CO')} COP</span>
-                    <span>{creditPct}% del cupo asignado</span>
+                  <div className="flex justify-between text-[11px] text-slate-500">
+                    <span className="font-semibold text-slate-700">
+                      Compras Acumuladas: ${c.total_purchases_cop.toLocaleString('es-CO')} COP
+                    </span>
+                    <span>{creditPct}% del cupo utilizado</span>
                   </div>
                 </div>
               </div>
             );
           })}
+
+          {filteredCustomers.length === 0 && (
+            <div className="py-12 bg-white rounded-xl border border-dashed border-slate-300 text-center text-slate-400 text-xs">
+              No se encontraron clientes con el filtro seleccionado.
+            </div>
+          )}
         </div>
 
+        {/* Columna Derecha: Ficha Rápida de Abono */}
         <div className="lg:col-span-4 flex flex-col gap-6">
           <div className="p-5 rounded-xl bg-white shadow-xs border border-slate-200/80 flex flex-col gap-4">
             <div className="flex items-center justify-between">
@@ -251,7 +366,7 @@ export function AdminCustomersTab({
             <form onSubmit={handleRecordAbono} className="flex flex-col gap-3 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Cliente o Maestro:
+                  Cliente o Usuario:
                 </label>
                 <select
                   className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 font-semibold outline-none focus:ring-2 focus:ring-[#F97316]"
@@ -260,16 +375,16 @@ export function AdminCustomersTab({
                 >
                   {customers.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.full_name} (${c.credit_balance_cop.toLocaleString('es-CO')} deudor)
+                      {c.full_name} (${(c.credit_balance_cop || 0).toLocaleString('es-CO')} saldo)
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="p-3 bg-amber-50/60 rounded-lg border border-amber-200 text-amber-900 flex justify-between items-center font-mono">
-                <span>Deuda Pendiente:</span>
+                <span>Saldo Pendiente:</span>
                 <span className="font-bold text-sm">
-                  ${selectedAbonoCustomer?.credit_balance_cop.toLocaleString('es-CO')} COP
+                  ${(selectedAbonoCustomer?.credit_balance_cop || 0).toLocaleString('es-CO')} COP
                 </span>
               </div>
 
@@ -338,7 +453,7 @@ export function AdminCustomersTab({
                     <span>Registrando...</span>
                   </>
                 ) : (
-                  <span>Registrar Abono en Mesón</span>
+                  <span>Registrar Abono</span>
                 )}
               </button>
             </form>
@@ -347,12 +462,12 @@ export function AdminCustomersTab({
           <div className="p-4 rounded-xl bg-orange-50 border border-orange-200 text-slate-700 text-xs flex flex-col gap-2">
             <span className="font-bold text-[#EA580C] flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" />
-              Reglas de Crédito Vecinal FerroMax:
+              Reglas de Clientes FerroMax:
             </span>
             <ul className="list-disc pl-4 space-y-1 text-slate-600">
-              <li>Pago máximo a 30 días calendario.</li>
-              <li>Descuento adicional de 2% por pago antes del día 15.</li>
-              <li>Límite de fiado bloqueado automáticamente al superar el cupo.</li>
+              <li>Los compradores en línea acumulan puntos para descuento en mesón.</li>
+              <li>Crédito vecinal a 30 días calendario para maestros calificados.</li>
+              <li>Actualización de saldo en tiempo real con cada abono.</li>
             </ul>
           </div>
         </div>

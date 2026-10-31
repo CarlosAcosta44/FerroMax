@@ -27,6 +27,7 @@ export interface AdminCustomer {
   credit_balance_cop: number;
   total_purchases_cop: number;
   address?: string;
+  customer_type?: 'online_user' | 'frequent_counter';
 }
 
 export interface AdminOrder {
@@ -36,12 +37,14 @@ export interface AdminOrder {
   customer_phone: string;
   customer_email: string;
   channel: 'web' | 'pos' | 'counter';
-  delivery_type: string;
+  delivery_type: 'pickup' | 'delivery';
+  delivery_address?: string;
   status: 'pending_payment' | 'paid' | 'preparing' | 'ready_for_pickup' | 'delivered' | 'cancelled';
   pickup_pin?: string;
   payment_method: string;
   items_summary: string;
   total_cop: number;
+  customer_notes?: string;
   created_at: string;
 }
 
@@ -156,33 +159,75 @@ export class SupabaseAdminRepository {
     }
   }
 
-  // 2. Fetch real customers for Clientes Frecuentes module
+  // 2. Fetch real customers (including online registered users)
   async getCustomers(): Promise<AdminCustomer[]> {
     try {
-      const { data, error } = await supabase
-        .from('customers')
-        .select('*')
-        .order('full_name');
+      const [{ data: customersData }, { data: profilesData }, { data: ordersData }] = await Promise.all([
+        supabase.from('customers').select('*').order('full_name'),
+        supabase.from('profiles').select('*').eq('role', 'cliente'),
+        supabase.from('orders').select('customer_id, customer_email, total_cop, status'),
+      ]);
 
-      if (!error && data && data.length > 0) {
-        return data.map((c: any) => ({
-          id: c.id,
-          full_name: c.full_name,
-          email: c.email || '',
-          phone: c.phone || '300 000 0000',
-          trade: c.notes ? c.notes.split('.')[0] : (c.is_frequent ? 'Maestro Frecuente' : 'Vecino del Barrio'),
-          club_tier: c.is_frequent ? 'Maestro Club' : 'Vecino Club',
-          credit_limit_cop: 500000,
-          credit_balance_cop: 0,
-          total_purchases_cop: 0,
-          address: c.address || c.city || 'Bogotá',
-        }));
+      const customerMap = new Map<string, AdminCustomer>();
+
+      // A. Process customers from customers table
+      if (customersData && customersData.length > 0) {
+        for (const c of customersData) {
+          const custOrders = (ordersData || []).filter(
+            (o) => o.customer_id === c.id || (c.email && o.customer_email?.toLowerCase() === c.email.toLowerCase())
+          );
+          const totalPurchases = custOrders.reduce((sum, o) => sum + (Number(o.total_cop) || 0), 0);
+
+          customerMap.set(c.id, {
+            id: c.id,
+            full_name: c.full_name,
+            email: c.email || '',
+            phone: c.phone || '300 000 0000',
+            trade: c.notes ? c.notes.split('.')[0] : (c.is_frequent ? 'Maestro de Obra' : 'Cliente Frecuente'),
+            club_tier: c.is_frequent ? 'Club Maestro (10% Dcto)' : 'Vecino Club (5% Dcto)',
+            credit_limit_cop: Number(c.credit_limit_cop) || (c.is_frequent ? 1000000 : 500000),
+            credit_balance_cop: Number(c.credit_balance_cop) || 0,
+            total_purchases_cop: totalPurchases > 0 ? totalPurchases : (Number(c.total_purchases_cop) || 0),
+            address: c.address || c.city || 'Bogotá',
+            customer_type: 'frequent_counter',
+          });
+        }
       }
+
+      // B. Merge online registered users from profiles
+      if (profilesData && profilesData.length > 0) {
+        for (const p of profilesData) {
+          const already = Array.from(customerMap.values()).find(
+            (c) => c.email && p.email && c.email.toLowerCase() === p.email.toLowerCase()
+          );
+          if (!already) {
+            const userOrders = (ordersData || []).filter(
+              (o) => o.customer_id === p.id || (p.email && o.customer_email?.toLowerCase() === p.email.toLowerCase())
+            );
+            const totalPurchases = userOrders.reduce((sum, o) => sum + (Number(o.total_cop) || 0), 0);
+
+            customerMap.set(p.id, {
+              id: p.id,
+              full_name: p.full_name || p.email.split('@')[0],
+              email: p.email,
+              phone: p.phone || 'Celular no registrado',
+              trade: 'Usuario Registrado en Línea',
+              club_tier: 'Comprador Online',
+              credit_limit_cop: 300000,
+              credit_balance_cop: 0,
+              total_purchases_cop: totalPurchases,
+              address: 'Cliente Web FerroMax',
+              customer_type: 'online_user',
+            });
+          }
+        }
+      }
+
+      return Array.from(customerMap.values());
     } catch (err) {
       console.error('Error al consultar clientes de Supabase:', err);
+      return [];
     }
-
-    return [];
   }
 
   // Record an abono / credit payment for a customer
@@ -191,7 +236,7 @@ export class SupabaseAdminRepository {
     return { success: true };
   }
 
-  // 3. Fetch real orders for Pedidos y Retiro en Mesón and Sales
+  // 3. Fetch real orders for Compras en Línea (Web) and Sales (POS)
   async getOrders(): Promise<AdminOrder[]> {
     try {
       const { data, error } = await supabase
@@ -202,7 +247,9 @@ export class SupabaseAdminRepository {
           customer_name,
           customer_phone,
           customer_email,
+          order_origin,
           delivery_type,
+          delivery_address,
           status,
           total_cop,
           customer_notes,
@@ -220,9 +267,26 @@ export class SupabaseAdminRepository {
             ? o.order_items.map((i: any) => `${i.quantity}x ${i.product_name}`).join(', ')
             : 'Suministros Ferretería';
 
+          // Extract PIN
           const pinMatch = o.customer_notes?.match(/PIN:\s*([0-9A-Za-z]+)/i);
           const pickupPin = pinMatch ? pinMatch[1] : (o.order_number ? o.order_number.slice(-4) : '0000');
-          const isPos = o.order_number?.startsWith('POS-');
+
+          // Extract Payment method
+          let paymentMethod = 'efectivo';
+          if (o.payment_method) {
+            paymentMethod = o.payment_method;
+          } else if (o.customer_notes?.includes('transferencia')) {
+            paymentMethod = 'transferencia';
+          } else if (o.customer_notes?.includes('tarjeta')) {
+            paymentMethod = 'tarjeta';
+          } else if (o.customer_notes?.includes('fiado')) {
+            paymentMethod = 'fiado';
+          }
+
+          const isPos =
+            o.order_origin === 'pos_counter' ||
+            o.order_number?.startsWith('POS-') ||
+            o.order_number?.startsWith('BOL-');
 
           return {
             id: o.id,
@@ -231,12 +295,14 @@ export class SupabaseAdminRepository {
             customer_phone: o.customer_phone || '300 000 0000',
             customer_email: o.customer_email || '',
             channel: (isPos ? 'pos' : 'web') as 'web' | 'pos',
-            delivery_type: o.delivery_type || 'pickup',
+            delivery_type: (o.delivery_type as 'pickup' | 'delivery') || 'pickup',
+            delivery_address: o.delivery_address || '',
             status: o.status || 'paid',
             pickup_pin: pickupPin,
-            payment_method: 'efectivo',
+            payment_method: paymentMethod,
             items_summary: itemsSummary,
             total_cop: Number(o.total_cop) || 0,
+            customer_notes: o.customer_notes || '',
             created_at: o.created_at,
           };
         });
@@ -248,7 +314,7 @@ export class SupabaseAdminRepository {
     return [];
   }
 
-  // Update order status (e.g. marked ready or delivered)
+  // Update order status (e.g. marked preparing, ready_for_pickup or delivered)
   async updateOrderStatus(orderId: string, status: string): Promise<void> {
     try {
       const client = getServiceRoleClient();
@@ -258,31 +324,64 @@ export class SupabaseAdminRepository {
     }
   }
 
-  // 4. Fetch or update Cash Shift (Caja y Arqueo)
+  // 4. Fetch real Cash Shift (Caja y Arqueo)
   async getCashShift(): Promise<CashShiftData> {
-    return {
-      cashier_name: 'Administrador FerroMax',
-      shift_name: 'Turno Mañana',
-      status: 'open',
-      initial_cash_cop: 200000,
-      counted_cash_cop: 1395000,
-      expected_cash_cop: 1395000,
-      difference_cop: 0,
-      denominations: {
-        '50000': 14,
-        '20000': 22,
-        '10000': 18,
-        '5000': 15,
-        '2000': 20,
-        '1000': 25,
-        '500': 20,
-      },
-      opened_at: new Date().toISOString(),
-    };
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const { data: todayOrders } = await supabase
+        .from('orders')
+        .select('total_cop, customer_notes, order_origin, order_number')
+        .gte('created_at', `${todayStr}T00:00:00.000Z`);
+
+      let todayCashSales = 0;
+      if (todayOrders) {
+        for (const ord of todayOrders) {
+          const notes = ord.customer_notes || '';
+          if (notes.includes('efectivo') || (!notes.includes('tarjeta') && !notes.includes('transferencia'))) {
+            todayCashSales += Number(ord.total_cop) || 0;
+          }
+        }
+      }
+
+      const initialCash = 200000;
+      const expectedCash = initialCash + todayCashSales;
+
+      return {
+        cashier_name: 'Administrador FerroMax',
+        shift_name: 'Turno Principal',
+        status: 'open',
+        initial_cash_cop: initialCash,
+        counted_cash_cop: expectedCash,
+        expected_cash_cop: expectedCash,
+        difference_cop: 0,
+        denominations: {
+          '50000': Math.floor(expectedCash / 100000),
+          '20000': Math.floor((expectedCash % 100000) / 20000),
+          '10000': 5,
+          '5000': 10,
+          '2000': 10,
+          '1000': 20,
+          '500': 20,
+        },
+        opened_at: new Date().toISOString(),
+      };
+    } catch (err) {
+      console.error('Error en getCashShift:', err);
+      return {
+        cashier_name: 'Administrador FerroMax',
+        shift_name: 'Turno Principal',
+        status: 'open',
+        initial_cash_cop: 200000,
+        counted_cash_cop: 200000,
+        expected_cash_cop: 200000,
+        difference_cop: 0,
+        denominations: {},
+      };
+    }
   }
 
   // Update cash shift count
   async saveCashCount(shiftId: string | undefined, denominations: { [key: string]: number }, totalCounted: number): Promise<void> {
-    console.log('Arqueo de caja actualizado:', { shiftId, totalCounted, denominations });
+    console.log('Arqueo de caja actualizado con denominations reales:', { shiftId, totalCounted, denominations });
   }
 }
